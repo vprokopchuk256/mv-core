@@ -13,7 +13,7 @@ module MigrationValidators
       module ClassMethods
         def migrate_with_validators *args
           migrate_without_validators *args
-          DbValidator.commit MigrationValidators.validator
+          MigrationValidators::Core::DbValidator.commit MigrationValidators.validator
         end
       end
     end
