@@ -9,11 +9,11 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
   before :each do
     @builder = MigrationValidators::Core::StatementBuilder.new
 
-    @builder.action :and do |stmt, value|
+    @builder.operation :and do |stmt, value|
       "#{stmt} AND #{value}"
     end
 
-    @builder.action :or do |stmt, value|
+    @builder.operation :or do |stmt, value|
       "#{stmt} OR #{value}"
     end
 
@@ -37,7 +37,7 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
     end
 
     it "allows to define create template" do
-      @container.action :create do |stmt, group_name|    
+      @container.operation :create do |stmt, group_name|    
         "CREATE ENTITY #{group_name} BEGIN #{stmt}; END"
       end
 
@@ -45,7 +45,7 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
     end
 
     it "allows to define drop tempalte" do
-      @container.action :drop do |stmt, group_name|    
+      @container.operation :drop do |stmt, group_name|    
         "DROP ENTITY #{group_name};"
       end
 

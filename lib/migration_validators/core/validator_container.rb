@@ -10,15 +10,15 @@ module MigrationValidators
           validator.name
         end
 
-        action :create do |stmt, group_name|
+        operation :create do |stmt, group_name|
           stmt
         end
 
-        action :drop do
+        operation :drop do
           ""
         end
 
-        action :join do |stmt, stmt_1|
+        operation :join do |stmt, stmt_1|
           [stmt, stmt_1].delete_if(&:blank?).join(" JOIN ")
         end
       end

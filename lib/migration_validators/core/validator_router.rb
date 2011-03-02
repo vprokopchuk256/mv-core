@@ -6,7 +6,7 @@ module MigrationValidators
         @routes = {}
       end
 
-      def to container_name, conditions
+      def to container_name, conditions = {}
         @routes[container_name] ||= conditions[:if]
       end
 

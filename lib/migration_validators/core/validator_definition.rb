@@ -7,21 +7,18 @@ module MigrationValidators
         super "", definition
 
         @properties = properties
+        @posts = []
 
         self.validator = validator if validator
 
-        action :column_name do |stmt|
-          self.validator.column_name
-        end
-
-        action :bind_to_error do |stmt, error|
+        operation :bind_to_error do |stmt, error|
           stmt
         end
       end
 
       def validator= validator
         @validator = validator
-        column_name(validator.column_name)
+        @stmt = validator.column_name
       end
 
       def column
@@ -34,14 +31,18 @@ module MigrationValidators
         res
       end
 
-      def property name, opts = {}, &block
+      def property name = "", opts = {}, &block
         @properties[name.to_s] ||= [opts, block]
+      end
+
+      def post opts = {}, &block
+        @posts << [opts, block]
       end
 
       def process validator, filter = []
         self.validator = validator
 
-        return [] if validator.options.blank?
+        return [] if validator.options.nil?
 
         unless filter.blank? 
           filter = filter.collect(&:to_s)
@@ -50,21 +51,35 @@ module MigrationValidators
           options = validator.options
         end
 
-        options.inject([]) do |res, (property_name, property_value)|
-          opts, block = @properties[property_name.to_s]
-          
-          if (block)
-            change(property_value, &block)
-            bind_to_error(message(opts))
-          
-            res << self.to_s
-          end
-
+        res = options.inject([]) do |res, (property_name, property_value)|
+          res << self.to_s if handle_property(property_name, property_value)
           res
-        end unless validator.options.blank?
+        end
+
+        return res unless res.blank?
+        return (handle_property("", options) && res << self.to_s) || []
       end
 
       private 
+
+      def handle_property property_name, property_value
+          opts, block = @properties[property_name.to_s]
+
+          if (block)
+            at_least_one_property_handled = true
+            change(property_value, &block)
+            apply_posts
+            bind_to_error(message(opts))
+
+            return true
+          end
+
+          false
+      end
+
+      def apply_posts 
+        @posts.each{|opts, post_block| change(&post_block) if validator.satisfies(opts)}
+      end
 
       def message opts
         validator.options[opts[:message]] || 

@@ -12,8 +12,12 @@ module MigrationValidators
         @stmt
       end
 
-      def action name, &block
-        @actions[name.to_s] = block if block
+      def operation name, &block
+        @actions[name.to_s] = block || lambda{|stmt| stmt}
+      end
+
+      def compile value
+        StatementBuilder.new value, self
       end
 
       def merge! builder

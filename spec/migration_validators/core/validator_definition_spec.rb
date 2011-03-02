@@ -9,11 +9,11 @@ describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
   before :each do
     @definition = MigrationValidators::Core::ValidatorDefinition.new  
 
-    @definition.action :and do |stmt, value|
+    @definition.operation :and do |stmt, value|
       "#{stmt} AND #{value}"
     end
 
-    @definition.action :or do |stmt, value|
+    @definition.operation :or do |stmt, value|
       "#{stmt} OR #{value}"
     end
   end
@@ -32,23 +32,7 @@ describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
       @definition.validator = @validator
     end
 
-    describe :column_name do
-      it "initialized by validator" do
-        @definition.column_name.to_s.should == @validator.column_name
-      end
-
-      it "might be redefined" do
-        @definition.action :column_name do |name|
-          "NEW.#{validator.column_name}"
-        end
-
-        @definition.column_name.to_s.should == "NEW.#{@validator.column_name}"
-      end
-    end
-  
-
     it "supports invariant column property" do
-
       @definition.column.and(@definition.column).to_s.should == "#{@validator.column_name} AND #{@validator.column_name}"
     end
 
@@ -67,11 +51,43 @@ describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
         end
       
         @definition.process(@validator).should == ["#{@validator.column_name} AND property_value"]
-     end
+      end
+
+      it "allows to define post processors" do
+        @definition.property :property_name do |property_value|
+          "#{column.and(property_value)}"
+        end
+
+        @definition.post do
+          self.and("some_post_value")
+        end
+
+        @definition.post :property_name => :property_value do
+          self.and("some_post_value_1")
+        end
+
+        @definition.post :property_name => :wrong_property_value do
+          self.and("some_post_value_2")
+        end
+
+        @definition.process(@validator).should == ["#{@validator.column_name} AND property_value AND some_post_value AND some_post_value_1"]
+      end
+
+      it "allows to define default property handler" do
+        @validator.options = {}
+
+        @definition.property do |property_value|
+          "#{column}"
+        end
+
+        @definition.process(@validator).should == ["#{@validator.column_name}"]
+      end
+
+
 
       describe :bind_to_error do
         before :each do
-          @definition.action :bind_to_error do |stmt, error|
+          @definition.operation :bind_to_error do |stmt, error|
             "SHOW '#{error}' UNLESS (#{stmt})"
           end
         end

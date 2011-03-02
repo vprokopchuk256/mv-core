@@ -10,16 +10,16 @@ describe MigrationValidators::Core::StatementBuilder  do
   end
 
   it "allows to define additional action" do
-    @builder.action(:and) {|stmt, value| "#{stmt} and #{value}" }
+    @builder.operation(:and) {|stmt, value| "#{stmt} and #{value}" }
 
     @builder.and("column_1").to_s.should == "column and column_1"
   end
 
   it "might be merged with another builder" do
-    @builder.action(:and) {|stmt, value| "#{stmt} and #{value}" }
+    @builder.operation(:and) {|stmt, value| "#{stmt} and #{value}" }
 
     builder1 = MigrationValidators::Core::StatementBuilder.new ""
-    builder1.action(:and) {|stmt, value| "#{stmt} and #{value} new" }
+    builder1.operation(:and) {|stmt, value| "#{stmt} and #{value} new" }
 
     @builder.merge!(builder1)
 
@@ -27,7 +27,7 @@ describe MigrationValidators::Core::StatementBuilder  do
   end
 
   it "migth be initialized by another (parent) builder" do
-    @builder.action(:and) {|stmt, value| "#{stmt} and #{value}" }
+    @builder.operation(:and) {|stmt, value| "#{stmt} and #{value}" }
 
     builder1 = MigrationValidators::Core::StatementBuilder.new "column_2", @builder
 

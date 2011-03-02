@@ -9,11 +9,11 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
   before :each do
     @builder = MigrationValidators::Core::StatementBuilder.new
 
-    @builder.action :and do |stmt, value|
+    @builder.operation :and do |stmt, value|
       "#{stmt} AND #{value}"
     end
 
-    @builder.action :or do |stmt, value|
+    @builder.operation :or do |stmt, value|
       "#{stmt} OR #{value}"
     end
 
@@ -24,12 +24,12 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
     end
 
     @container = MigrationValidators::Core::ValidatorContainer.new :validator_name => @definition
-    @container.action :create do |stmt, group_name|    
+    @container.operation :create do |stmt, group_name|    
       "CREATE ENTITY #{group_name} BEGIN #{stmt} END"
     end
 
     @container_1 = MigrationValidators::Core::ValidatorContainer.new :validator_name => @definition
-    @container_1.action :create do |stmt, group_name|    
+    @container_1.operation :create do |stmt, group_name|    
       "CREATE ENTITY_1 #{group_name} BEGIN #{stmt} END"
     end
 
