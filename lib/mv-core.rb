@@ -40,7 +40,7 @@ module MigrationValidators
     end
 
     def current_connection_adapter
-      ActiveRecord::Base.connection_pool.spec.config[:adapter]
+      ::ActiveRecord::Base.connection_pool.spec.config[:adapter]
     end
   
     def dumper 
@@ -57,7 +57,7 @@ module MigrationValidators
     end
 
     def validator 
-      @validator ||= AdapterWrapper.new(@adapter || validators[current_connection_adapter].new)
+      @validator ||= MigrationValidators::Core::AdapterWrapper.new(@adapter || validators[current_connection_adapter].new)
     end
 
     def reload_validator
