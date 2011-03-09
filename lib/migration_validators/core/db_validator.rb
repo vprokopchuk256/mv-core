@@ -3,13 +3,12 @@ module MigrationValidators
     class DbValidator < ::ActiveRecord::Base
       set_table_name MigrationValidators.migration_validators_table_name
 
-      validates :table_name,  :presence => true,   
-                              :length => {:maximum => 255 }
+      validates_presence_of :table_name
+      validates_length_of :table_name, :maximum => 255
+      validates_length_of :column_name, :maximum => 255
 
-      validates :column_name,  :length => {:maximum => 255 }
-
-      validates :validator_name,  :presence => true,  
-                                  :length => {:maximum => 255 }
+      validates_presence_of :validator_name
+      validates_length_of :validator_name, :maximum => 255
 
       validate do |validator|
         unless ::ActiveRecord::Base.connection.table_exists?(validator.table_name)
