@@ -13,7 +13,6 @@ group :test do
   gem 'factory_girl'
   gem 'shoulda'
   gem 'autotest'
-  gem 'carlosbrando-autotest-notification'
   gem 'sqlite3'
   gem 'mv-test'
 end
