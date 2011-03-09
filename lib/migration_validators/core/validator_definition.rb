@@ -3,11 +3,11 @@ module MigrationValidators
     class ValidatorDefinition < StatementBuilder
       attr_reader :validator
 
-      def initialize definition = nil, validator = nil, properties = {}
+      def initialize definition = nil, validator = nil, properties = {}, posts = []
         super "", definition
 
         @properties = properties
-        @posts = []
+        @posts = posts
 
         self.validator = validator if validator
 
@@ -26,7 +26,7 @@ module MigrationValidators
       end
 
       def clone builder = nil
-        res = ValidatorDefinition.new self, validator, @properties.clone
+        res = ValidatorDefinition.new self, validator, @properties.clone, @posts.clone
         res.merge!(builder) if builder
         res
       end

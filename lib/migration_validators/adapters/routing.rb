@@ -37,48 +37,65 @@ module MigrationValidators
       end
 
       def add_index validator
-        db.add_index validator.table_name, 
+        ::ActiveRecord::Base.connection.add_index validator.table_name, 
                      validator.column_name, 
                      :name => compose_index_name(validator),
                      :unique => true
       end
 
       def remove_index validator
-        db.remove_index validator.table_name, 
+        ::ActiveRecord::Base.connection.remove_index validator.table_name, 
                         :name => compose_index_name(validator)
       end
 
       def execute statements
         statements = [statements] if statements.kind_of?(String) 
 
-        statements.each {|stmt| db.execute(stmt) }
+        statements.each {|stmt| ::ActiveRecord::Base.connection.execute(stmt) }
       end
 
       module ClassMethods
-        def route validator_name, container_type, opts = {}, &block
-          router = MigrationValidators::Core::ValidatorRouter.new containers
+        def routers to = nil
+          @routers ||= {}
+        end
+
+
+        def router validator_name, container_type, &block
+          router = routers["#{validator_name}_#{container_type}"] ||= MigrationValidators::Core::ValidatorRouter.new(containers)
           router.instance_eval(&block) if block
+          router
+        end
+
+        def route validator_name, container_type, opts = {}, &block
+          router validator_name, container_type, &block
 
           default = opts.delete(:default)
           remove = opts.delete(:remove)
           remove = true if remove.nil?
 
-          to = opts[:to]
-          to = [to] unless to.kind_of?(Array)
-          to.each {|container_name| router.to container_name}
+          if (to = opts[:to])
+            to = [to] unless to.kind_of?(Array)
+            to.each {|container_name| router(validator_name, container_type).to container_name}
+          end
 
           define_method :"validate_#{validator_name}_#{container_type}" do |validators|
             execute(validators.group_by(&:table_name).inject([]) do |statements, (table_name, group)|
-              statements.concat(router.process(MigrationValidators::Core::DbValidator.table_validators(table_name)))
+              table_validators = MigrationValidators::Core::DbValidator.table_validators(table_name, :as => :"#{container_type}")
+              statements.concat(self.class.router(validator_name, container_type).process(table_validators))
             end)
+
+            validators
           end
           alias_method(:"validate_#{validator_name}", :"validate_#{validator_name}_#{container_type}") if default
 
           if remove 
             define_method :"remove_validate_#{validator_name}_#{container_type}" do |validators|
               execute(validators.group_by(&:table_name).inject([]) do |statements, (table_name, group)|
-                statements.concat(router.process(MigrationValidators::Core::DbValidator.table_validators(table_name) - group))
+                table_validators = MigrationValidators::Core::DbValidator.table_validators(table_name, :as => :"#{container_type}")
+                statements.concat(self.class.router(validator_name, container_type).process(table_validators - group))
               end)
+
+              validators
             end
             alias_method(:"remove_validate_#{validator_name}", :"remove_validate_#{validator_name}_#{container_type}") if default
           end

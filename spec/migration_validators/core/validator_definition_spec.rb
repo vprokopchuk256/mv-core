@@ -66,6 +66,10 @@ describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
           self.and("some_post_value_1")
         end
 
+        @definition.post "property_name" => :property_value do
+          self.and("some_post_value_1")
+        end
+
         @definition.post :property_name => :wrong_property_value do
           self.and("some_post_value_2")
         end

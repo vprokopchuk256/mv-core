@@ -107,6 +107,11 @@ module MigrationValidators
         end
 
 
+        def clear_all
+          rollback
+          DbValidator.delete_all
+        end
+
         private 
 
         def with_options opts, &block

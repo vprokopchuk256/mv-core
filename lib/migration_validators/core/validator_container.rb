@@ -54,7 +54,8 @@ module MigrationValidators
       def create_group group_name, group
         isolate do
           group.each do |validator|
-            definition = @definitions[validator.validator_name]
+            definition = @definitions[validator.validator_name.to_s] || @definitions[validator.validator_name.to_sym]
+
 
             raise MigrationValidators::MigrationValidatorsException.new("Validator defintion for #{validator.validator_name} is not defined.") unless definition
 
