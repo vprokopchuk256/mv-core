@@ -49,7 +49,7 @@ describe MigrationValidators::Adapters::Base, :type => :mv_test do
   describe :container do
     it "allows to define validator definition" do
       Driver.containers[:container_name].should_not be_blank
-      Driver.containers[:container_name].process([@validator]).should == ["column_name SOME_INTERESTING_CONTAINER_OPERATION property_value"]
+      Driver.containers[:container_name].add_validators([@validator]).should == ["column_name SOME_INTERESTING_CONTAINER_OPERATION property_value"]
     end
   end
 

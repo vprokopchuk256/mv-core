@@ -14,13 +14,16 @@ module MigrationValidators
         unless ::ActiveRecord::Base.connection.table_exists?(validator.table_name)
           validator.errors[:table_name] << "table '#{table_name}' does not exist" 
         else 
-          unless ::ActiveRecord::Base.connection.columns(validator.table_name).any?{|col| col.name == column_name.to_s}
+          unless ::ActiveRecord::Base.connection.columns(validator.table_name).any?{|col| col.name == validator.column_name.to_s}
             validator.errors[:column_name] << "column '#{column_name}' does not exist in the table '#{table_name}'" 
           end
         end
       end 
 
+      before_save :prepare_options
+
       serialize :options, Hash
+      serialize :constraints, Array
 
       def name
         "#{table_name}_#{column_name}_#{validator_name}"
@@ -45,16 +48,39 @@ module MigrationValidators
         end
       end
 
+      def save_to_constraint constraint_name
+        self.constraints ||= []
+        self.constraints << constraint_name.to_s unless self.constraints.include?(constraint_name.to_s)
+      end
+
+      def remove_from_constraint constraint_name
+        self.constraints.delete(constraint_name.to_s) if self.constraints
+      end
+
+      def in_constraint? constraint_name
+        self.constraints && self.constraints.include?(constraint_name.to_s)
+      end
+
+      private
+        def prepare_options
+          options = options.inject({}) do |res, (key, value)|
+            res[key.to_s] = value
+            res
+          end unless options.blank?
+
+          true
+        end
+
       class << self 
 
         def add_column_validator table_name, column_name, validator_name, opts
-          remove_validators(:table_name => table_name,
-                            :column_name => column_name,
-                            :validator_name => validator_name)
+          remove_validators(:table_name => table_name.to_s,
+                            :column_name => column_name.to_s,
+                            :validator_name => validator_name.to_s)
 
-          add_new_validator(:table_name => table_name,
-                            :column_name => column_name,
-                            :validator_name => validator_name, 
+          add_new_validator(:table_name => table_name.to_s,
+                            :column_name => column_name.to_s,
+                            :validator_name => validator_name.to_s, 
                             :options => opts)
         end
 
@@ -70,6 +96,10 @@ module MigrationValidators
           with_options opts do
             DbValidator.find(:all, :conditions => { :table_name => table_name })
           end
+        end
+
+        def constraint_validators constraint
+          DbValidator.find(:all, :conditions => ["constraints LIKE ?", "%#{constraint}%"]).select{|validator| validator.in_constraint?(constraint)}
         end
 
         def remove_table_validators table_name 
@@ -95,8 +125,8 @@ module MigrationValidators
           validators_to_remove.each(&:destroy) 
           validators_to_remove.clear
 
-          validators_to_add.each(&:save!)
           adapter.create_validators(validators_to_add) if adapter
+          validators_to_add.each(&:save!)
           validators_to_add.clear
         end
 

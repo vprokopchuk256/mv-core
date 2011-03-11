@@ -23,12 +23,12 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
       column
     end
 
-    @container = MigrationValidators::Core::ValidatorContainer.new :validator_name => @definition
+    @container = MigrationValidators::Core::ValidatorContainer.new :container, :validator_name => @definition
     @container.operation :create do |stmt, group_name|    
       "CREATE ENTITY #{group_name} BEGIN #{stmt} END"
     end
 
-    @container_1 = MigrationValidators::Core::ValidatorContainer.new :validator_name => @definition
+    @container_1 = MigrationValidators::Core::ValidatorContainer.new :container, :validator_name => @definition
     @container_1.operation :create do |stmt, group_name|    
       "CREATE ENTITY_1 #{group_name} BEGIN #{stmt} END"
     end
@@ -43,8 +43,8 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
     @router.to :container, :if => {:on => :create}
     @router.to :container_1, :if => {:on => :update}
     
-    @router.process([validator1, validator2]).should == ["CREATE ENTITY #{validator1.name} BEGIN #{validator1.column_name} END",
-                                                         "CREATE ENTITY_1 #{validator2.name} BEGIN #{validator2.column_name} END"]
+    @router.add_validators([validator1, validator2]).should == ["CREATE ENTITY #{validator1.name} BEGIN #{validator1.column_name} END",
+                                                                "CREATE ENTITY_1 #{validator2.name} BEGIN #{validator2.column_name} END"]
   end
 
 

@@ -12,6 +12,11 @@ module MigrationValidators
 
       module ClassMethods
         def migrate_with_validators *args
+
+          ::ActiveRecord::Base.connection.class.class_eval {
+            include MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter
+          } unless ::ActiveRecord::Base.connection.class.include?(MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter)
+
           migrate_without_validators *args
           MigrationValidators::Core::DbValidator.commit MigrationValidators.validator
         end

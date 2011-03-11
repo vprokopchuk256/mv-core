@@ -1,13 +1,20 @@
 module MigrationValidators
   module Core
     class ValidatorContainer < StatementBuilder
-      def initialize definitions, builder = nil
+      attr_reader :name
+
+      def initialize name, definitions, builder = nil
         super "", builder
 
+        @name = name
         @definitions = definitions
 
         group do |validator|
           validator.name
+        end
+
+        constraint_name do |group_key|
+          group_key.to_s
         end
 
         operation :create do |stmt, group_name|
@@ -27,17 +34,47 @@ module MigrationValidators
         @group_proc = block
       end
 
-      def process validators
-        validators.group_by(&@group_proc).inject([]) do |res, (group_name, group)|
-          stmt = drop_group(group_name)
-          res << stmt unless stmt.blank?
+      def constraint_name &block
+        @constraint_name_proc = block
+      end
 
-          stmt = create_group(group_name, group)
-          res << stmt unless stmt.blank?
+      def add_validators validators
+        process_validators(validators) do |existing_validators|
+          validators + existing_validators
         end
       end
 
+      
+
+      def remove_validators validators
+        process_validators(validators) do |existing_validators|
+          existing_validators - validators
+        end
+      end
+
+
       private
+
+      def process_validators validators
+        validators.group_by(&@group_proc).inject([]) do |res, (group_name, group)|
+          constraint_name = @constraint_name_proc.call(group_name)
+          constraint_validators = MigrationValidators::Core::DbValidator.constraint_validators(constraint_name)
+
+          group = yield(constraint_validators).uniq
+
+          unless constraint_validators.blank?
+            stmt = drop_group(constraint_name, group_name)
+            res << stmt unless stmt.blank?
+          end
+
+          unless group.blank?
+            stmt = create_group(constraint_name, group_name, group) 
+            res << stmt unless stmt.blank?
+          end
+
+          res
+        end
+      end
 
       def isolate 
         clear!
@@ -47,11 +84,11 @@ module MigrationValidators
         res
       end
 
-      def drop_group group_name
-        isolate { drop(group_name) }
+      def drop_group constraint_name, group_name
+        isolate { drop(constraint_name, group_name) }
       end
 
-      def create_group group_name, group
+      def create_group constraint_name, group_name, group
         isolate do
           group.each do |validator|
             definition = @definitions[validator.validator_name.to_s] || @definitions[validator.validator_name.to_sym]
@@ -62,9 +99,11 @@ module MigrationValidators
             definition.clone(self).process(validator).each do |statement|
               join(statement)
             end
+
+            validator.save_to_constraint(constraint_name)
           end
           
-          create(group_name)
+          create(constraint_name, group_name)
         end
       end
     end 

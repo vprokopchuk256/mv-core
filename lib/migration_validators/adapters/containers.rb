@@ -13,7 +13,7 @@ module MigrationValidators
         def container name, &block
           raise "Container name is not defined" if name.blank?
 
-          container = containers[name] ||= MigrationValidators::Core::ValidatorContainer.new(validators, syntax)
+          container = containers[name] ||= MigrationValidators::Core::ValidatorContainer.new(name, validators, syntax)
           container.instance_eval(&block) if block
           container
         end
@@ -21,22 +21,21 @@ module MigrationValidators
         def define_base_containers
           container :insert_trigger do
             group do |validator|
-              trigger_name = (validator.options && validator.options[:insert_trigger_name]) || "trg_mgr_validates_#{validator.table_name}_ins"
-              [validator.table_name, trigger_name]
+              [validator.table_name, (validator.options && validator.options[:insert_trigger_name]) || "trg_mgr_validates_#{validator.table_name}_ins"]
             end
 
-            operation :create do |stmt, group_name|
-              table_name, trigger_name = group_name
+            constraint_name do |group_name|
+              group_name.last
+            end
 
-              "CREATE TRIGGER #{trigger_name} BEFORE INSERT ON #{table_name} FOR EACH ROW
+            operation :create do |stmt, trigger_name, group_name|
+              "CREATE TRIGGER #{trigger_name} BEFORE INSERT ON #{group_name.first} FOR EACH ROW
                BEGIN
                 #{stmt};
                END;"
             end
 
-            operation :drop do |stmt, group_name|
-              table_name, trigger_name = group_name
-
+            operation :drop do |stmt, trigger_name, group_name|
               "DROP TRIGGER IF EXISTS #{trigger_name};"
             end
 
@@ -52,22 +51,21 @@ module MigrationValidators
 
           container :update_trigger do
             group do |validator|
-              trigger_name = (validator.options && validator.options[:update_trigger_name]) || "trg_mgr_validates_#{validator.table_name}_upd"
-              [validator.table_name, trigger_name]
+              [validator.table_name, (validator.options && validator.options[:update_trigger_name]) || "trg_mgr_validates_#{validator.table_name}_upd"]
             end
 
-            operation :create do |stmt, group_name|
-              table_name, trigger_name = group_name
+            constraint_name do |group_name|
+              group_name.last
+            end
 
-              "CREATE TRIGGER #{trigger_name} BEFORE UPDATE ON #{table_name} FOR EACH ROW
+            operation :create do |stmt, trigger_name, group_name|
+              "CREATE TRIGGER #{trigger_name} BEFORE UPDATE ON #{group_name.first} FOR EACH ROW
                BEGIN
                 #{stmt};
                END;"
             end
 
-            operation :drop do |stmt, group_name|
-              table_name, trigger_name = group_name
-
+            operation :drop do |stmt, trigger_name, group_name|
               "DROP TRIGGER IF EXISTS #{trigger_name};"
             end
 
@@ -82,18 +80,19 @@ module MigrationValidators
 
           container :check do
             group do |validator|
-              check_name = (validator.options && validator.options[:check_name]) || "chk_#{validator.table_name}_#{validator.column_name}"
-              [validator.table_name, check_name]
+              [validator.table_name, (validator.options && validator.options[:check_name]) || "chk_#{validator.table_name}_#{validator.column_name}"]
             end
 
-            operation :create do |stmt, group_name|
-              table_name, check_name = group_name
-              "ALTER TABLE #{table_name} ADD CONSTRAINT #{check_name} CHECK(#{stmt});"
+            constraint_name do |group_name|
+              group_name.last
             end
 
-            operation :drop do |stmt, group_name|
-              table_name, check_name = group_name
-              "ALTER TABLE #{table_name} DROP CONSTRAINT #{check_name};"
+            operation :create do |stmt, check_name, group_name|
+              "ALTER TABLE #{group_name.first} ADD CONSTRAINT #{check_name} CHECK(#{stmt});"
+            end
+
+            operation :drop do |stmt, check_name, group_name|
+              "ALTER TABLE #{group_name.first} DROP CONSTRAINT #{check_name};"
             end
           end
         end

@@ -7,6 +7,14 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
   end
 
   before :each do
+    MigrationValidators::Core::DbValidator.clear_all
+
+    db.drop_table :test_table if db.table_exists?(:test_table)
+    db.create_table :test_table do |t|
+      t.string :str_column
+      t.string :str_column_1
+    end
+
     @builder = MigrationValidators::Core::StatementBuilder.new
 
     @builder.operation :and do |stmt, value|
@@ -23,7 +31,7 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
       column.and(property_value)
     end
 
-    @container = MigrationValidators::Core::ValidatorContainer.new :validator_name => @definition
+    @container = MigrationValidators::Core::ValidatorContainer.new :container, :validator_name => @definition
     @validator = Factory.build :db_validator, 
                                :validator_name => :validator_name,
                                :column_name => :column_name,
@@ -31,39 +39,83 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
 
   end
 
-  describe :process do
-    it "returns definition processing result by default" do
-      @container.process([@validator]).should == ["column_name AND property_value"]
-    end
-
-    it "allows to define create template" do
-      @container.operation :create do |stmt, group_name|    
-        "CREATE ENTITY #{group_name} BEGIN #{stmt}; END"
-      end
-
-      @container.process([@validator]).should == ["CREATE ENTITY #{@validator.name} BEGIN column_name AND property_value; END"]
-    end
-
-    it "allows to define drop tempalte" do
-      @container.operation :drop do |stmt, group_name|    
-        "DROP ENTITY #{group_name};"
-      end
-
-      @container.process([@validator]).should == ["DROP ENTITY #{@validator.name};", "column_name AND property_value"]
-    end
-
-    it "joins with JOIN statements from the same group by default" do
-      @container.process([@validator, @validator]).should == ["column_name AND property_value JOIN column_name AND property_value"]
-    end
-
-    it "separates statements for validators from different groups" do
-      validator1 = Factory.build :db_validator, 
-                                 :validator_name => :validator_name,
-                                 :column_name => :column_name_1,
-                                 :options => {:property_name => :property_value_1}
-
-      @container.process([@validator, validator1]).should == ["column_name AND property_value", "column_name_1 AND property_value_1"]
+  describe :remove_validators do
+    it "regenerates constraint without specified validators" do
     end
   end
-  
+
+  describe :add_validators do
+    it "returns definition processing result by default" do
+      @container.add_validators([@validator]).should == ["column_name AND property_value"]
+    end
+
+    it "adds constraint name to processed validators constraint list" do
+      @container.constraint_name {|group_key| "constraint" }
+      @container.add_validators([@validator]).should == ["column_name AND property_value"]
+
+      @validator.in_constraint?("constraint").should be_true
+    end
+
+    it "joins specified validator to existing ones within the same constraint" do
+      @container.constraint_name {|group_key| "constraint" }
+
+      validator1 = Factory.create :db_validator, 
+                                  :validator_name => :validator_name,
+                                  :table_name => :test_table, 
+                                  :column_name => :str_column,
+                                  :options => {:property_name => :property_value_1}, 
+                                  :constraints => ["constraint"]
+
+      @container.add_validators([@validator]).should == ["column_name AND property_value JOIN str_column AND property_value_1"]
+    end
+
+    it "creates drop statement if defined" do
+      @container.constraint_name {|group_key| "constraint" }
+
+      @container.operation :drop do |stmt, constraint_name, group_name|    
+        "DROP ENTITY #{constraint_name}"
+      end
+
+      validator1 = Factory.create :db_validator, 
+                                  :validator_name => :validator_name,
+                                  :table_name => :test_table, 
+                                  :column_name => :str_column,
+                                  :options => {:property_name => :property_value_1}, 
+                                  :constraints => ["constraint"]
+
+      @container.add_validators([@validator]).should == ["DROP ENTITY constraint", "column_name AND property_value JOIN str_column AND property_value_1"]
+    end
+
+    it "do not creates drop statement if such constraint does not exist" do
+      @container.constraint_name {|group_key| "constraint" }
+
+      @container.operation :drop do |stmt, constraint_name, group_name|    
+        "DROP ENTITY #{constraint_name}"
+      end
+
+      @container.add_validators([@validator]).should == ["column_name AND property_value"]
+    end
+  end
+
+  describe :remove_validators do
+    it "regenerates constraint without specified validators" do
+      @container.constraint_name {|group_key| "constraint" }
+
+      validator1 = Factory.create :db_validator, 
+                                  :validator_name => :validator_name,
+                                  :table_name => :test_table, 
+                                  :column_name => :str_column,
+                                  :options => {:property_name => :property_value_1}, 
+                                  :constraints => ["constraint"]
+
+      validator2 = Factory.create :db_validator, 
+                                  :validator_name => :validator_name,
+                                  :table_name => :test_table, 
+                                  :column_name => :str_column_1,
+                                  :options => {:property_name => :property_value_2}, 
+                                  :constraints => ["constraint"]
+
+      @container.remove_validators([validator2]).should == ["str_column AND property_value_1"]
+    end
+  end
 end

@@ -17,6 +17,7 @@ module MigrationValidators
               t.string :column_name, :null => true, :limit => 255
               t.string :validator_name, :null => false, :limit => 255
               t.text :options
+              t.text :constraints
             end 
 
             add_index migrations_table, :table_name

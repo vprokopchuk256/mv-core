@@ -79,22 +79,14 @@ module MigrationValidators
           end
 
           define_method :"validate_#{validator_name}_#{container_type}" do |validators|
-            execute(validators.group_by(&:table_name).inject([]) do |statements, (table_name, group)|
-              table_validators = MigrationValidators::Core::DbValidator.table_validators(table_name, :as => :"#{container_type}")
-              statements.concat(self.class.router(validator_name, container_type).process(table_validators))
-            end)
-
+            execute(self.class.router(validator_name, container_type).add_validators(validators))
             validators
           end
           alias_method(:"validate_#{validator_name}", :"validate_#{validator_name}_#{container_type}") if default
 
           if remove 
             define_method :"remove_validate_#{validator_name}_#{container_type}" do |validators|
-              execute(validators.group_by(&:table_name).inject([]) do |statements, (table_name, group)|
-                table_validators = MigrationValidators::Core::DbValidator.table_validators(table_name, :as => :"#{container_type}")
-                statements.concat(self.class.router(validator_name, container_type).process(table_validators - group))
-              end)
-
+              execute(self.class.router(validator_name, container_type).remove_validators(validators))
               validators
             end
             alias_method(:"remove_validate_#{validator_name}", :"remove_validate_#{validator_name}_#{container_type}") if default
@@ -105,7 +97,6 @@ module MigrationValidators
           public_instance_methods.grep(/^remove_validate_/) { |method_name| undef_method method_name }
           public_instance_methods.grep(/^validate_/) { |method_name| undef_method method_name }
         end
-
       end
 
     end
