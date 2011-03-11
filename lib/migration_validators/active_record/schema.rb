@@ -1,17 +1,17 @@
 module MigrationValidators
   module ActiveRecord
-    module Migration
+    module Schema
       def self.included(base)
         base.extend ClassMethods
         base.class_eval do
           class << self
-            alias_method_chain :migrate, :validators
+            alias_method_chain :define, :validators
           end
         end
       end
 
       module ClassMethods
-        def migrate_with_validators *args
+        def define_with_validators *args, &block
 
           connection.class.class_eval {
             include MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter
@@ -19,9 +19,11 @@ module MigrationValidators
 
           connection.initialize_migration_validators_table
 
-          migrate_without_validators *args
+          res = define_without_validators *args, &block
 
           MigrationValidators::Core::DbValidator.commit MigrationValidators.validator
+
+          res
         end
       end
     end

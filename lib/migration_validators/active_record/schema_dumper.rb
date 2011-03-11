@@ -3,12 +3,12 @@ module MigrationValidators
     module SchemaDumper
       def self.included(base)
         base.class_eval do
-          alias_method_chain :dump, :validators
+          alias_method_chain :tables, :validators
         end
       end
 
-      def dump_with_validators(stream)
-        dump_without_validators(stream)
+      def tables_with_validators(stream)
+        tables_without_validators(stream)
 
         stream.puts ""
         stream.puts "#Validators"

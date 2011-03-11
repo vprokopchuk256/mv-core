@@ -9,6 +9,7 @@ require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/connection_adapters/table_definition'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/base'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/migration'
+require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/schema'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/schema_dumper'
 
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/core/db_validator'
@@ -58,6 +59,8 @@ module MigrationValidators
     end
 
     def validator 
+      return nil unless @adapter || validators[current_connection_adapter]
+
       @validator ||= MigrationValidators::Core::AdapterWrapper.new(@adapter || validators[current_connection_adapter].new)
     end
 
@@ -72,8 +75,8 @@ module MigrationValidators
       ::ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter }
       ::ActiveRecord::Base.instance_eval { include MigrationValidators::ActiveRecord::Base }
       ::ActiveRecord::Migration.instance_eval { include MigrationValidators::ActiveRecord::Migration }
+      ::ActiveRecord::Schema.instance_eval { include MigrationValidators::ActiveRecord::Schema }
       ::ActiveRecord::SchemaDumper.instance_eval { include MigrationValidators::ActiveRecord::SchemaDumper }
-      #ActiveRecord::SchemaDumper.class_eval { include MigrationValidators::SchemaDumper }
 
       ::ActiveRecord::SchemaDumper.ignore_tables << MigrationValidators.migration_validators_table_name.to_s
     end
