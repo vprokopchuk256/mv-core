@@ -39,17 +39,25 @@ module MigrationValidators
       end
 
       def add_validators validators
-        process_validators(validators) do |existing_validators|
+        res, constraint_name = process_validators(validators) do |existing_validators|
           validators + existing_validators
         end
+
+        validators.each {|validator| validator.save_to_constraint(constraint_name) }
+
+        res
       end
 
       
 
       def remove_validators validators
-        process_validators(validators) do |existing_validators|
+        res, constraint_name = process_validators(validators) do |existing_validators|
           existing_validators - validators
         end
+
+        validators.each {|validator| validator.remove_from_constraint(constraint_name) }
+
+        res
       end
 
 
@@ -71,8 +79,7 @@ module MigrationValidators
             stmt = create_group(constraint_name, group_name, group) 
             res << stmt unless stmt.blank?
           end
-
-          res
+          [res, constraint_name]
         end
       end
 
@@ -93,17 +100,14 @@ module MigrationValidators
           group.each do |validator|
             definition = @definitions[validator.validator_name.to_s] || @definitions[validator.validator_name.to_sym]
 
-
             raise MigrationValidators::MigrationValidatorsException.new("Validator defintion for #{validator.validator_name} is not defined.") unless definition
 
             definition.clone(self).process(validator).each do |statement|
               join(statement)
             end
-
-            validator.save_to_constraint(constraint_name)
           end
           
-          create(constraint_name, group_name)
+          create(constraint_name, group_name) unless group.blank?
         end
       end
     end 

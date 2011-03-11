@@ -99,7 +99,7 @@ module MigrationValidators
         end
 
         def constraint_validators constraint
-          DbValidator.find(:all, :conditions => ["constraints LIKE ?", "%#{constraint}%"]).select{|validator| validator.in_constraint?(constraint)}
+          (DbValidator.find(:all, :conditions => ["constraints LIKE ?", "%#{constraint}%"]) + validators_to_add).select{|validator| validator.in_constraint?(constraint)}
         end
 
         def remove_table_validators table_name 

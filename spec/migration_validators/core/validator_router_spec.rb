@@ -23,7 +23,7 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
       column
     end
 
-    @container = MigrationValidators::Core::ValidatorContainer.new :container, :validator_name => @definition
+    @container = MigrationValidators::Core::ValidatorContainer.new :container, :validator_name => @definition, :validator_name_1 => @definition
     @container.operation :create do |stmt, group_name|    
       "CREATE ENTITY #{group_name} BEGIN #{stmt} END"
     end
@@ -47,5 +47,14 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
                                                                 "CREATE ENTITY_1 #{validator2.name} BEGIN #{validator2.column_name} END"]
   end
 
+  it "merges routes to the same container" do
+    validator1 = Factory.build :db_validator, :table_name => :table_name, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :create}
+    validator2 = Factory.build :db_validator, :table_name => :table_name, :validator_name => :validator_name_1, :options => {:property_name => :property_value, :on => :create}
 
+    @container.group {|validator| validator.table_name}
+    @container.constraint_name {|group_name| "trigger_name" }
+    @router.to :container, :if => {:on => :create}
+    
+    @router.add_validators([validator1, validator2]).should == ["CREATE ENTITY trigger_name BEGIN #{validator1.column_name} JOIN #{validator2.column_name} END"]
+  end
 end
