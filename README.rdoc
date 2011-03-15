@@ -39,16 +39,17 @@ mv-core is a set of core classes that are used everywhere across Migration Valid
 
 = Drivers
 
-  Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
-  
-  list of supported validators my vary for each db (it depends on RDBMS features actually)
+Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
+List of supported validators my vary for each db (it depends on RDBMS features actually)
 
-  so - see detailed info here: 
+So - see detailed info here: 
 
-  PostgreSQL[http://github.com/vprokopchuk256/mv-postgresql]
+PostgreSQL
 
-  MySQL: https://github.com/vprokopchuk256/mv-mysql
-  SQLite: https://github.com/vprokopchuk256/mv-sqlite
+http://github.com/vprokopchuk256/mv-postgresql]
+
+MySQL: https://github.com/vprokopchuk256/mv-mysql
+SQLite: https://github.com/vprokopchuk256/mv-sqlite
 
 
 == Contributing to mv-core
