@@ -159,6 +159,13 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
 
           MigrationValidators::Core::DbValidator.count.should be_zero
         end
+
+        it "works well with symbols" do
+          MigrationValidators::Core::DbValidator.remove_column_validator "table_name", :column_name, :validator_name
+          MigrationValidators::Core::DbValidator.commit
+
+          MigrationValidators::Core::DbValidator.count.should be_zero
+        end
       end
 
       describe :remove_column_validators do

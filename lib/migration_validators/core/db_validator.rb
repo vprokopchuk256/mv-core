@@ -85,43 +85,43 @@ module MigrationValidators
         end
 
         def remove_column_validator table_name, column_name, validator_name
-          remove_validators :table_name => table_name, :column_name => column_name, :validator_name => validator_name
+          remove_validators :table_name => table_name.to_s, :column_name => column_name.to_s, :validator_name => validator_name.to_s
         end
 
         def remove_column_validators table_name, column_name
-          remove_validators :table_name => table_name, :column_name => column_name
+          remove_validators :table_name => table_name.to_s, :column_name => column_name.to_s
         end
 
         def table_validators table_name, opts = {}
           with_options opts do
-            DbValidator.find(:all, :conditions => { :table_name => table_name })
+            DbValidator.find(:all, :conditions => { :table_name => table_name.to_s })
           end
         end
 
         def constraint_validators constraint
-          (DbValidator.find(:all, :conditions => ["constraints LIKE ?", "%#{constraint}%"]) + validators_to_add).select{|validator| validator.in_constraint?(constraint)}
+          (DbValidator.find(:all, :conditions => ["constraints LIKE ?", "%#{constraint}%"]) + validators_to_add - validators_to_remove).select{|validator| validator.in_constraint?(constraint)}
         end
 
         def remove_table_validators table_name 
-          remove_validators :table_name => table_name
+          remove_validators :table_name => table_name.to_s
         end
         
         def column_validators table_name, column_name, opts = {}
           with_options opts do
-            DbValidator.find :all, :conditions => { :table_name => table_name, :column_name => column_name }
+            DbValidator.find :all, :conditions => { :table_name => table_name.to_s, :column_name => column_name.to_s }
           end
         end
 
         def rename_column table_name, old_column_name, new_column_name
-          DbValidator.update_all({:column_name => new_column_name}, :column_name => old_column_name)
+          DbValidator.update_all({:column_name => new_column_name.to_s}, :column_name => old_column_name.to_s)
         end
 
         def rename_table old_table_name, new_table_name
-          DbValidator.update_all({:table_name => new_table_name}, :table_name => old_table_name)
+          DbValidator.update_all({:table_name => new_table_name.to_s}, :table_name => old_table_name.to_s)
         end
 
         def commit adapter = nil
-          adapter.remove_validators(validators_to_remove) if adapter
+          adapter.remove_validators(validators_to_remove.select{|validator| ::ActiveRecord::Base.connection.table_exists?(validator.table_name)}) if adapter
           validators_to_remove.each(&:destroy) 
           validators_to_remove.clear
 
@@ -141,7 +141,23 @@ module MigrationValidators
           DbValidator.delete_all
         end
 
+        def validators_to_remove
+          @validators_to_remove ||= []
+        end
+
+        def validators_to_add
+          @validators_to_add ||= []
+        end
+
         private 
+
+        def validators_to_remove
+          @validators_to_remove ||= []
+        end
+
+        def validators_to_add
+          @validators_to_add ||= []
+        end
 
         def with_options opts, &block
           block.call.select {|validator| validator.satisfies(opts) } 
@@ -155,13 +171,6 @@ module MigrationValidators
           DbValidator.find(:all, :conditions => opts).each { |validator| validators_to_remove << validator }
         end
 
-        def validators_to_remove
-          @validators_to_remove ||= []
-        end
-
-        def validators_to_add
-          @validators_to_add ||= []
-        end
 
       end
     end

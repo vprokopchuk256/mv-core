@@ -48,8 +48,6 @@ module MigrationValidators
         res
       end
 
-      
-
       def remove_validators validators
         res, constraint_name = process_validators(validators) do |existing_validators|
           existing_validators - validators
@@ -60,7 +58,6 @@ module MigrationValidators
         res
       end
 
-
       private
 
       def process_validators validators
@@ -70,10 +67,8 @@ module MigrationValidators
 
           group = yield(constraint_validators).uniq
 
-          unless constraint_validators.blank?
-            stmt = drop_group(constraint_name, group_name)
-            res << stmt unless stmt.blank?
-          end
+          stmt = drop_group(constraint_name, group_name)
+          res << stmt unless stmt.blank?
 
           unless group.blank?
             stmt = create_group(constraint_name, group_name, group) 

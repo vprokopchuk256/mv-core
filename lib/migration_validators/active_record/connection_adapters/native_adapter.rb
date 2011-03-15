@@ -24,7 +24,7 @@ module MigrationValidators
               raise MigrationValidatorsException.new("use false to remove column validator") unless validator_options == false
 
               MigrationValidators::Core::DbValidator.remove_column_validator table_name, column_name, validator_name
-            else validator_options.blank?
+            else 
               validator_options = {} if validator_options == true
               MigrationValidators::Core::DbValidator.add_column_validator table_name, column_name, validator_name, validator_options
             end
@@ -71,7 +71,9 @@ module MigrationValidators
 
         def remove_column_with_validators table_name, *column_names
           do_enabled do
-            column_names.each {|column_name| MigrationValidators::Core::DbValidator.remove_column_validators table_name, column_name }
+            column_names.flatten.each do |column_name| 
+              MigrationValidators::Core::DbValidator.remove_column_validators table_name, column_name 
+            end
           end
 
           do_internally { remove_column_without_validators table_name, *column_names }

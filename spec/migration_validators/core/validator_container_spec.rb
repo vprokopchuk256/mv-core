@@ -86,15 +86,15 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
       @container.add_validators([@validator]).should == ["DROP ENTITY constraint", "column_name AND property_value JOIN str_column AND property_value_1"]
     end
 
-    it "do not creates drop statement if such constraint does not exist" do
-      @container.constraint_name {|group_key| "constraint" }
+    #it "do not creates drop statement if such constraint does not exist" do
+    #  @container.constraint_name {|group_key| "constraint" }
 
-      @container.operation :drop do |stmt, constraint_name, group_name|    
-        "DROP ENTITY #{constraint_name}"
-      end
+    #  @container.operation :drop do |stmt, constraint_name, group_name|    
+    #    "DROP ENTITY #{constraint_name}"
+    #  end
 
-      @container.add_validators([@validator]).should == ["column_name AND property_value"]
-    end
+    #  @container.add_validators([@validator]).should == ["column_name AND property_value"]
+    #end
   end
 
   describe :remove_validators do
