@@ -45,8 +45,7 @@ mv-core is a set of core classes that are used everywhere across Migration Valid
 
   so - see detailed info here: 
 
-  PostgreSQL: 
-  http://github.com/vprokopchuk256/mv-postgresql
+  PostgreSQL[http://github.com/vprokopchuk256/mv-postgresql]
 
   MySQL: https://github.com/vprokopchuk256/mv-mysql
   SQLite: https://github.com/vprokopchuk256/mv-sqlite
