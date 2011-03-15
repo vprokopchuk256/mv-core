@@ -1,6 +1,57 @@
+= Abbreviations
+
+MV - Migration Validators Projects. All gems that belongs to that project are prefixed with mv-*
+
+= Project goals
+
+Main goal of the project is to allow developer to express database constraints in a Ruby like manner. 
+
 = mv-core
 
-Description goes here.
+mv-core is a set of core classes that are used everywhere across Migration Validators project gems. 
+
+= Usage
+
+  Create new table:
+
+  create_table do |t|
+    t.string :str_column, :validates => {:uniqueness => true, :inclusion => {:in => 1..3}}
+    t.column :column_name, :integer, :validates => {:exclusion => {:in => [1,2,3]}}
+  end
+
+  Modify existing table: 
+
+  change_table do |t|
+    t.change :str_column, :integer, :validates => {:exclusion => {:in => [1,2,3]}}
+    t.change_validates :column_name, :inclusion => {:in => 1..3}
+  end
+
+  Update existing table with new validators: 
+
+  validate_column :str_column, :integer, :exclusion => {:in => [1,2,3]}
+
+  Remove existing validators: 
+
+  change_table do |t|
+    t.change :str_column, :integer, :validates => {:exclusion => false}
+  end
+  validate_column :str_column, :integer, :exclusion => false
+
+= Drivers
+
+  Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
+  
+  list of supported validators my vary for each db (it depends on RDBMS features actually)
+
+  so - see detailed info here: 
+
+  PosgreSQL
+  MySQL
+  SQLite 
+
+
+
+
 
 == Contributing to mv-core
  
