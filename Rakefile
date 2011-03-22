@@ -13,7 +13,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "mv-core"
-  gem.homepage = "http://github.com/vprokochuk256/mv-core"
+  gem.homepage = "http://github.com/vprokopchuk256/mv-core"
   gem.license = "MIT"
   gem.summary = "Migration Validators project core classes"
   gem.description = "Migration Validators project core classes"
