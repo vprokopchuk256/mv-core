@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mv-core}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Valeriy Prokopchuk"]
@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
     "lib/mv-core.rb",
     "lib/options.rb"
   ]
-  s.homepage = %q{http://github.com/vprokochuk256/mv-core}
+  s.homepage = %q{http://github.com/vprokopchuk256/mv-core}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.6.2}
