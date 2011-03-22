@@ -28,19 +28,40 @@ mv-core is a set of core classes that are used everywhere across Migration Valid
 
   Update existing table with new validators: 
 
-  validate_column :str_column, :integer, :exclusion => {:in => [1,2,3]}
+  validate_column :table_name, :str_column, :exclusion => {:in => [1,2,3]}
 
   Remove existing validators: 
 
   change_table do |t|
     t.change :str_column, :integer, :validates => {:exclusion => false}
   end
-  validate_column :str_column, :integer, :exclusion => false
+  validate_column table_name, :str_column, :exclusion => false
+
+  Define the way how validator will be created:
+
+  as trigger:
+
+  validate_column :table_name, :str_column, :validates => {:uniqueness => true, :as => :trigger }
+
+  as check constraint:
+
+  validate_column :table_name, :str_column, :validates => {:uniqueness => true, :as => :check }
+
+  Define event that will be validates:
+
+  while new record creation: 
+
+  validate_column :table_name, :str_column, :validates => {:uniqueness => true, :on => :create }
+
+  or while updating of existing record:
+
+  validate_column :table_name, :str_column, :validates => {:uniqueness => true, :on => :create }
+
+  Supported validators and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
 
 = Drivers
 
 Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
-List of supported validators my vary for each db (it depends on RDBMS features actually)
 
 So - see detailed info here: 
 
