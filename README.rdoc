@@ -10,6 +10,20 @@ Main goal of the project is to allow developer to express database constraints i
 
 mv-core is a set of core classes that are used everywhere across Migration Validators project gems. 
 
+= Install
+
+  PostgreSQL:
+
+  gem install mv-postgresql
+
+  MySQL:
+
+  gem install mv-mysql
+
+  SQLite: 
+
+  gem install mv-sqlite
+ 
 = Usage
 
   Create new table:
@@ -55,7 +69,7 @@ mv-core is a set of core classes that are used everywhere across Migration Valid
 
   or while updating of existing record:
 
-  validate_column :table_name, :str_column, :validates => {:uniqueness => true, :on => :create }
+  validate_column :table_name, :str_column, :validates => {:uniqueness => true, :on => :update }
 
   Supported validators and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
 
