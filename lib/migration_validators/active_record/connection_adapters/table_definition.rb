@@ -2,8 +2,10 @@ module MigrationValidators
   module ActiveRecord
     module ConnectionAdapters
       module TableDefinition
-        def self.included(base)
-          base.class_eval do
+        extend ActiveSupport::Concern
+
+        included do
+          class_eval do
             alias_method_chain :column, :validators
 
             def change_validates *args
@@ -11,12 +13,14 @@ module MigrationValidators
           end
         end
 
-        def column_with_validators name, type, options = {}
-          validates = options.delete(:validates)
+        module InstanceMethods 
+          def column_with_validators name, type, options = {}
+            validates = options.delete(:validates)
 
-          column_without_validators name, type, options
+            column_without_validators name, type, options
 
-          ::ActiveRecord::Base.connection.validate_column(nil, name, validates) unless validates.blank?
+            ::ActiveRecord::Base.connection.validate_column(nil, name, validates) unless validates.blank?
+          end
         end
       end
     end

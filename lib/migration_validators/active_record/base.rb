@@ -1,9 +1,10 @@
 module MigrationValidators
   module ActiveRecord
     module Base
-      def self.included(base)
-        base.extend ClassMethods
-        base.class_eval do
+      extend ActiveSupport::Concern
+
+      included do
+        class_eval do
           class << self
             alias_method_chain :establish_connection, :validators
           end

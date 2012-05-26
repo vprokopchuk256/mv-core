@@ -1,9 +1,7 @@
 module MigrationValidators
   module Adapters
     module Syntax
-      def self.included(base)
-        base.extend ClassMethods
-      end
+      extend ActiveSupport::Concern
 
       module ClassMethods
         def define_base_syntax
