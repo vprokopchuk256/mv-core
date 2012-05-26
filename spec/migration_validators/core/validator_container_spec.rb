@@ -32,7 +32,7 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
     end
 
     @container = MigrationValidators::Core::ValidatorContainer.new :container, :validator_name => @definition
-    @validator = Factory.build :db_validator, 
+    @validator = FactoryGirl.build :db_validator, 
                                :validator_name => :validator_name,
                                :column_name => :column_name,
                                :options => {:property_name => :property_value}
@@ -59,7 +59,7 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
     it "joins specified validator to existing ones within the same constraint" do
       @container.constraint_name {|group_key| "constraint" }
 
-      validator1 = Factory.create :db_validator, 
+      validator1 = FactoryGirl.create :db_validator, 
                                   :validator_name => :validator_name,
                                   :table_name => :test_table, 
                                   :column_name => :str_column,
@@ -76,7 +76,7 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
         "DROP ENTITY #{constraint_name}"
       end
 
-      validator1 = Factory.create :db_validator, 
+      validator1 = FactoryGirl.create :db_validator, 
                                   :validator_name => :validator_name,
                                   :table_name => :test_table, 
                                   :column_name => :str_column,
@@ -101,14 +101,14 @@ describe MigrationValidators::Core::ValidatorContainer, :type => :mv_test  do
     it "regenerates constraint without specified validators" do
       @container.constraint_name {|group_key| "constraint" }
 
-      validator1 = Factory.create :db_validator, 
+      validator1 = FactoryGirl.create :db_validator, 
                                   :validator_name => :validator_name,
                                   :table_name => :test_table, 
                                   :column_name => :str_column,
                                   :options => {:property_name => :property_value_1}, 
                                   :constraints => ["constraint"]
 
-      validator2 = Factory.create :db_validator, 
+      validator2 = FactoryGirl.create :db_validator, 
                                   :validator_name => :validator_name,
                                   :table_name => :test_table, 
                                   :column_name => :str_column_1,

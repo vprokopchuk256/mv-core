@@ -28,7 +28,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
   end
 
   subject do
-    Factory.create :db_validator, :table_name => :table_name
+    FactoryGirl.create :db_validator, :table_name => :table_name
   end
 
   it { should have_db_column(:table_name).of_type(:string).with_options(:length => 255, :null => false) }
@@ -49,27 +49,27 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
   it { should ensure_length_of(:validator_name).is_at_most(255) }
 
   it "should support read only name property composed of attributes" do
-    validator =  Factory.create :db_validator, :table_name => :table_name
+    validator =  FactoryGirl.create :db_validator, :table_name => :table_name
 
     validator.name.should == "#{validator.table_name}_#{validator.column_name}_#{validator.validator_name}"
   end
 
   describe "Error message" do
     it "is made of validator name, table_name and colum name if special message not defined" do
-      validator =  Factory.build :db_validator, :table_name => :table_name
+      validator =  FactoryGirl.build :db_validator, :table_name => :table_name
 
       validator.error_message.should == "#{validator.validator_name} violated for #{validator.table_name} field #{validator.column_name}"
     end
 
     it "might be re - defined" do
-      validator =  Factory.build :db_validator, :table_name => :table_name, :options => {:message => "Custom message"}
+      validator =  FactoryGirl.build :db_validator, :table_name => :table_name, :options => {:message => "Custom message"}
 
       validator.error_message.should == 'Custom message'
     end
   end
 
   it "should support options serialization" do
-    db_validator = Factory.build :db_validator, :table_name => :table_name
+    db_validator = FactoryGirl.build :db_validator, :table_name => :table_name
 
     db_validator.options = {:message => "some message"}
 
@@ -81,7 +81,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
   end
 
   it "should support containers serialization" do
-    db_validator = Factory.build :db_validator, :table_name => :table_name
+    db_validator = FactoryGirl.build :db_validator, :table_name => :table_name
 
     db_validator.constraints = [:some_constraint]
 
@@ -210,7 +210,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
 
     describe :satisfies do
       before :each do
-        @validator = Factory.build(:db_validator, :options => {:property_name => :property_value})
+        @validator = FactoryGirl.build(:db_validator, :options => {:property_name => :property_value})
       end
 
       it "returns false if the validator has different property values than specified"  do
@@ -218,15 +218,15 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
       end
 
       it "returns true if values of the specified property values are equals to validator's ones" do
-        @validator = Factory.build(:db_validator, :options => {:property_name => :property_value})
+        @validator = FactoryGirl.build(:db_validator, :options => {:property_name => :property_value})
       end
 
       it "returns false if at least one specified property is not defined in validator's options" do
-        @validator = Factory.build(:db_validator, :options => {:property_name => :property_value})
+        @validator = FactoryGirl.build(:db_validator, :options => {:property_name => :property_value})
       end
 
       it "returns true if empty was specified" do
-        @validator = Factory.build(:db_validator, :options => {:property_name => :property_value})
+        @validator = FactoryGirl.build(:db_validator, :options => {:property_name => :property_value})
       end
 
       it "allows arrays of possible values to be spesified" do
@@ -287,7 +287,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
 
     describe :save_to_constraint do
       it "updates validator constraints list with string representation of the specified constraint name" do
-        validator =  Factory.create :db_validator, :table_name => :table_name
+        validator =  FactoryGirl.create :db_validator, :table_name => :table_name
 
         validator.save_to_constraint :constraint
 
@@ -295,7 +295,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
       end
 
       it "does nothing if such constraint already exists in the list" do
-        validator =  Factory.create :db_validator, :table_name => :table_name
+        validator =  FactoryGirl.create :db_validator, :table_name => :table_name
 
         validator.save_to_constraint :constraint
         validator.save_to_constraint :constraint
@@ -306,7 +306,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
 
     describe :remove_from_constraint do
       it "removes specified constraint name from the internal constraints list" do
-        validator =  Factory.create :db_validator, :table_name => :table_name
+        validator =  FactoryGirl.create :db_validator, :table_name => :table_name
         validator.constraints = ["constraint"]
 
         validator.remove_from_constraint :constraint
@@ -315,7 +315,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
       end
 
       it "does nothing if validator was not added to the constraint with the specified name" do
-        validator =  Factory.create :db_validator, :table_name => :table_name
+        validator =  FactoryGirl.create :db_validator, :table_name => :table_name
         validator.constraints = nil
 
         validator.remove_from_constraint :constraint
@@ -326,7 +326,7 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
 
     describe :in_constraint? do
       it "returns true if validator belongs to the constriant with specified name" do
-        validator =  Factory.create :db_validator, :table_name => :table_name
+        validator =  FactoryGirl.create :db_validator, :table_name => :table_name
 
         validator.save_to_constraint :constraint
 
@@ -337,8 +337,8 @@ describe MigrationValidators::Core::DbValidator, :type => :mv_test do
 
     describe :constraint_validators do
       it "searches validators that were included to constraint with specified name" do
-        validator =  Factory.create :db_validator, :table_name => :table_name, :column_name => :column_name, :constraints => ["constraint"]
-        validator1 =  Factory.create :db_validator, :table_name => :table_name, :column_name => :column_name_1, :constraints => ["constraint1"]
+        validator =  FactoryGirl.create :db_validator, :table_name => :table_name, :column_name => :column_name, :constraints => ["constraint"]
+        validator1 =  FactoryGirl.create :db_validator, :table_name => :table_name, :column_name => :column_name_1, :constraints => ["constraint1"]
 
         MigrationValidators::Core::DbValidator.constraint_validators("constraint").to_a.should == [validator]
       end

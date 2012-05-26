@@ -19,7 +19,7 @@ describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
   end
 
   it "might be initialized by db validator" do
-    validator = Factory.build :db_validator
+    validator = FactoryGirl.build :db_validator
 
     @definition.validator = validator
 
@@ -28,7 +28,7 @@ describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
   
   describe "with validator" do
     before :each do
-      @validator = Factory.build :db_validator
+      @validator = FactoryGirl.build :db_validator
       @definition.validator = @validator
     end
 

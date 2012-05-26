@@ -8,7 +8,7 @@ describe MigrationValidators::Adapters::Base, :type => :mv_test do
   end
 
   before :each do
-    @validator = Factory.build :db_validator, 
+    @validator = FactoryGirl.build :db_validator, 
                                :validator_name => :validator_name, 
                                :table_name => :table_name, 
                                :column_name => :column_name,

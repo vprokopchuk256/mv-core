@@ -37,8 +37,8 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
   end
 
   it "routes validators according to their properties" do
-    validator1 = Factory.build :db_validator, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :create}
-    validator2 = Factory.build :db_validator, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :update}
+    validator1 = FactoryGirl.build :db_validator, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :create}
+    validator2 = FactoryGirl.build :db_validator, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :update}
 
     @router.to :container, :if => {:on => :create}
     @router.to :container_1, :if => {:on => :update}
@@ -48,8 +48,8 @@ describe MigrationValidators::Core::ValidatorRouter, :type => :mv_test  do
   end
 
   it "merges routes to the same container" do
-    validator1 = Factory.build :db_validator, :table_name => :table_name, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :create}
-    validator2 = Factory.build :db_validator, :table_name => :table_name, :validator_name => :validator_name_1, :options => {:property_name => :property_value, :on => :create}
+    validator1 = FactoryGirl.build :db_validator, :table_name => :table_name, :validator_name => :validator_name, :options => {:property_name => :property_value, :on => :create}
+    validator2 = FactoryGirl.build :db_validator, :table_name => :table_name, :validator_name => :validator_name_1, :options => {:property_name => :property_value, :on => :create}
 
     @container.group {|validator| validator.table_name}
     @container.constraint_name {|group_name| "trigger_name" }
