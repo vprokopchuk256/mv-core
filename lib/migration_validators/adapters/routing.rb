@@ -3,55 +3,53 @@ module MigrationValidators
     module Routing
       extend ActiveSupport::Concern
 
-      module InstanceMethods
-        ###################################################################
-        ## UNIQUENESS
-        ###################################################################
-        def validate_uniqueness_index validators
-          add_index validators.first
-          [validators.first]
+      ###################################################################
+      ## UNIQUENESS
+      ###################################################################
+      def validate_uniqueness_index validators
+        add_index validators.first
+        [validators.first]
+      end
+
+      def remove_validate_uniqueness_index validators
+        remove_index(validators.first)
+        [validators.first]
+      end
+
+      def validate_uniqueness validators
+        validate_uniqueness_index validators
+      end
+
+      def remove_validate_uniqueness validators
+        remove_validate_uniqueness_index validators
+      end
+
+      private 
+
+      def compose_index_name validator
+        if validator.options.blank? || (index_name = validator.options[:index_name]).blank? 
+          "idx_mgr_validates_#{validator.table_name}_#{validator.column_name}_#{validator.validator_name}"
+        else
+          index_name
         end
+      end
 
-        def remove_validate_uniqueness_index validators
-          remove_index(validators.first)
-          [validators.first]
-        end
+      def add_index validator
+        ::ActiveRecord::Base.connection.add_index validator.table_name, 
+                     validator.column_name, 
+                     :name => compose_index_name(validator),
+                     :unique => true
+      end
 
-        def validate_uniqueness validators
-          validate_uniqueness_index validators
-        end
+      def remove_index validator
+        ::ActiveRecord::Base.connection.remove_index validator.table_name, 
+                        :name => compose_index_name(validator)
+      end
 
-        def remove_validate_uniqueness validators
-          remove_validate_uniqueness_index validators
-        end
+      def execute statements
+        statements = [statements] if statements.kind_of?(String) 
 
-        private 
-
-        def compose_index_name validator
-          if validator.options.blank? || (index_name = validator.options[:index_name]).blank? 
-            "idx_mgr_validates_#{validator.table_name}_#{validator.column_name}_#{validator.validator_name}"
-          else
-            index_name
-          end
-        end
-
-        def add_index validator
-          ::ActiveRecord::Base.connection.add_index validator.table_name, 
-                       validator.column_name, 
-                       :name => compose_index_name(validator),
-                       :unique => true
-        end
-
-        def remove_index validator
-          ::ActiveRecord::Base.connection.remove_index validator.table_name, 
-                          :name => compose_index_name(validator)
-        end
-
-        def execute statements
-          statements = [statements] if statements.kind_of?(String) 
-
-          statements.each {|stmt| ::ActiveRecord::Base.connection.execute(stmt) }
-        end
+        statements.each {|stmt| ::ActiveRecord::Base.connection.execute(stmt) }
       end
 
       module ClassMethods

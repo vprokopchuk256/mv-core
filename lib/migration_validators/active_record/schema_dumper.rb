@@ -9,15 +9,13 @@ module MigrationValidators
         end
       end
 
-      module InstanceMethods
-        def tables_with_validators(stream)
-          tables_without_validators(stream)
+      def tables_with_validators(stream)
+        tables_without_validators(stream)
 
-          stream.puts ""
-          stream.puts "  #Validators"
-          MigrationValidators::Core::DbValidator.find(:all, :order => "table_name, column_name").each do |validator|
-            stream.puts "  validate_column :#{validator.table_name}, :#{validator.column_name}, :#{validator.validator_name} => #{validator.options.inspect}"
-          end
+        stream.puts ""
+        stream.puts "  #Validators"
+        MigrationValidators::Core::DbValidator.find(:all, :order => "table_name, column_name").each do |validator|
+          stream.puts "  validate_column :#{validator.table_name}, :#{validator.column_name}, :#{validator.validator_name} => #{validator.options.inspect}"
         end
       end
     end

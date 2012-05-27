@@ -1,7 +1,7 @@
 module MigrationValidators
   module Core
     class DbValidator < ::ActiveRecord::Base
-      set_table_name MigrationValidators.migration_validators_table_name
+      self.table_name = MigrationValidators.migration_validators_table_name
 
       validates_presence_of :table_name
       validates_length_of :table_name, :maximum => 255

@@ -13,14 +13,12 @@ module MigrationValidators
           end
         end
 
-        module InstanceMethods 
-          def column_with_validators name, type, options = {}
-            validates = options.delete(:validates)
+        def column_with_validators name, type, options = {}
+          validates = options.delete(:validates)
 
-            column_without_validators name, type, options
+          column_without_validators name, type, options
 
-            ::ActiveRecord::Base.connection.validate_column(nil, name, validates) unless validates.blank?
-          end
+          ::ActiveRecord::Base.connection.validate_column(nil, name, validates) unless validates.blank?
         end
       end
     end
