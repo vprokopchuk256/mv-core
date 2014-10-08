@@ -1,130 +1,139 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe MigrationValidators::Core::ValidatorDefinition, :type => :mv_test  do
-  before :all do
+ValidatorDefinition = MigrationValidators::Core::ValidatorDefinition
+
+describe ValidatorDefinition, :type => :mv_test  do
+  let(:validator) { FactoryGirl.build(:db_validator)}
+  subject(:validator_definition) { described_class.new }
+
+  it_behaves_like :statement_builder do
+    subject(:builder) { validator_definition }
+  end
+
+  before :example do
     use_memory_db
     db.initialize_schema_migrations_table
   end
 
   before :each do
-    @definition = MigrationValidators::Core::ValidatorDefinition.new  
-
-    @definition.operation :and do |stmt, value|
+    validator_definition.operation :and do |stmt, value|
       "#{stmt} AND #{value}"
     end
 
-    @definition.operation :or do |stmt, value|
+    validator_definition.operation :or do |stmt, value|
       "#{stmt} OR #{value}"
     end
   end
 
-  it "might be initialized by db validator" do
-    validator = FactoryGirl.build :db_validator
-
-    @definition.validator = validator
-
-    @definition.to_s.should == validator.column_name
-  end
-  
   describe "with validator" do
     before :each do
-      @validator = FactoryGirl.build :db_validator
-      @definition.validator = @validator
+      validator_definition.validator = validator
     end
+    
+    its(:to_s) { is_expected.to eq(validator.column_name)}
 
-    it "supports invariant column property" do
-      @definition.column.and(@definition.column).to_s.should == "#{@validator.column_name} AND #{@validator.column_name}"
-    end
-
-    describe :process do
+    describe '#process' do
       before :each do
-        @validator.options = { :property_name => :property_value }
+        validator.options = { :property_name => :property_value }
       end
 
-      it "returns empty array by default" do
-        @definition.process(@validator).should == []
+      subject{ validator_definition.process(validator) }
+
+      it { is_expected.to be_empty }
+
+      context 'when property handler defined' do
+        before do
+          validator_definition.property :property_name do |property_value|
+            "#{column.and(property_value)}"
+          end
+        end
+        
+        it { is_expected.to eq(["#{validator.column_name} AND property_value"]) }
       end
 
-      it "allows to define property handlers" do
-        @definition.property :property_name do |property_value|
-          "#{column.and(property_value)}"
+      context 'when post processors are defined' do
+        before do 
+          validator_definition.property :property_name do |property_value|
+            "#{column.and(property_value)}"
+          end
+
+          validator_definition.post do
+            self.and("some_post_value")
+          end
+
+          validator_definition.post :property_name => :property_value do
+            self.and("some_post_value_1")
+          end
+
+          validator_definition.post "property_name" => :property_value do
+            self.and("some_post_value_1")
+          end
+
+          validator_definition.post :property_name => :wrong_property_value do
+            self.and("some_post_value_2")
+          end
         end
-      
-        @definition.process(@validator).should == ["#{@validator.column_name} AND property_value"]
+
+        it { is_expected.to eq(["#{validator.column_name} AND property_value AND some_post_value AND some_post_value_1"])}
+        
       end
 
-      it "allows to define post processors" do
-        @definition.property :property_name do |property_value|
-          "#{column.and(property_value)}"
+      context 'with default property handler' do
+        before do
+          validator.options = {}
+
+          validator_definition.property do |property_value|
+            "#{column}"
+          end
         end
 
-        @definition.post do
-          self.and("some_post_value")
-        end
-
-        @definition.post :property_name => :property_value do
-          self.and("some_post_value_1")
-        end
-
-        @definition.post "property_name" => :property_value do
-          self.and("some_post_value_1")
-        end
-
-        @definition.post :property_name => :wrong_property_value do
-          self.and("some_post_value_2")
-        end
-
-        @definition.process(@validator).should == ["#{@validator.column_name} AND property_value AND some_post_value AND some_post_value_1"]
+        it { is_expected.to eq(["#{validator.column_name}"]) }
       end
 
-      it "allows to define default property handler" do
-        @validator.options = {}
-
-        @definition.property do |property_value|
-          "#{column}"
-        end
-
-        @definition.process(@validator).should == ["#{@validator.column_name}"]
-      end
-
-
-
-      describe :bind_to_error do
+      describe '#bind_to_error' do
         before :each do
-          @definition.operation :bind_to_error do |stmt, error|
+          validator_definition.operation :bind_to_error do |stmt, error|
             "SHOW '#{error}' UNLESS (#{stmt})"
           end
         end
 
-        it "takes :message validator property as default" do
-          @validator.options[:message] = :default_message
+        context 'when message is define as validator property' do
+          before do 
+            validator.options[:message] = :default_message 
 
-          @definition.property :property_name do |property_value|
-            "#{column.and(property_value)}"
+            validator_definition.property :property_name do |property_value|
+              "#{column.and(property_value)}"
+            end
           end
-
-          @definition.process(@validator).should == ["SHOW 'default_message' UNLESS (#{@validator.column_name} AND property_value)"]
+          
+          it { is_expected.to eq(["SHOW 'default_message' UNLESS (#{validator.column_name} AND property_value)"]) }
         end
 
-        it "allows to define message mapping" do
-          @validator.options[:message] = :default_message
-          @validator.options[:specific_message] = :some_specific_message
+        context 'when message mapping is defined' do
+          before do 
+            validator.options[:message] = :default_message
+            validator.options[:specific_message] = :some_specific_message
 
-          @definition.property :property_name, :message => :specific_message do |property_value|
-            "#{column.and(property_value)}"
+            validator_definition.property :property_name, :message => :specific_message do |property_value|
+              "#{column.and(property_value)}"
+            end
           end
-
-          @definition.process(@validator).should == ["SHOW 'some_specific_message' UNLESS (#{@validator.column_name} AND property_value)"]
+          
+          it { is_expected.to eq(["SHOW 'some_specific_message' UNLESS (#{validator.column_name} AND property_value)"]) }
         end
       end
 
-      it "allows to define options filter" do
-        @validator.options[:property_name_1] = :property_value_1
+      context 'when options filter is defined' do
+        before do    
+          validator.options[:property_name_1] = :property_value_1
 
-        @definition.property(:property_name) {|property_value| "#{column.and(property_value)}"}
-        @definition.property(:property_name_1) {|property_value| "#{column.and(property_value)}"}
+          validator_definition.property(:property_name) {|property_value| "#{column.and(property_value)}"}
+          validator_definition.property(:property_name_1) {|property_value| "#{column.and(property_value)}"}
+        end
 
-        @definition.process(@validator, [:property_name]).should == ["#{@validator.column_name} AND property_value"]
+        subject{ validator_definition.process(validator, [:property_name]) }
+
+        it { is_expected.to eq(["#{validator.column_name} AND property_value"]) }
       end
     end
   end

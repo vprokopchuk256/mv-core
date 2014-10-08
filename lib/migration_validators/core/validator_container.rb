@@ -43,7 +43,7 @@ module MigrationValidators
           validators + existing_validators
         end
 
-        validators.each {|validator| validator.save_to_constraint(constraint_name) }
+        validators.each {|validator| validator.constraints.add(constraint_name) }
 
         res
       end
@@ -53,7 +53,7 @@ module MigrationValidators
           existing_validators - validators
         end
 
-        validators.each {|validator| validator.remove_from_constraint(constraint_name) }
+        validators.each {|validator| validator.constraints.remove(constraint_name) }
 
         res
       end

@@ -22,6 +22,7 @@ module MigrationValidators
 
       def merge! builder
         @actions.merge!(builder.actions) if builder
+        self
       end
 
       alias_method :old_method_missing, :method_missing

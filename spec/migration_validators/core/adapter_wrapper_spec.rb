@@ -1,168 +1,205 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe MigrationValidators::Core::AdapterWrapper, :type => :mv_test do
+  let(:wrapper) { MigrationValidators::Core::AdapterWrapper.new MigrationValidators::Spec::Support::TestAdapter.new }
+
   before :each do
     use_memory_db
     db.initialize_schema_migrations_table
     MigrationValidators::Spec::Support::TestAdapter.clear
-    @wrapper = MigrationValidators::Core::AdapterWrapper.new MigrationValidators::Spec::Support::TestAdapter.new
   end
 
-  describe :create_validators do
-    it "calls driver method if such validator is supported" do
-      validator = FactoryGirl.build :uniqueness_check
+  describe '#create_validators' do
+    context "calls driver method if such validator is supported" do
+      let(:validator) { FactoryGirl.build :uniqueness_check }
 
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness, :check
-      @wrapper.create_validators [validator]
-
-      MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness_check].should_not be_blank
-      MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness_check].first.should == [validator]
-    end
-
-    it "groups validators by table_name, validator_name and db form" do
-      validator1 = FactoryGirl.build :presense_check, :column_name => :column_name_1
-      validator2 = FactoryGirl.build :presense_check, :column_name => :column_name_2
-
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :presense, :check
-      @wrapper.create_validators [validator1, validator2]
-
-      MigrationValidators::Spec::Support::TestAdapter.log[:validate_presense_check].first.should == [validator1, validator2]
-    end
-
-    it "calls driver method until all validatos are created if not all validators were handled" do
-      validator1 = FactoryGirl.build :uniqueness_check, :column_name => :column_name_1
-      validator2 = FactoryGirl.build :uniqueness_check, :column_name => :column_name_2
-
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness, :check do |validators|
-        [validators.first]
+      before do
+        MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness, :check
+        wrapper.create_validators [validator]
       end
 
-      @wrapper.create_validators [validator1, validator2]
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness_check] }
 
-      MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness_check].first.should == [validator1, validator2]
-      MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness_check].last.should == [validator2]
+      it { is_expected.to be_present }
+      its(:first) { is_expected.to eq([validator])}
     end
 
-    it "raises an exception is driver does not support specified validator" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :presense, :check
+    context "groups validators by table_name, validator_name and db form" do
+      let(:validator1) { FactoryGirl.build :presense_check, :column_name => :column_name_1 }
+      let(:validator2) { FactoryGirl.build :presense_check, :column_name => :column_name_2 }
 
-      validator = FactoryGirl.build :uniqueness_check
+      before do
+        MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :presense, :check
+        wrapper.create_validators [validator1, validator2]
+      end
 
-      lambda {
-        @wrapper.create_validators [validator]
-      }.should raise_error MigrationValidators::MigrationValidatorsException, /Action 'validate' for 'uniqueness' is not supported. Available validators: \['presense'\]/
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:validate_presense_check] }
+
+
+      its(:first) { is_expected.to eq([validator1, validator2]) }
     end
 
-    it "raises an exception if driver does not support default db form for specified validator" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :presense, :check
+    context "calls driver method until all validatos are created if not all validators were handled" do
+      let(:validator1) { FactoryGirl.build :uniqueness_check, :column_name => :column_name_1 }
+      let(:validator2) { FactoryGirl.build :uniqueness_check, :column_name => :column_name_2 }
 
-      validator = FactoryGirl.build :presense
+      before do 
+        MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness, :check do |validators|
+          [validators.first]
+        end
 
-      lambda {
-        @wrapper.create_validators [validator]
-      }.should raise_error MigrationValidators::MigrationValidatorsException, /Action 'validate' for 'presense' with default db form is not supported/
+        wrapper.create_validators [validator1, validator2]
+      end
+
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness_check] }
+
+      its(:first) { is_expected.to eq([validator1, validator2]) }
+      its(:last) { is_expected.to eq([validator2]) }
     end
 
-    it "raises an exception is driver does not support specified validator in specified db form" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness, :trigger
+    context "raises an exception is driver does not support specified validator" do
+      let(:validator) { FactoryGirl.build :uniqueness_check }
 
-      validator = FactoryGirl.build :uniqueness_check
+      before{ MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :presense, :check }
 
-      lambda {
-        @wrapper.create_validators [validator]
-      }.should raise_error MigrationValidators::MigrationValidatorsException, /Action 'validate' for db form 'check' for validator 'uniqueness' is not supported. Available db forms: \['trigger'\]/
+      it do
+        expect{
+          wrapper.create_validators [validator]
+        }.to raise_error MigrationValidators::MigrationValidatorsException, /Action 'validate' for 'uniqueness' is not supported. Available validators: \['presense'\]/
+      end
     end
 
-    it "handles omitted db form" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness
+    context "raises an exception if driver does not support default db form for specified validator" do
+      let(:validator) { FactoryGirl.build :presense }
 
-      validator = FactoryGirl.build :uniqueness
+      before { MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :presense, :check }
 
-      lambda {
-        @wrapper.create_validators [validator]
-      }.should_not raise_error
+      it do
+        expect{
+          wrapper.create_validators [validator]
+        }.to raise_error MigrationValidators::MigrationValidatorsException, /Action 'validate' for 'presense' with default db form is not supported/
+      end
+    end
 
+    context "raises an exception is driver does not support specified validator in specified db form" do
+      let(:validator) { FactoryGirl.build :uniqueness_check }
 
-      MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness].first.should == [validator]
+      before{ MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness, :trigger }
+
+      it do
+        expect{
+          wrapper.create_validators [validator]
+        }.to raise_error MigrationValidators::MigrationValidatorsException, /Action 'validate' for db form 'check' for validator 'uniqueness' is not supported. Available db forms: \['trigger'\]/
+      end
+    end
+
+    context "handles omitted db form" do
+      let(:validator) { FactoryGirl.build :uniqueness }
+
+      before do 
+        MigrationValidators::Spec::Support::TestAdapter.stub_validate_method :uniqueness 
+        wrapper.create_validators [validator]
+      end
+
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:validate_uniqueness] }
+
+      its(:first) { is_expected.to eq([validator]) }
     end
   end
 
   describe :remove_validators do
-    it "calls driver method if such validator remove is supported" do
-      validator = FactoryGirl.build :uniqueness_check
+    context "calls driver method if such validator remove is supported" do
+      let(:validator) { FactoryGirl.build :uniqueness_check }
 
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness, :check
-      @wrapper.remove_validators [validator]
-
-      MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness_check].should_not be_blank
-      MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness_check].first.should == [validator]
-    end
-
-    it "groups validators by table_name, validator_name and db form" do
-      validator1 = FactoryGirl.build :presense_check, :column_name => :column_name_1
-      validator2 = FactoryGirl.build :presense_check, :column_name => :column_name_2
-
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :presense, :check
-      @wrapper.remove_validators [validator1, validator2]
-
-      MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_presense_check].first.should == [validator1, validator2]
-    end
-
-    it "calls driver method until all validatos are removed if not all validators were handled" do
-      validator1 = FactoryGirl.build :uniqueness_check, :column_name => :column_name_1
-      validator2 = FactoryGirl.build :uniqueness_check, :column_name => :column_name_2
-
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness, :check do |validators|
-        [validators.first]
+      before do
+        MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness, :check
+        wrapper.remove_validators [validator]
       end
 
-      @wrapper.remove_validators [validator1, validator2]
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness_check] }
 
-      MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness_check].first.should == [validator1, validator2]
-      MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness_check].last.should == [validator2]
+      it { is_expected.to be_present }
+      its(:first) { is_expected.to eq([validator]) }
     end
 
-    it "raises an exception is driver does not support removing of the specified validator" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :presense, :check
+    context "groups validators by table_name, validator_name and db form" do
+      let(:validator1) { FactoryGirl.build :presense_check, :column_name => :column_name_1 }
+      let(:validator2) { FactoryGirl.build :presense_check, :column_name => :column_name_2 }
 
-      validator = FactoryGirl.build :uniqueness_check
+      before do
+        MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :presense, :check
+        wrapper.remove_validators [validator1, validator2]
+      end
 
-      lambda {
-        @wrapper.remove_validators [validator]
-      }.should raise_error MigrationValidators::MigrationValidatorsException, /Action 'remove_validate' for 'uniqueness' is not supported. Available validators: \['presense'\]/
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_presense_check] }
+
+      its(:first) { is_expected.to eq([validator1, validator2]) }
     end
 
-    it "raises an exception if driver does not support removing validator with in default db form" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :presense, :check
+    context "calls driver method until all validatos are removed if not all validators were handled" do
+      let(:validator1) { FactoryGirl.build :uniqueness_check, :column_name => :column_name_1 }
+      let(:validator2) { FactoryGirl.build :uniqueness_check, :column_name => :column_name_2 }
 
-      validator = FactoryGirl.build :presense
+      before do
+        MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness, :check do |validators|
+          [validators.first]
+        end
+        wrapper.remove_validators [validator1, validator2]
+      end
 
-      lambda {
-        @wrapper.remove_validators [validator]
-      }.should raise_error MigrationValidators::MigrationValidatorsException, /Action 'remove_validate' for 'presense' with default db form is not supported/
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness_check] }
+
+      its(:first) { is_expected.to eq([validator1, validator2]) }
+      its(:last) { is_expected.to eq([validator2]) }
     end
 
-    it "raises an exception is driver does not support specified removing validator in specified db form" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness, :trigger
+    context "raises an exception is driver does not support removing of the specified validator" do
+      let(:validator) { FactoryGirl.build :uniqueness_check }
 
-      validator = FactoryGirl.build :uniqueness_check
+      before{ MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :presense, :check }
 
-      lambda {
-        @wrapper.remove_validators [validator]
-      }.should raise_error MigrationValidators::MigrationValidatorsException, /Action 'remove_validate' for db form 'check' for validator 'uniqueness' is not supported. Available db forms: \['trigger'\]/
+      it do
+        expect {
+          wrapper.remove_validators [validator]
+        }.to raise_error MigrationValidators::MigrationValidatorsException, /Action 'remove_validate' for 'uniqueness' is not supported. Available validators: \['presense'\]/
+      end
     end
 
-    it "handles omitted db form" do
-      MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness
+    context "raises an exception if driver does not support removing validator with in default db form" do
+      let(:validator) { FactoryGirl.build :presense }
 
-      validator = FactoryGirl.build :uniqueness
+      before{ MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :presense, :check }
 
-      lambda {
-        @wrapper.remove_validators [validator]
-      }.should_not raise_error
+      it do
+        expect {
+          wrapper.remove_validators [validator]
+        }.to raise_error MigrationValidators::MigrationValidatorsException, /Action 'remove_validate' for 'presense' with default db form is not supported/
+      end
+    end
 
+    context "raises an exception is driver does not support specified removing validator in specified db form" do
+      let(:validator) { FactoryGirl.build :uniqueness_check }
 
-      MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness].first.should == [validator]
+      before{ MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness, :trigger }
+
+      it do
+        expect {
+          wrapper.remove_validators [validator]
+        }.to raise_error MigrationValidators::MigrationValidatorsException, /Action 'remove_validate' for db form 'check' for validator 'uniqueness' is not supported. Available db forms: \['trigger'\]/
+      end
+    end
+
+    context "handles omitted db form" do
+      let(:validator) { FactoryGirl.build :uniqueness }
+
+      before do
+        MigrationValidators::Spec::Support::TestAdapter.stub_remove_validate_method :uniqueness 
+        wrapper.remove_validators [validator]
+      end
+
+      subject{ MigrationValidators::Spec::Support::TestAdapter.log[:remove_validate_uniqueness] }
+
+      its(:first) { is_expected.to eq([validator]) }
     end
   end
 end

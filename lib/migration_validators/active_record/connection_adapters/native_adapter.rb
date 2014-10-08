@@ -1,3 +1,5 @@
+# DbValidator = MigrationValidators::Core::DbValidator
+
 module MigrationValidators
   module ActiveRecord
     module ConnectionAdapters 
@@ -25,10 +27,16 @@ module MigrationValidators
             if validator_options.blank?
               raise MigrationValidatorsException.new("use false to remove column validator") unless validator_options == false
 
-              MigrationValidators::Core::DbValidator.remove_column_validator table_name, column_name, validator_name
+              MigrationValidators::Core::DbValidator.on_table(table_name)
+                                                    .on_column(column_name)
+                                                    .with_name(validator_name)
+                                                    .delayed_destroy
             else 
               validator_options = {} if validator_options == true
-              MigrationValidators::Core::DbValidator.add_column_validator table_name, column_name, validator_name, validator_options
+              MigrationValidators::Core::DbValidator.new(table_name: table_name, 
+                                                         column_name: column_name, 
+                                                         validator_name: validator_name, 
+                                                         options: validator_options).delayed_save
             end
           end
         end
@@ -67,14 +75,15 @@ module MigrationValidators
 
 
         def drop_table_with_validators table_name
-          do_enabled { MigrationValidators::Core::DbValidator.remove_table_validators table_name }
+          do_enabled { MigrationValidators::Core::DbValidator.on_table(table_name).delayed_destroy }
           do_internally { drop_table_without_validators table_name }
         end
 
         def remove_column_with_validators table_name, *column_names
           do_enabled do
             column_names.flatten.each do |column_name| 
-              MigrationValidators::Core::DbValidator.remove_column_validators table_name, column_name 
+              # MigrationValidators::Core::DbValidator.remove_column_validators table_name, column_name 
+              MigrationValidators::Core::DbValidator.on_table(table_name).on_column(column_name).delayed_destroy
             end
           end
 
@@ -102,7 +111,7 @@ module MigrationValidators
         def change_column_with_validators table_name, column_name, type, opts
           validates = opts.delete(:validates)
 
-          do_enabled { MigrationValidators::Core::DbValidator.remove_column_validators table_name, column_name }
+          do_enabled { MigrationValidators::Core::DbValidator.on_table(table_name).on_column(column_name).delayed_destroy }
 
           do_internally { change_column_without_validators table_name, column_name, type, opts }
 

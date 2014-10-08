@@ -18,8 +18,8 @@ module MigrationValidators
               t.string :table_name, :null => false, :limit => 255
               t.string :column_name, :null => true, :limit => 255
               t.string :validator_name, :null => false, :limit => 255
-              t.text :options
-              t.text :constraints
+              t.text :options#, default: {}.to_yaml
+              t.text :constraints#, default: [].to_yaml
             end 
 
             add_index migrations_table, :table_name

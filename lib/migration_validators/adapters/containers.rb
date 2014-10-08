@@ -27,10 +27,10 @@ module MigrationValidators
             end
 
             operation :create do |stmt, trigger_name, group_name|
-              "CREATE TRIGGER #{trigger_name} BEFORE INSERT ON #{group_name.first} FOR EACH ROW
-               BEGIN
-                #{stmt};
-               END;"
+              ["CREATE TRIGGER #{trigger_name} BEFORE INSERT ON #{group_name.first} FOR EACH ROW",
+               "BEGIN",
+               "#{stmt}; ",
+               "END;"].join(' ')
             end
 
             operation :drop do |stmt, trigger_name, group_name|
@@ -57,10 +57,10 @@ module MigrationValidators
             end
 
             operation :create do |stmt, trigger_name, group_name|
-              "CREATE TRIGGER #{trigger_name} BEFORE UPDATE ON #{group_name.first} FOR EACH ROW
-               BEGIN
-                #{stmt};
-               END;"
+              ["CREATE TRIGGER #{trigger_name} BEFORE UPDATE ON #{group_name.first} FOR EACH ROW",
+               "BEGIN",
+                "#{stmt}; ",
+                "END;"].join(' ')
             end
 
             operation :drop do |stmt, trigger_name, group_name|

@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe MigrationValidators::ActiveRecord::SchemaDumper, "migration validators extension", :type => :mv_test do
+  subject(:validators) { MigrationValidators::Core::DbValidator.on_table(:test_table) }
   before :all do
     ActiveRecord::Migration.verbose = false
     use_memory_db
@@ -29,16 +30,15 @@ describe MigrationValidators::ActiveRecord::SchemaDumper, "migration validators 
 
     MigrationValidators::Core::DbValidator.commit
  
-    @validators = MigrationValidators::Core::DbValidator.table_validators "test_table"
   end
 
-  describe :dump do
-    it "validator info" do
-      @validators.length.should == 1
-      @validators.first.validator_name.should == "length"
-      @validators.first.column_name.should == "str_column"
-      @validators.first.options.should == {:in => [1..5], :message => :SomeErrorMessage}
-    end
-  end
+  its(:length) { is_expected.to eq(1) }
 
+  context 'created validator' do
+    subject{ validators.first }
+
+    its(:validator_name) { is_expected.to eq('length') }
+    its(:column_name) { is_expected.to eq('str_column') }
+    its(:options) { is_expected.to eq({:in => [1..5], :message => :SomeErrorMessage})}
+  end
 end

@@ -1,5 +1,7 @@
+# require 'active_support'
 require 'active_support'
 require 'active_record'
+# require 'active_record/railtie'
 
 require File.expand_path(File.dirname(__FILE__)) + '/options'
 
@@ -12,6 +14,7 @@ require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/schema'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/active_record/schema_dumper'
 
+require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/core/validator_constraints_list'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/core/db_validator'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/core/adapter_wrapper'
 require File.expand_path(File.dirname(__FILE__)) + '/migration_validators/core/statement_builder'
@@ -72,15 +75,16 @@ module MigrationValidators
     def load!
       ::ActiveRecord::ConnectionAdapters::TableDefinition.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::TableDefinition }
       ::ActiveRecord::ConnectionAdapters::Table.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::Table }
-      ::ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter }
+      # ::ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter }
       ::ActiveRecord::Base.instance_eval { include MigrationValidators::ActiveRecord::Base }
       ::ActiveRecord::Migration.instance_eval { include MigrationValidators::ActiveRecord::Migration }
       ::ActiveRecord::Schema.instance_eval { include MigrationValidators::ActiveRecord::Schema }
       ::ActiveRecord::SchemaDumper.instance_eval { include MigrationValidators::ActiveRecord::SchemaDumper }
-
       ::ActiveRecord::SchemaDumper.ignore_tables << MigrationValidators.migration_validators_table_name.to_s
+
     end
   end
+
 end
 
 Dir.glob('adapters/**/*.rb').each {|file_name| require file_name}
@@ -98,3 +102,4 @@ if defined?(Rails::Railtie)
 else
   MigrationValidators.load!
 end
+

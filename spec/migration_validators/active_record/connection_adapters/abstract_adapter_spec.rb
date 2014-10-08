@@ -1,58 +1,44 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 
 AbstractAdapter = ::ActiveRecord::ConnectionAdapters::AbstractAdapter
+DbValidator = ::MigrationValidators::Core::DbValidator
 
 describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validators extension", :type => :mv_test do
+  let(:migrations_table_name) { ::ActiveRecord::Migrator::schema_migrations_table_name }
+  let(:validators_table_name) { MigrationValidators.migration_validators_table_name }
 
-  before :all do
+  before :example do
     use_memory_db
-    @migrations_table = ::ActiveRecord::Migrator::schema_migrations_table_name
-    @validators_table = MigrationValidators.migration_validators_table_name
   end
 
   before :each do
     MigrationValidators::Core::DbValidator.rollback
   end
 
-  describe :initialize_migration_validators_table do
-    before :each do
-      db.drop_table @validators_table if db.table_exists?(@validators_table)
-    end
+  describe '#initialize_migration_validators_table' do
+    subject { db.initialize_migration_validators_table }
 
-    it "creates table if it's not created" do
-      db.initialize_migration_validators_table
-      db.table_exists?(@validators_table).should be_true
-    end
-
-    it "should not throw an error if table already exists" do
-      db.initialize_migration_validators_table
-
-      lambda { db.initialize_migration_validators_table }.should_not raise_error
-    end
-  end
-
-  describe :initialize_schema_migrations_table do
-    before :each do
-
-      db.do_internally do
-        db.drop_table @migrations_table if db.table_exists?(@migrations_table)
-        db.drop_table @validators_table if db.table_exists?(@validators_table)
+    context 'when it does not exists initially' do
+      before :each do
+        db.drop_table validators_table_name if db.table_exists?(validators_table_name)
       end
-      db.initialize_schema_migrations_table
+
+      it { expect{ subject }.to change{ db.table_exists?(validators_table_name) }.from(false).to(true) }
     end
 
-    it "should initialize migrations table as usuall" do
-      db.table_exists?(@migrations_table).should be_true
-    end
+    context 'when it already exists' do
+      before :each do
+        db.initialize_migration_validators_table
+      end
 
-    it "should also initialize validators table" do
-      db.table_exists?(@validators_table).should be_true
+      it { expect{ subject }.not_to raise_error}
     end
   end
+
 
   describe "synchronization with schema statements" do
     before :each do
-
+      db.initialize_schema_migrations_table
       db.do_internally do
         db.drop_table :new_table_name if db.table_exists?(:new_table_name)
         db.drop_table :table_name if db.table_exists?(:table_name)
@@ -62,379 +48,333 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
         end 
       end
 
-      MigrationValidators::Core::DbValidator.delete_all
+      DbValidator.delete_all
     end
 
-    describe :drop_table do
-      it "drops all validators of the dropped table" do
-        db.validate_column :table_name, :column_name, :uniqueness => {:message => "some message"}
-        MigrationValidators::Core::DbValidator.commit
-
-        db.drop_table :table_name
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.count.should be_zero
+    describe '#drop_table' do
+      before do
+        db.validate_column(:table_name, :column_name, uniqueness: { message: "some message"})
+        DbValidator.commit
       end
 
-      it "still drops table" do
-        db.drop_table :table_name
-        db.table_exists?(:table_name).should be_false
+      subject do 
+        db.drop_table( :table_name ) 
+        DbValidator.commit
       end
+      
+      it { expect{ subject }.to change{ DbValidator.on_table(:table_name).count }.from(1).to(0) }
+      it { expect{ subject }.to change{ db.table_exists?(:table_name) }.from(true).to(false) }
     end
 
-    describe :remove_column do
-      it "removes column validators" do
-        db.validate_column :table_name, :column_name, :uniqueness => {:message => "some message"}
-        db.validate_column :table_name, :column_name1, :uniqueness => {:message => "some message"}
-        MigrationValidators::Core::DbValidator.commit
-
-        db.remove_column :table_name, :column_name1
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.count.should == 1
-        MigrationValidators::Core::DbValidator.first.column_name.should == "column_name"
+    describe '#remove_column' do
+      before do
+        db.validate_column(:table_name, :column_name, uniqueness: { message: "some message"})
+        DbValidator.commit
       end
 
-      it "still removes column" do
-        db.remove_column :table_name, :column_name1
-        db.column_exists?(:table_name, :column_name1).should be_false
+      subject do 
+        db.remove_column(:table_name, :column_name) 
+        DbValidator.commit
       end
+
+      it { expect{ subject }.to change(DbValidator, :count).by(-1) }
+      it { expect{ subject }.to change{ db.column_exists?(:table_name, :column_name) }.from(true).to(false) }
     end
 
-
-    describe :rename_column do
-      it "updates column name in validators table" do
-        db.validate_column :table_name, :column_name, :uniqueness => {:message => "some message"}
-        db.validate_column :table_name, :column_name1, :uniqueness => {:message => "some message"}
-        MigrationValidators::Core::DbValidator.commit
-
-        db.rename_column :table_name, :column_name1, :column_name2
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.column_validators(:table_name, :column_name2).should_not be_blank
+    describe '#rename_column' do
+      before do
+        db.validate_column(:table_name, :column_name, uniqueness: { message: "some message"})
+        DbValidator.commit
       end
 
-      it "still renames column" do
-        db.rename_column :table_name, :column_name1, :column_name2
-        MigrationValidators::Core::DbValidator.commit
-
-        db.column_exists?(:table_name, :column_name1).should be_false
-        db.column_exists?(:table_name, :column_name2).should be_true
+      subject do 
+        db.rename_column(:table_name, :column_name, :new_column_name) 
+        DbValidator.commit
       end
+
+      it { expect{ subject }.not_to change(DbValidator, :count) }
+      it { expect{ subject }.to change{ DbValidator.on_table(:table_name).first.column_name }.from('column_name').to('new_column_name') }
     end
 
-    describe :rename_table do
-      it "updates table name in validators table" do
-        db.validate_column :table_name, :column_name, :uniqueness => {:message => "some message"}
-        MigrationValidators::Core::DbValidator.commit
-
-        db.rename_table :table_name, :new_table_name
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.table_validators(:new_table_name).should_not be_blank
+    describe '#rename_table' do
+      before do
+        db.validate_column(:table_name, :column_name, uniqueness: { message: "some message"})
+        DbValidator.commit
       end
 
-      it "still renames table" do
-        db.rename_table :table_name, :new_table_name
-
-        db.table_exists?(:table_name).should be_false
-        db.table_exists?(:new_table_name).should be_true
+      subject do 
+        db.rename_table(:table_name, :new_table_name)
+        DbValidator.commit
       end
+
+      it { expect{ subject }.not_to change(DbValidator, :count) }
+      it { expect{ subject }.to change{ DbValidator.first.table_name }.from('table_name').to('new_table_name') }
     end
 
-    describe :add_column do
+    describe '#add_column' do
+      subject :each do
+        db.add_column :table_name, :new_column, :integer, :validates => {:uniqueness => true}
+        DbValidator.commit
+      end
+
+      it { expect{ subject }.to change{DbValidator.on_table(:table_name).on_column(:new_column).count}.from(0).to(1) }
+      it { expect{ subject }.to change{ db.column_exists?(:table_name, :new_column) }.from(false).to(true) }
+    end
+
+    describe '#change_column' do
       before :each do
         db.add_column :table_name, :new_column, :integer, :validates => {:uniqueness => true}
-        MigrationValidators::Core::DbValidator.commit
-      end
-
-      it "should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:table_name, :new_column).should_not be_blank
-      end
-
-      it "should still add column" do
-        db.column_exists?(:table_name, :new_column).should be_true
-      end
-    end
-
-    describe :change_column do
-      before :each do
-        db.add_column :table_name, :new_column, :integer, :validates => {:uniqueness => true}
-        MigrationValidators::Core::DbValidator.commit
-
+        DbValidator.commit
         db.change_column :table_name, :new_column, :string, :validates => {:presense => true}
-        MigrationValidators::Core::DbValidator.commit
+        DbValidator.commit
       end
 
-      it "should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:table_name, :new_column).first.validator_name.should == "presense"
+      context 'column' do
+        subject{ db.columns(:table_name).find{|col| col.name.to_sym == :new_column} }
+
+        its(:type) { is_expected.to eq(:string) }
       end
 
-      it "should still change column" do
-        db.columns(:table_name).find{|col| col.name.to_sym == :new_column}.type.should == :string
+      context 'validator' do
+        subject { DbValidator.on_table(:table_name).on_column(:new_column).first }
+
+        its(:validator_name) { is_expected.to eq('presense')}
       end
     end
 
-    describe :create_table do
+    describe '#create_table' do
       before :each do
-        db.drop_table :created_table if db.table_exists?(:created_table)
-        db.create_table :created_table do |t|
+        db.drop_table :new_table if db.table_exists?(:new_table)
+        DbValidator.commit
+      end
+
+      subject do 
+        db.create_table :new_table do |t|
           t.column :column, :string, :validates => {:presense => true} 
-          t.string :string_column, :validates => {:presense => true} 
-          t.text :text_column, :validates => {:presense => true} 
-          t.integer :integer_column, :validates => {:presense => true} 
-          t.float :float_column, :validates => {:presense => true} 
-          t.decimal :decimal_column, :validates => {:presense => true} 
-          t.datetime :datetime_column, :validates => {:presense => true} 
-          t.time :time_column, :validates => {:presense => true} 
-          t.date :date_column, :validates => {:presense => true} 
-          t.binary :binary_column, :validates => {:presense => true} 
-          t.boolean :boolean_column, :validates => {:presense => true} 
+        end
+        DbValidator.commit
+      end
+
+      it { expect{ subject }.to change{ DbValidator.on_table(:new_table).on_column(:column).count }.from(0).to(1) }
+      it { expect{ subject }.to change{ db.table_exists?(:new_table) }.from(false).to(true) }
+    end
+  end
+
+  describe '#change_table' do
+    describe "existing_columns" do
+      before :each do
+        db.initialize_schema_migrations_table
+        db.drop_table :new_table if db.table_exists?(:new_table)
+        db.create_table(:new_table) do |t| 
+          t.string :column
+          t.string :column_1
+        end
+        DbValidator.commit
+      end
+
+      context 'create' do
+        subject do
+          db.change_table :new_table do |t|
+            t.column :new_column, :string, :validates => {:presense => true} 
+          end
+          DbValidator.commit
+        end
+        
+        it { expect{ subject }.to change{ DbValidator.on_table(:new_table).on_column(:new_column).count }.from(0).to(1) }
+        it { expect{ subject }.to change{ db.column_exists?(:new_table, :new_column) }.from(false).to(true) }
+      end
+
+      context 'remove' do
+        before do
+          db.change_table :new_table do |t|
+            t.change :column, :string, validates: { presense: true }
+          end
+          DbValidator.commit
         end
 
-        MigrationValidators::Core::DbValidator.commit
+        subject do
+          db.change_table :new_table do |t|
+            t.remove :column
+          end
+          DbValidator.commit
+        end
+        
+        it { expect{ subject }.to change{ DbValidator.on_table(:new_table).on_column(:column).count }.from(1).to(0) }
+        it { expect{ subject }.to change{ db.column_exists?(:new_table, :column) }.from(true).to(false) }
       end
 
-      it "with generall column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :column).should_not be_blank
+      context 'change_validates' do
+        before do
+          db.change_table :new_table do |t|
+            t.change :column, :string, validates: { presense: true }
+          end
+          DbValidator.commit
+        end
+
+        subject do
+          db.change_table :new_table do |t|
+            t.change_validates :column, presense: false, uniqueness: true
+          end
+          DbValidator.commit
+        end
+        
+        it do 
+          expect{ subject }.to change{ 
+            DbValidator.on_table(:new_table).on_column(:column).first.validator_name
+          }.from('presense').to('uniqueness') 
+        end
       end
 
-      it "with string column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :string_column).should_not be_blank
-      end
+      context 'change' do
+        context 'type' do
+          subject do
+            db.change_table :new_table do |t|
+              t.change :column, :integer
+            end
+            DbValidator.commit
+          end
 
-      it "with text column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :text_column).should_not be_blank
-      end
+          it { expect{ subject }.to change{ db.columns(:new_table).find{|col| col.name.to_sym == :column}.type }.from(:string).to(:integer) }
+        end
 
-      it "with integer column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :integer_column).should_not be_blank
-      end
+        context 'add validator' do
+          subject do
+            db.change_table :new_table do |t|
+              t.change :column, :string, validates: { presense: true }
+            end
+            DbValidator.commit
+          end
 
-      it "with float column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :float_column).should_not be_blank
-      end
+          it { expect{ subject }.to change{ DbValidator.on_table(:new_table).on_column(:column).count }.from(0).to(1) }
+        end
 
-      it "with decimal column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :decimal_column).should_not be_blank
-      end
+        context 'remove validator' do
+          before do
+            db.change_table :new_table do |t|
+              t.change :column, :string, validates: { presense: true }
+            end
+            DbValidator.commit
+          end
 
-      it "with datetime column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :datetime_column).should_not be_blank
-      end
+          subject do
+            db.change_table :new_table do |t|
+              t.change :column, :string
+            end
+            DbValidator.commit
+          end
 
-      it "with time column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :time_column).should_not be_blank
-      end
+          it { expect{ subject }.to change{ DbValidator.on_table(:new_table).on_column(:column).count }.from(1).to(0) }
+        end
 
-      it "with date column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :date_column).should_not be_blank
-      end
+        context 'update validator' do
+          before do
+            db.change_table :new_table do |t|
+              t.change :column, :string, validates: { presense: true }
+            end
+            DbValidator.commit
+          end
 
-      it "with binary column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :binary_column).should_not be_blank
-      end
+          subject do
+            db.change_table :new_table do |t|
+              t.change :column, :string, validates: { uniqueness: true }
+            end
+            DbValidator.commit
+          end
 
-      it "with boolean column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :boolean_column).should_not be_blank
+          it do 
+            expect{ subject }.to change{ 
+              DbValidator.on_table(:new_table).on_column(:column).first.validator_name
+            }.from('presense').to('uniqueness') 
+          end
+        end
       end
     end
   end
 
-  describe :change_table do
-    describe "create_columns" do
-      before :each do
-        db.drop_table :created_table if db.table_exists?(:created_table)
-        db.create_table(:created_table) {|t| t.string :dummy_column }
-        db.change_table :created_table do |t|
-          t.column :column, :string, :validates => {:presense => true} 
-          t.string :string_column, :validates => {:presense => true} 
-          t.text :text_column, :validates => {:presense => true} 
-          t.integer :integer_column, :validates => {:presense => true} 
-          t.float :float_column, :validates => {:presense => true} 
-          t.decimal :decimal_column, :validates => {:presense => true} 
-          t.datetime :datetime_column, :validates => {:presense => true} 
-          t.time :time_column, :validates => {:presense => true} 
-          t.date :date_column, :validates => {:presense => true} 
-          t.binary :binary_column, :validates => {:presense => true} 
-          t.boolean :boolean_column, :validates => {:presense => true} 
-        end
-
-        MigrationValidators::Core::DbValidator.commit
-      end
-
-      it "with generall column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :column).should_not be_blank
-      end
-
-      it "with string column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :string_column).should_not be_blank
-      end
-
-      it "with text column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :text_column).should_not be_blank
-      end
-
-      it "with integer column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :integer_column).should_not be_blank
-      end
-
-      it "with float column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :float_column).should_not be_blank
-      end
-
-      it "with decimal column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :decimal_column).should_not be_blank
-      end
-
-      it "with datetime column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :datetime_column).should_not be_blank
-      end
-
-      it "with time column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :time_column).should_not be_blank
-      end
-
-      it "with date column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :date_column).should_not be_blank
-      end
-
-      it "with binary column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :binary_column).should_not be_blank
-      end
-
-      it "with boolean column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :boolean_column).should_not be_blank
-      end
-    end
-
-    describe "change_existing_columns" do
-      before :each do
-        db.drop_table :created_table if db.table_exists?(:created_table)
-
-        db.create_table :created_table do |t|
-          t.column :column, :string, :validates => {:presense => true} 
-          t.column :column_1, :string, :validates => {:presense => true} 
-          t.column :column_to_remove, :string, :validates => {:presense => true}
-          t.column :old_column_name, :string, :validates => {:presense => true}
-        end
-
-        MigrationValidators::Core::DbValidator.commit
-
-
-        db.change_table :created_table do |t|
-          t.change :column, :string, :validates => {:presense => false} 
-          t.remove :column_to_remove
-          t.rename :old_column_name, :new_column_name
-          t.change_validates :column_1, :presense => false
-        end
-
-        MigrationValidators::Core::DbValidator.commit
-      end
-
-      it "with generall column should update validators table" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :column).should be_blank
-      end
-
-      it "should track column removing" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :column_to_remove).should be_blank
-      end
-
-      it "should trach column renaming" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :old_column_name).should be_blank
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :new_column_name).should_not be_blank
-      end
-
-      it "supports special change_validates method" do
-        MigrationValidators::Core::DbValidator.column_validators(:created_table, :column_1).should be_blank
-      end
-    end
-  end
-
-
-  describe "operations with validators" do
-    before :each do
+  describe '#validate_column' do
+    before do
+      db.initialize_schema_migrations_table
       db.create_table(:table_name) do |t|
         t.string :column_name 
       end unless db.table_exists?(:table_name)
-      
-      MigrationValidators::Core::DbValidator.remove_table_validators :table_name
-      MigrationValidators::Core::DbValidator.commit
     end
 
-    describe :validate_column do
-      it "raises an exception if 0 validators defined" do
-        lambda {
-          db.validate_column :table_name, :column_name, {}
-        }.should raise_error(MigrationValidators::MigrationValidatorsException, /at least one column validator should be defined/)
-      end
-
-      it "adds all specified validators to the validator table" do
-
-        db.validate_column :table_name, 
-                           :column_name, 
-                           :uniqueness => {:message => "unique"}, 
-                           :inclusion => {:message => "inclusion"}
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.column_validators("table_name", "column_name").length.should == 2
-      end
-
-      it "stores validator options if they defined as hash" do
+    context 'new validator is defined' do
+      before do
         db.validate_column :table_name, 
                            :column_name, 
                            :uniqueness => {:message => "unique"}
-        MigrationValidators::Core::DbValidator.commit
-
-
-        MigrationValidators::Core::DbValidator.table_validators("table_name").first.options[:message].should == "unique"
+        DbValidator.commit
       end
 
-      it "should treat true in validator options as empty options list" do
+      subject{ DbValidator.on_table(:table_name).on_column(:column_name).with_name(:uniqueness).first }
+
+      it { is_expected.to be_present }
+      its(:options) { is_expected.to eq(message: 'unique') }
+    end 
+
+    context 'when validator option is not defined' do
+      subject do
+        db.validate_column :table_name, 
+                           :column_name, 
+                           {}
+        DbValidator.commit
+      end
+
+      it { expect{ subject }.to raise_error }
+    end
+
+    context 'new validator are defined as true' do
+      before do
         db.validate_column :table_name, 
                            :column_name, 
                            :uniqueness => true
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.table_validators("table_name").first.options.should == {}
+        DbValidator.commit
       end
 
-      it "should treat false in validator option as validator removing request" do
+      subject{ DbValidator.on_table(:table_name).on_column(:column_name).with_name(:uniqueness).first }
+
+      it { is_expected.to be_present }
+      its(:options) { is_expected.to be_blank }
+    end 
+
+    context 'new validator are defined as false' do
+      before do
         db.validate_column :table_name, 
                            :column_name, 
                            :uniqueness => true
-        MigrationValidators::Core::DbValidator.commit
+        DbValidator.commit
 
         db.validate_column :table_name, 
                            :column_name, 
                            :uniqueness => false
-        MigrationValidators::Core::DbValidator.commit
-
-        MigrationValidators::Core::DbValidator.table_validators(:table_name).should be_blank
+        DbValidator.commit
       end
 
-      it "should not allow nil instead of false as validator parameter" do
-        lambda {
-          db.validate_column :table_name, 
-                             :column_name, 
-                             :uniqueness => nil
-          MigrationValidators::Core::DbValidator.commit
-        }.should raise_error(MigrationValidators::MigrationValidatorsException, /use false to remove column validator/)
-      end
+      subject{ DbValidator.on_table(:table_name).on_column(:column_name).with_name(:uniqueness).first }
 
-      it "takes name of the context table if blank table name specified as parameter" do
-        db.in_context_of_table :table_name do
-          db.validate_column nil, 
-                             :column_name, 
-                             :uniqueness => true 
-          MigrationValidators::Core::DbValidator.commit
-        end
+      it { is_expected.to be_nil }
+    end 
+  end
 
-        MigrationValidators::Core::DbValidator.column_validators("table_name", "column_name").length.should == 1
+  describe '#in_context_of_table' do
+    before do
+      db.initialize_schema_migrations_table
+      db.create_table(:table_name) do |t|
+        t.string :column_name 
+      end unless db.table_exists?(:table_name)
+
+      db.in_context_of_table :table_name do
+        db.validate_column nil, 
+                           :column_name, 
+                           :uniqueness => true 
+        DbValidator.commit
       end
     end
 
-    describe :validate_table, "supports" do
-    end
+    subject{ DbValidator.on_table(:table_name).on_column(:column_name).with_name(:uniqueness).first }
+
+    it { is_expected.to be_present }
+    its(:table_name) { is_expected.to eq('table_name') }
   end
 end

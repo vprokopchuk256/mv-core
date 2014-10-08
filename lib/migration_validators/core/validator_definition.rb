@@ -63,18 +63,18 @@ module MigrationValidators
       private 
 
       def handle_property property_name, property_value
-          opts, block = @properties[property_name.to_s]
+        opts, block = @properties[property_name.to_s]
 
-          if (block)
-            at_least_one_property_handled = true
-            change(property_value, &block)
-            apply_posts
-            bind_to_error(message(opts))
+        if (block)
+          # at_least_one_property_handled = true
+          change(property_value, &block)
+          apply_posts
+          bind_to_error(message(opts))
 
-            return true
-          end
+          return true
+        end
 
-          false
+        false
       end
 
       def apply_posts 

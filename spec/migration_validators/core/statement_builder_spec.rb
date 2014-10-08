@@ -1,36 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe MigrationValidators::Core::StatementBuilder  do
-  before :each do
-    @builder = MigrationValidators::Core::StatementBuilder.new "column"
+describe StatementBuilder  do
+  subject(:builder) { StatementBuilder.new 'column' }
+
+  describe '#initialize' do
+    its(:actions) { is_expected.to be_empty }
+    its(:to_s) { is_expected.to eq('column') }
   end
 
-  it "returns initial string by default" do
-    @builder.to_s.should == "column"
-  end
+  it_behaves_like :statement_builder
 
-  it "allows to define additional action" do
-    @builder.operation(:and) {|stmt, value| "#{stmt} and #{value}" }
-
-    @builder.and("column_1").to_s.should == "column and column_1"
-  end
-
-  it "might be merged with another builder" do
-    @builder.operation(:and) {|stmt, value| "#{stmt} and #{value}" }
-
-    builder1 = MigrationValidators::Core::StatementBuilder.new ""
-    builder1.operation(:and) {|stmt, value| "#{stmt} and #{value} new" }
-
-    @builder.merge!(builder1)
-
-    @builder.and("column_1").to_s.should == "column and column_1 new"
-  end
-
-  it "migth be initialized by another (parent) builder" do
-    @builder.operation(:and) {|stmt, value| "#{stmt} and #{value}" }
-
-    builder1 = MigrationValidators::Core::StatementBuilder.new "column_2", @builder
-
-    builder1.and("column_1").to_s.should == "column_2 and column_1"
-  end
 end

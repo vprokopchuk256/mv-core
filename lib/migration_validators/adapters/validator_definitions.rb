@@ -9,15 +9,20 @@ module MigrationValidators
         end
 
         def validator name, opts = {}, &block
-          validator = validators[name] ||= MigrationValidators::Core::ValidatorDefinition.new(syntax)
+          validator = validators[name]
 
-          validator.post :allow_nil => true do
-            self.wrap.or(column.db_name.null)
-          end if opts[:allow_nil] || !opts.key?(:allow_nil)
+          unless validator
+            validator = validators[name] = MigrationValidators::Core::ValidatorDefinition.new(syntax)
 
-          validator.post :allow_blank => true do
-            self.wrap.or(column.db_name.coalesce.trim.length.equal_to(0))
-          end if opts[:allow_blank] || !opts.key?(:allow_blank)
+            validator.post :allow_nil => true do
+              self.wrap.or(column.db_name.null)
+            end if opts[:allow_nil] || !opts.key?(:allow_nil)
+
+            validator.post :allow_blank => true do
+              self.wrap.or(column.db_name.coalesce.trim.length.equal_to(0))
+            end if opts[:allow_blank] || !opts.key?(:allow_blank)
+          end
+
 
           validator.instance_eval(&block) if block
         end 
@@ -117,9 +122,7 @@ module MigrationValidators
 
           validator :uniqueness do
             property do |value|
-              "NOT EXISTS(SELECT #{column}  
-                            FROM #{validator.table_name}
-                           WHERE (#{column.db_name} = #{column}))"
+              "NOT EXISTS(SELECT #{column.to_s} FROM #{validator.table_name} tbl WHERE (#{column.db_name} = #{column.to_s}))"
             end
           end
         end

@@ -18,6 +18,10 @@ module MigrationValidators
           connection.class.class_eval {
             include MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter
           } unless connection.class.include?(MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter)
+
+          connection.class.class_eval {
+            include MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter
+          } unless connection.class.include?(MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter)
         end
       end
     end
