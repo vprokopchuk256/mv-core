@@ -114,7 +114,7 @@ module MigrationValidators
             end
           end
 
-          validator :presense  do
+          validator :presence  do
             property do |value| 
               column.db_name.not_null.and(column.db_name.trim.length.greater_than(0))
             end

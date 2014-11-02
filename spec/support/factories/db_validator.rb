@@ -11,7 +11,7 @@ FactoryGirl.define do
   factory :db_validator, :class => MigrationValidators::Core::DbValidator do |validator|
     validator.table_name { FactoryGirl.generate(:validator_table_name) }
     validator.column_name FactoryGirl.generate(:validator_column_name) 
-    validator.validator_name 'presense'
+    validator.validator_name 'presence'
   end
 
   factory :db_validator_base, :parent => :db_validator do |validator|
@@ -31,15 +31,15 @@ FactoryGirl.define do
     validator.options  :as => :trigger
   end
 
-  factory :presense, :parent => :db_validator_base do |validator|
-    validator.validator_name "presense"
+  factory :presence, :parent => :db_validator_base do |validator|
+    validator.validator_name "presence"
   end
 
-  factory :presense_check, :parent => :presense do |validator|
+  factory :presence_check, :parent => :presence do |validator|
     validator.options  :as => :check
   end
 
-  factory :presense_trigger, :parent => :presense do |validator|
+  factory :presence_trigger, :parent => :presence do |validator|
     validator.options  :as => :trigger
   end
 end

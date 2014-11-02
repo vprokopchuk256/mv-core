@@ -317,7 +317,7 @@ describe MigrationValidators::Adapters::Base, :type => :mv_test do
       end
     end
 
-    context 'presense', validator_name: :presense, options: {} do
+    context 'presence', validator_name: :presence, options: {} do
       it do 
         is_expected.to eq("column_name IS NOT NULL AND LENGTH(TRIM(column_name)) > 0")
       end

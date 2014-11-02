@@ -125,7 +125,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
       before :each do
         db.add_column :table_name, :new_column, :integer, :validates => {:uniqueness => true}
         DbValidator.commit
-        db.change_column :table_name, :new_column, :string, :validates => {:presense => true}
+        db.change_column :table_name, :new_column, :string, :validates => {:presence => true}
         DbValidator.commit
       end
 
@@ -138,7 +138,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
       context 'validator' do
         subject { DbValidator.on_table(:table_name).on_column(:new_column).first }
 
-        its(:validator_name) { is_expected.to eq('presense')}
+        its(:validator_name) { is_expected.to eq('presence')}
       end
     end
 
@@ -150,7 +150,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
 
       subject do 
         db.create_table :new_table do |t|
-          t.column :column, :string, :validates => {:presense => true} 
+          t.column :column, :string, :validates => {:presence => true} 
         end
         DbValidator.commit
       end
@@ -175,7 +175,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
       context 'create' do
         subject do
           db.change_table :new_table do |t|
-            t.column :new_column, :string, :validates => {:presense => true} 
+            t.column :new_column, :string, :validates => {:presence => true} 
           end
           DbValidator.commit
         end
@@ -187,7 +187,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
       context 'remove' do
         before do
           db.change_table :new_table do |t|
-            t.change :column, :string, validates: { presense: true }
+            t.change :column, :string, validates: { presence: true }
           end
           DbValidator.commit
         end
@@ -206,14 +206,14 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
       context 'change_validates' do
         before do
           db.change_table :new_table do |t|
-            t.change :column, :string, validates: { presense: true }
+            t.change :column, :string, validates: { presence: true }
           end
           DbValidator.commit
         end
 
         subject do
           db.change_table :new_table do |t|
-            t.change_validates :column, presense: false, uniqueness: true
+            t.change_validates :column, presence: false, uniqueness: true
           end
           DbValidator.commit
         end
@@ -221,7 +221,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
         it do 
           expect{ subject }.to change{ 
             DbValidator.on_table(:new_table).on_column(:column).first.validator_name
-          }.from('presense').to('uniqueness') 
+          }.from('presence').to('uniqueness') 
         end
       end
 
@@ -240,7 +240,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
         context 'add validator' do
           subject do
             db.change_table :new_table do |t|
-              t.change :column, :string, validates: { presense: true }
+              t.change :column, :string, validates: { presence: true }
             end
             DbValidator.commit
           end
@@ -251,7 +251,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
         context 'remove validator' do
           before do
             db.change_table :new_table do |t|
-              t.change :column, :string, validates: { presense: true }
+              t.change :column, :string, validates: { presence: true }
             end
             DbValidator.commit
           end
@@ -269,7 +269,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
         context 'update validator' do
           before do
             db.change_table :new_table do |t|
-              t.change :column, :string, validates: { presense: true }
+              t.change :column, :string, validates: { presence: true }
             end
             DbValidator.commit
           end
@@ -284,7 +284,7 @@ describe ::ActiveRecord::ConnectionAdapters::AbstractAdapter, "migration validat
           it do 
             expect{ subject }.to change{ 
               DbValidator.on_table(:new_table).on_column(:column).first.validator_name
-            }.from('presense').to('uniqueness') 
+            }.from('presence').to('uniqueness') 
           end
         end
       end
