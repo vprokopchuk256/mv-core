@@ -18,7 +18,14 @@ module MigrationValidators
 
           column_without_validators name, type, options
 
-          ::ActiveRecord::Base.connection.validate_column(nil, name, validates) unless validates.blank?
+          #ugly patch
+          connection = ::ActiveRecord::Base.connection
+
+          connection.class.class_eval {
+            include MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter
+          } unless connection.class.include?(MigrationValidators::ActiveRecord::ConnectionAdapters::NativeAdapter)
+
+          connection.validate_column(nil, name, validates) unless validates.blank?
         end
       end
     end

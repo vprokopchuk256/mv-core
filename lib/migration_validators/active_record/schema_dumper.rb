@@ -12,6 +12,8 @@ module MigrationValidators
       def tables_with_validators(stream)
         tables_without_validators(stream)
 
+        @connection.initialize_migration_validators_table
+
         stream.puts ""
         stream.puts "  #Validators"
         MigrationValidators::Core::DbValidator.order([:table_name, :column_name]).each do |validator|

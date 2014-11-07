@@ -75,7 +75,7 @@ module MigrationValidators
     def load!
       ::ActiveRecord::ConnectionAdapters::TableDefinition.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::TableDefinition }
       ::ActiveRecord::ConnectionAdapters::Table.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::Table }
-      # ::ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter }
+      ::ActiveRecord::ConnectionAdapters::AbstractAdapter.class_eval { include MigrationValidators::ActiveRecord::ConnectionAdapters::AbstractAdapter }
       ::ActiveRecord::Base.instance_eval { include MigrationValidators::ActiveRecord::Base }
       ::ActiveRecord::Migration.instance_eval { include MigrationValidators::ActiveRecord::Migration }
       ::ActiveRecord::Schema.instance_eval { include MigrationValidators::ActiveRecord::Schema }
@@ -89,17 +89,17 @@ end
 
 Dir.glob('adapters/**/*.rb').each {|file_name| require file_name}
 
-if defined?(Rails::Railtie)
-  module Foreigner
-    class Railtie < Rails::Railtie
-      initializer 'migration-validators.load' do
-        ActiveSupport.on_load :active_record do
-          MigrationValidators.load!
-        end
-      end
-    end
-  end
-else
+# if defined?(Rails::Railtie)
+#   module Foreigner
+#     class Railtie < Rails::Railtie
+#       initializer 'migration-validators.load' do
+#         ActiveSupport.on_load :active_record do
+#           MigrationValidators.load!
+#         end
+#       end
+#     end
+#   end
+# else
   MigrationValidators.load!
-end
+# end
 

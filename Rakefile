@@ -16,7 +16,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/vprokopchuk256/mv-core"
   gem.license = "MIT"
   gem.summary = "Migration Validators project core classes"
-  gem.description = "Migration Validators project core classes"
+  gem.description = "Migration Validators project. Core classes"
   gem.email = "vprokopchuk@gmail.com"
   gem.authors = ["Valeriy Prokopchuk"]
   gem.files = Dir.glob('lib/**/*.rb')
