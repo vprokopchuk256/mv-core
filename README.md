@@ -1,3 +1,5 @@
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vprokopchuk256/mv-core/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 # Abbreviations
 
 MV - Migration Validators Projects. All gems that belongs to that project are prefixed with mv-*
