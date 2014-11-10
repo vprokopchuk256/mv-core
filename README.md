@@ -127,3 +127,7 @@ So - see detailed info here:
 
 Copyright (c) 2011 Valeriy Prokopchuk. See LICENSE.txt for
 further details.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vprokopchuk256/mv-core/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
