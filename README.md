@@ -106,6 +106,8 @@ This gem is not intended to be installed directly and referenced from within the
 
   Supported validators and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
 
+  **WARNING:** `change` method is not supported in migrations yet. You should rather use `up` && `down` methods
+
 # Drivers
 
 Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
