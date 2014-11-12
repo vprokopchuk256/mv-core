@@ -18,5 +18,6 @@ group :test do
   gem 'autotest'
   gem 'mv-test', '~> 1.0'
   gem 'capybara'
+  gem 'coveralls', require: false
 end
 

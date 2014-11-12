@@ -1,5 +1,6 @@
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vprokopchuk256/mv-core/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 [![Build Status](https://travis-ci.org/vprokopchuk256/mv-core.svg?branch=master)](https://travis-ci.org/vprokopchuk256/mv-core)
+[![Coverage Status](https://coveralls.io/repos/vprokopchuk256/mv-core/badge.png?branch=master)](https://coveralls.io/r/vprokopchuk256/mv-core?branch=master)
 
 # Abbreviations
 

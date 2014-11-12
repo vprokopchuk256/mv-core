@@ -15,5 +15,8 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 ActiveRecord::Migration.verbose = false
 
+require 'coveralls'
+Coveralls.wear!
+
 RSpec.configure do |config|
 end
