@@ -43,3 +43,7 @@ pkg
 
 #Coveralls.io
 .coveralls.yml
+
+.ruby-version
+
+vendor/**
