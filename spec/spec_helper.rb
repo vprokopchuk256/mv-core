@@ -17,7 +17,7 @@ require 'coveralls'
 Coveralls.wear!
 
 RSpec.configure do |config|
-	config.before :all do
+	config.before :each do
     ActiveRecord::Base.remove_connection if ::ActiveRecord::Base.connected?
     ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
   end	  
