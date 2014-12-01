@@ -32,6 +32,24 @@ module Mv
 				def self.set_current(version)
 					@@current = new(version)
 				end
+
+				def add_column table_name, column_name, opts
+				end
+
+				def remove_column table_name, column_name
+				end
+
+				def rename_column table_name, old_column_name, new_column_name
+				end
+
+				def change_column table_name, column_name, opts
+				end
+
+				def rename_table old_table_name, new_table_name
+				end
+
+				def drop_table table_name
+				end
 			end
 		end
 	end

@@ -15,7 +15,7 @@ group :test, :development do
   gem 'rspec-its'
   gem 'factory_girl'
   gem 'shoulda'
-  gem 'pry-byebug'
+  gem 'pry-debugger'
   gem 'mv-test', '~> 1.0'
   gem 'coveralls', require: false
   if `uname` =~ /Darwin/

@@ -21,7 +21,7 @@ module Mv
 				private
 
 				def db
-					ActiveRecord::Base.connection
+					::ActiveRecord::Base.connection
 				end
 			end
 		end

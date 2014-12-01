@@ -45,5 +45,6 @@ pkg
 .coveralls.yml
 
 .ruby-version
+.pryrc
 
 vendor/**
