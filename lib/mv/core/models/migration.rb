@@ -34,21 +34,32 @@ module Mv
 				end
 
 				def add_column table_name, column_name, opts
+					puts "add_column called. table_name #{table_name}, column_name: #{column_name}, opts: #{opts}"
 				end
 
 				def remove_column table_name, column_name
+					puts "remove_column called. table_name: #{table_name} column_name: #{column_name}"
 				end
 
 				def rename_column table_name, old_column_name, new_column_name
+					puts "rename_column called. table_name: #{table_name} old_column_name: #{old_column_name} new_column_name: #{new_column_name}"
 				end
 
 				def change_column table_name, column_name, opts
+					puts "change_column called table_name: #{table_name} column_name: #{column_name} opts: #{opts}"
 				end
 
 				def rename_table old_table_name, new_table_name
+					puts "rename_table called old_table_name: #{old_table_name}, new_table_name: #{new_table_name}"
 				end
 
 				def drop_table table_name
+					puts "drop_table called table_name: #{table_name}"
+				end
+
+				class << self
+					delegate :add_column, :remove_column, :rename_column, :change_column, 
+					         :rename_table, :drop_table, to: :current, allow_nil: true
 				end
 			end
 		end

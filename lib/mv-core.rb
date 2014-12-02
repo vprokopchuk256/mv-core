@@ -1,6 +1,8 @@
-# require 'active_support'
-# require 'active_support'
-# require 'active_record'
+require 'active_support'
+require 'active_support'
+require 'active_record'
+
+require 'mv/core/railtie'
 # require 'active_record/railtie'
 
 # require File.expand_path(File.dirname(__FILE__)) + '/options'
@@ -102,4 +104,5 @@
 # # else
 #   MigrationValidators.load!
 # # end
+
 
