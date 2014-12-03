@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
+gem 'railties', '~> 4.1'
 gem 'activerecord', '~> 4.1'
-gem 'activesupport', '~> 4.1'
 gem 'i18n', github: 'svenfuchs/i18n'
 
 group :development do
@@ -13,7 +13,6 @@ end
 group :test, :development do
   gem 'rspec', '~> 3.1'
   gem 'rspec-its'
-  gem 'factory_girl'
   gem 'shoulda'
   gem 'pry-debugger'
   gem 'mv-test', '~> 1.0'

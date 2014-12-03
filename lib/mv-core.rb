@@ -1,5 +1,4 @@
-require 'active_support'
-require 'active_support'
+require 'rails'
 require 'active_record'
 
 require 'mv/core/railtie'

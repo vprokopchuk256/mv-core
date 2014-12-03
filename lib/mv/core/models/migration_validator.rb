@@ -8,6 +8,8 @@ module Mv
 				validates :validator_name, presence: true
 
 				serialize :options, Hash
+
+				scope :for_version, -> (version) { where(version: version) }
 			end
 		end
 	end
