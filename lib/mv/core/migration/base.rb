@@ -2,8 +2,8 @@ require 'mv/core/models/migration_validator'
 
 module Mv
 	module Core
-		module Models
-			class Migration
+		module Migration
+			class Base
 				attr_reader :version
 				
 				def initialize(version)

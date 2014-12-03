@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 require 'mv/core/models/migration_validator'
-require 'mv/core/models/migration'
+require 'mv/core/migration/base'
 require 'mv/core/active_record/connection_adapters/abstract_adapter'
 require 'mv/core/services/create_migration_validators_table'
 
@@ -9,7 +9,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
   before do
     ::ActiveRecord::Base.connection.class.send(:prepend, described_class)
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-    Mv::Core::Models::Migration.set_current('20141118164617')
+    Mv::Core::Migration::Base.set_current('20141118164617')
   end
 
   let(:conn) { ::ActiveRecord::Base.connection }
@@ -27,7 +27,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
     end
 
     it "calls migration add_column method" do
-      expect(Mv::Core::Models::Migration.current).to receive(:add_column).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:add_column).with(
         :table_name, :column_name, length: { is: 5}
       )
       add_column
@@ -53,10 +53,10 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
     end
 
     it "calls migration remove_column method" do
-      expect(Mv::Core::Models::Migration.current).to receive(:remove_column).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:remove_column).with(
         :table_name, :column_name
       )
-      expect(Mv::Core::Models::Migration.current).to receive(:remove_column).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:remove_column).with(
         :table_name, :column_name_1
       )
       remove_column
@@ -80,7 +80,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
     end
 
     it "calls migration rename_column method" do
-      expect(Mv::Core::Models::Migration.current).to receive(:rename_column).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:rename_column).with(
         :table_name, :col_name, :column_name
       )
       rename_column
@@ -105,7 +105,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
     end
 
     it "calls migratin change_column method" do
-      expect(Mv::Core::Models::Migration.current).to receive(:change_column).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
         :table_name, :column_name, length: { is: 5 } 
       )
       change_column
@@ -134,7 +134,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
     end
 
     it "calls migration rename_table method" do
-      expect(Mv::Core::Models::Migration.current).to receive(:rename_table).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:rename_table).with(
         :table_name, :new_table_name
       )
       rename_table
@@ -159,7 +159,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapter do
     end
 
     it "calls migration drop_table method" do
-      expect(Mv::Core::Models::Migration.current).to receive(:drop_table).with(
+      expect(Mv::Core::Migration::Base.current).to receive(:drop_table).with(
         :table_name
       )
       drop_table

@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 require 'mv/core/models/migration_validator'
-require 'mv/core/models/migration'
+require 'mv/core/migration/base'
 require 'mv/core/active_record/connection_adapters/table_definition.rb'
 require 'mv/core/services/create_migration_validators_table'
 
@@ -10,7 +10,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinition do
   before do
     ::ActiveRecord::ConnectionAdapters::TableDefinition.send(:prepend, described_class)
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-    Mv::Core::Models::Migration.set_current('20141118164617')
+    Mv::Core::Migration::Base.set_current('20141118164617')
   end
 
   let(:conn) { ::ActiveRecord::Base.connection }
@@ -23,7 +23,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinition do
  		end
 
     it "calls migration add_column method" do
-      expect(Mv::Core::Models::Migration).to receive(:add_column).with(
+      expect(Mv::Core::Migration::Base).to receive(:add_column).with(
         :table_name, :column_name, length: { is: 5 }
       ).at_least(:once)
       create_table

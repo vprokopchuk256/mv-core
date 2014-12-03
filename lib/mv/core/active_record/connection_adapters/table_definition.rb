@@ -1,5 +1,4 @@
-
-require 'mv/core/models/migration'
+require 'mv/core/migration/base'
 
 module Mv
 	module Core
@@ -7,7 +6,7 @@ module Mv
 			module ConnectionAdapters
 				module TableDefinition
 	        def column column_name, type, opts = {}
-						Mv::Core::Models::Migration.add_column(name, column_name, opts.delete(:validates))	
+						Mv::Core::Migration::Base.add_column(name, column_name, opts.delete(:validates))	
 
 	        	super
 					end

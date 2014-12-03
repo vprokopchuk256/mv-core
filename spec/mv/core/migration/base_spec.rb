@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/models/migration_validator'
-require 'mv/core/models/migration' 
+require 'mv/core/services/create_migration_validators_table'
+require 'mv/core/migration/base'
 
-describe Mv::Core::Models::Migration do
+describe Mv::Core::Migration::Base do
 	before do
 	  Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
 	end
