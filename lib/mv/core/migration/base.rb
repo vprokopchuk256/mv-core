@@ -1,4 +1,3 @@
-require 'mv/core/models/migration_validator'
 require 'mv/core/migration/operations/list'
 require 'mv/core/migration/operations/factory'
 

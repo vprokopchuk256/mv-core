@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 require 'mv/core/services/create_migration_validators_table'
-require 'mv/core/models/migration_validator'
+require 'mv/core/db/migration_validator'
 
-describe Mv::Core::Models::MigrationValidator do
+describe Mv::Core::Db::MigrationValidator do
 	subject(:migration_validator) { 
 		described_class.create(version: '20141118164617',
 												table_name: :table_name, 

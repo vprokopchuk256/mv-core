@@ -1,7 +1,6 @@
 
 require 'spec_helper'
 
-require 'mv/core/models/migration_validator'
 require 'mv/core/migration/base'
 require 'mv/core/active_record/connection_adapters/table_definition.rb'
 require 'mv/core/services/create_migration_validators_table'
