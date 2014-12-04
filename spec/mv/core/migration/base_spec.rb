@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'mv/core/migration/operations/base'
+require 'mv/core/migration/operations/factory'
 require 'mv/core/models/migration_validator'
 require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/migration/base'
@@ -34,8 +36,13 @@ describe Mv::Core::Migration::Base do
 		}
 
 		it "adds operation to the list" do
-			expect(migration.operations_list).to receive(:add_operation).with(
+			expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
 				:add_column, :table_name, :column_name, length: { is: 5 }
+			).and_call_original
+
+
+			expect(migration.operations_list).to receive(:add_operation).with(
+				kind_of(Mv::Core::Migration::Operations::Base)
 			)
 			subject
 		end
@@ -47,8 +54,13 @@ describe Mv::Core::Migration::Base do
 		}
 
 		it "adds operation to the list" do
-			expect(migration.operations_list).to receive(:add_operation).with(
+			expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
 				:remove_column, :table_name, :column_name
+			).and_call_original
+
+
+			expect(migration.operations_list).to receive(:add_operation).with(
+				kind_of(Mv::Core::Migration::Operations::Base)
 			)
 			subject
 		end
@@ -60,8 +72,13 @@ describe Mv::Core::Migration::Base do
 		}
 
 		it "adds operation to the list" do
-			expect(migration.operations_list).to receive(:add_operation).with(
+			expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
 				:rename_column, :table_name, :old_column_name, :new_column_name
+			).and_call_original
+
+
+			expect(migration.operations_list).to receive(:add_operation).with(
+				kind_of(Mv::Core::Migration::Operations::Base)
 			)
 			subject
 		end
@@ -73,8 +90,13 @@ describe Mv::Core::Migration::Base do
 		}
 
 		it "adds operation to the list" do
-			expect(migration.operations_list).to receive(:add_operation).with(
+			expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
 				:change_column, :table_name, :column_name, length: { is: 5 }
+			).and_call_original
+
+
+			expect(migration.operations_list).to receive(:add_operation).with(
+				kind_of(Mv::Core::Migration::Operations::Base)
 			)
 			subject
 		end
@@ -86,8 +108,13 @@ describe Mv::Core::Migration::Base do
 		}
 
 		it "adds operation to the list" do
-			expect(migration.operations_list).to receive(:add_operation).with(
+			expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
 				:rename_table, :old_table_name, :new_table_name
+			).and_call_original
+
+
+			expect(migration.operations_list).to receive(:add_operation).with(
+				kind_of(Mv::Core::Migration::Operations::Base)
 			)
 			subject
 		end
@@ -99,8 +126,13 @@ describe Mv::Core::Migration::Base do
 		}
 
 		it "adds operation to the list" do
-			expect(migration.operations_list).to receive(:add_operation).with(
+			expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
 				:drop_table, :table_name
+			).and_call_original
+
+
+			expect(migration.operations_list).to receive(:add_operation).with(
+				kind_of(Mv::Core::Migration::Operations::Base)
 			)
 			subject
 		end

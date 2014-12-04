@@ -9,6 +9,10 @@ module Mv
 						@version = version
 						@table_name = table_name
 					end
+
+					def execute validators
+						raise NotImplementedError
+					end
 				end
 			end
 		end

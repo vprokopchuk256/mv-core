@@ -16,7 +16,7 @@ module Mv
 						@version = version
 					end
 
-					def create operation_name, *args
+					def create_operation operation_name, *args
 						"Mv::Core::Migration::Operations::#{operation_name.to_s.camelize}".constantize.new(version, *args)
 					end
 				end

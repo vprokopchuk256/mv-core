@@ -11,7 +11,7 @@ describe Mv::Core::Migration::Operations::Factory do
 	end
 
 	describe "#create_operation" do
-		subject { operations_factory.create(:add_column, :table_name, :column_name, length: { id: 5 }) }
+		subject { operations_factory.create_operation(:add_column, :table_name, :column_name, length: { id: 5 }) }
 
 		it "should create AddColumn operation instance" do
 			expect(Mv::Core::Migration::Operations::AddColumn).to receive(:new).with(

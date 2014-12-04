@@ -4,9 +4,10 @@ module Mv
 			module Operations
 				class List
 					def initialize()
+						@operations = []	
 					end
 
-					def add_operation(operation_name, *args)
+					def add_operation(operation)
 					end
 
 					def execute(validators_list)
