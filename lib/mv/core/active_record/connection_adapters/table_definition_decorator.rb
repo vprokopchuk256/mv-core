@@ -4,7 +4,7 @@ module Mv
 	module Core
 		module ActiveRecord
 			module ConnectionAdapters
-				module TableDefinition
+				module TableDefinitionDecorator
 	        def column column_name, type, opts = {}
 						Mv::Core::Migration::Base.add_column(name, column_name, opts.delete(:validates))	
 
