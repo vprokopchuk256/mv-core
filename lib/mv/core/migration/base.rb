@@ -1,31 +1,24 @@
 require 'mv/core/models/migration_validator'
+require 'mv/core/migration/operations/list'
 
 module Mv
 	module Core
 		module Migration
 			class Base
+				SUPPORTED_METHODS = %i{ add_column remove_column rename_column 
+															  change_column rename_table drop_table}
 				attr_reader :version
+				attr_reader :operations_list
 				
 				def initialize(version)
 					@version = version
+					@operations_list = Mv::Core::Migration::Operations::List.new
 				end
 
-				def add_column table_name, column_name, opts
-				end
-
-				def remove_column table_name, column_name
-				end
-
-				def rename_column table_name, old_column_name, new_column_name
-				end
-
-				def change_column table_name, column_name, opts
-				end
-
-				def rename_table old_table_name, new_table_name
-				end
-
-				def drop_table table_name
+				SUPPORTED_METHODS.each do |operation_name|
+					define_method operation_name do |*args|
+						operations_list.add_operation(operation_name, *args)
+					end
 				end
 
 				class << self
@@ -35,8 +28,7 @@ module Mv
 						@current = new(version)
 					end
 
-					delegate :add_column, :remove_column, :rename_column, :change_column, 
-					         :rename_table, :drop_table, to: :current, allow_nil: true
+					delegate *SUPPORTED_METHODS, to: :current, allow_nil: true
 				end
 			end
 		end

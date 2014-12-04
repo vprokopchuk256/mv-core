@@ -54,5 +54,24 @@ describe Mv::Core::Models::MigrationValidator do
 				it { is_expected.to include(migration_validator) }
 			end
 		end
+
+		describe "recent" do
+			let!(:old_migration_validator) { 
+				described_class.create(version: '19001118164617',
+														table_name: :table_name, 
+					                  column_name: :column_name, 
+					                  validator_name: :validator_name)
+			  }
+
+			 subject { described_class.recent }
+
+			 it { is_expected.to eq([migration_validator]) }
+		end
+
+		describe "#clone" do
+			subject { migration_validator.clone_with_version('20151118164617') }
+
+			its(:version) { is_expected.to eq('20151118164617') }
+		end
 	end
 end
