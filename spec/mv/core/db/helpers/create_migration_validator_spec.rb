@@ -15,7 +15,7 @@ describe Mv::Core::Db::Helpers::CreateMigrationValidator do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  describe 'when remove validator directive specified' do
+  describe 'when remove validator directive is specified' do
     subject { instance.create_migration_validator(:table_name, :column_name, :uniqueness, false) }
 
     it { is_expected.to be_nil }
@@ -25,7 +25,7 @@ describe Mv::Core::Db::Helpers::CreateMigrationValidator do
     end
   end
 
-  describe 'simple add validator directive passed' do
+  describe 'simple add validator directive is passed' do
     subject do
       instance.create_migration_validator(:table_name, :column_name, :uniqueness, true).reload
     end
@@ -40,7 +40,7 @@ describe Mv::Core::Db::Helpers::CreateMigrationValidator do
     end
   end
 
-  describe 'validator with options passed' do
+  describe 'validator with options is passed' do
     subject { instance.create_migration_validator(:table_name, :column_name, :length, is: 5).reload }
 
     its(:table_name) { is_expected.to eq('table_name') }
