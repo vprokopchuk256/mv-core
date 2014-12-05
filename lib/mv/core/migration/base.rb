@@ -6,11 +6,12 @@ module Mv
   module Core
     module Migration
       class Base
+        include Singleton
+
         SUPPORTED_METHODS = %i{ add_column remove_column rename_column 
                                 change_column rename_table drop_table}
 
         attr_reader :operations_list, :operations_factory
-
         
         def initialize()
           @operations_list = Mv::Core::Migration::Operations::List.new
@@ -30,11 +31,7 @@ module Mv
         end
 
         class << self
-          attr_reader :current
-
-          def set_current()
-            @current = new()
-          end
+          alias_method :current, :instance
 
           delegate *[SUPPORTED_METHODS, :execute].flatten, to: :current, allow_nil: true
         end

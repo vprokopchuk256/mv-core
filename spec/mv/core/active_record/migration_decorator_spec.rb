@@ -19,7 +19,6 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
     )
 
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-    # Mv::Core::Migration::Base.set_current('20141118164617')
   end
 
   describe "change" do
@@ -35,11 +34,6 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
     
     describe "#up" do
       subject(:migrate_up) { migration.migrate(:up) }
-
-      it "sets current migration" do
-        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
-        migrate_up
-      end
 
       it "calls original migration call" do
         migrate_up
@@ -63,11 +57,6 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       before { migration.migrate(:up) }
 
       subject(:migrate_down) { migration.migrate(:down) }
-
-      it "sets current migration" do
-        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
-        migrate_down
-      end
 
       it "calls original migration call" do
         migrate_down
@@ -104,11 +93,6 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
     describe "#up" do
       subject(:migrate_up) { migration.migrate(:up) }
 
-      it "sets current migration" do
-        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
-        migrate_up
-      end
-
       it "calls original migration call" do
         migrate_up
         expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_truthy
@@ -131,11 +115,6 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       before { migration.migrate(:up) }
 
       subject(:migrate_down) { migration.migrate(:down) }
-
-      it "sets current migration" do
-        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
-        migrate_down
-      end
 
       it "calls original migration call" do
         migrate_down

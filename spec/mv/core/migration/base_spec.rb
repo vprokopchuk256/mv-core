@@ -11,15 +11,7 @@ describe Mv::Core::Migration::Base do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:migration) { described_class.new }
-
-  describe "##set_version" do
-    before { described_class.set_current() }
-
-    subject { described_class.current }
-
-    it { is_expected.to be_present }
-  end
+  subject(:migration) { described_class.current }
 
   describe "#add_column" do
     subject(:add_column) {

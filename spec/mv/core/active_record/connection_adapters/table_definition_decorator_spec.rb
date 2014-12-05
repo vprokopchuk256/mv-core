@@ -8,7 +8,6 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator do
   before do
     ::ActiveRecord::ConnectionAdapters::TableDefinition.send(:prepend, described_class)
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-    Mv::Core::Migration::Base.set_current()
   end
 
   let(:conn) { ::ActiveRecord::Base.connection }
