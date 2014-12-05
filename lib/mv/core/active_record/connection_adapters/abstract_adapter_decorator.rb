@@ -37,7 +37,7 @@ module Mv
             super
           end
 
-          def drop_table table_name
+          def drop_table table_name, opts = {}
             Mv::Core::Migration::Base.drop_table(table_name)
 
             super

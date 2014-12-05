@@ -5,16 +5,14 @@ require 'mv/core/db/migration_validator'
 
 describe Mv::Core::Db::MigrationValidator do
   subject(:migration_validator) { 
-    described_class.create(version: '20141118164617',
-                        table_name: :table_name, 
-                        column_name: :column_name, 
-                        validator_name: :validator_name)}
+    described_class.create(table_name: :table_name, 
+                           column_name: :column_name, 
+                           validator_name: :validator_name)}
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
   describe "db" do
-    it { is_expected.to have_db_column(:version).with_options(null: false) }
     it { is_expected.to have_db_column(:table_name).with_options(null: false) }
     it { is_expected.to have_db_column(:column_name).with_options(null: false) }
     it { is_expected.to have_db_column(:validator_name).with_options(null: false) }
@@ -36,42 +34,6 @@ describe Mv::Core::Db::MigrationValidator do
       it "initialized by empty hash by default" do
         expect(migration_validator.options).to eq({})
       end
-    end
-  end
-
-  describe "scopes" do
-    describe "for_version" do
-      describe "invalid" do
-        subject { described_class.for_version('20131118164617') }
-
-        it { is_expected.not_to include(migration_validator) }
-        
-      end
-
-      describe "valid" do
-        subject { described_class.for_version('20141118164617') }
-        
-        it { is_expected.to include(migration_validator) }
-      end
-    end
-
-    describe "recent" do
-      let!(:old_migration_validator) { 
-        described_class.create(version: '19001118164617',
-                            table_name: :table_name, 
-                            column_name: :column_name, 
-                            validator_name: :validator_name)
-        }
-
-       subject { described_class.recent }
-
-       it { is_expected.to eq([migration_validator]) }
-    end
-
-    describe "#dup_with_version" do
-      subject!(:dup_with_version) { migration_validator.dup_with_version('20151118164617') }
-
-      its(:version) { is_expected.to eq('20151118164617') }
     end
   end
 end

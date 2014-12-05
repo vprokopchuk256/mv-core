@@ -4,18 +4,14 @@ require 'mv/core/migration/operations/factory'
 require 'mv/core/migration/operations/add_column'
 
 describe Mv::Core::Migration::Operations::Factory do
-  subject(:operations_factory) { described_class.new('20141118164617') }
-
-  describe "#initialize" do
-    its(:version) { is_expected.to eq('20141118164617') }
-  end
+  subject(:operations_factory) { described_class.new }
 
   describe "#create_operation" do
     subject { operations_factory.create_operation(:add_column, :table_name, :column_name, length: { id: 5 }) }
 
     it "should create AddColumn operation instance" do
       expect(Mv::Core::Migration::Operations::AddColumn).to receive(:new).with(
-          '20141118164617', :table_name, :column_name, length: { id: 5 }
+        :table_name, :column_name, length: { id: 5 }
       )
 
       subject

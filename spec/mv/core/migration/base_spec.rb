@@ -11,23 +11,14 @@ describe Mv::Core::Migration::Base do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:migration) { described_class.new('20141118164617') }
-
-  describe '#initialize' do
-    describe '#version' do
-      subject{ migration.version }
-
-      it { is_expected.to eq('20141118164617') }
-    end
-  end
+  subject(:migration) { described_class.new }
 
   describe "##set_version" do
-    before { described_class.set_current('19000101010001') }
+    before { described_class.set_current() }
 
     subject { described_class.current }
 
     it { is_expected.to be_present }
-    its(:version) { is_expected.to eq('19000101010001') }
   end
 
   describe "#add_column" do
@@ -140,14 +131,12 @@ describe Mv::Core::Migration::Base do
 
   describe "#execute" do
     let!(:old_migration_validator) { 
-        Mv::Core::Db::MigrationValidator.create(version: '19001118164617',
-                                                table_name: :table_name, 
+        Mv::Core::Db::MigrationValidator.create(table_name: :table_name, 
                                                 column_name: :column_name, 
                                                 validator_name: :validator_name).reload
         }
     let!(:recent_migration_validator) { 
-        Mv::Core::Db::MigrationValidator.create(version: '19101118164617',
-                                                table_name: :table_name_1, 
+        Mv::Core::Db::MigrationValidator.create(table_name: :table_name_1, 
                                                 column_name: :column_name_1, 
                                                 validator_name: :validator_name_1).reload
         }
@@ -155,9 +144,7 @@ describe Mv::Core::Migration::Base do
     subject(:migration_execute) { migration.execute }
 
     it "should call list execute with the recent validators list" do
-      expect(migration.operations_list).to receive(:execute).with(
-        [kind_of(Mv::Core::Db::MigrationValidator)]
-      )
+      expect(migration.operations_list).to receive(:execute)  
       subject
     end
 

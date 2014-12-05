@@ -7,8 +7,8 @@ module Mv
         class RenameTable < Base
           attr_reader :new_table_name
 
-          def initialize(version, table_name, new_table_name)
-            super version, table_name
+          def initialize(table_name, new_table_name)
+            super table_name
             @new_table_name = new_table_name
           end
         end

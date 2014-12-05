@@ -5,8 +5,8 @@ module Mv
     module Migration
       module Operations
         class DropTable < Base
-          def initialize(version, table_name)
-            super version, table_name
+          def initialize(table_name)
+            super table_name
           end
         end
       end

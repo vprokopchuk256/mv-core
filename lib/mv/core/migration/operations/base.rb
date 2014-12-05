@@ -3,14 +3,13 @@ module Mv
     module Migration
       module Operations
         class Base
-          attr_reader :version, :table_name
+          attr_reader :table_name
           
-          def initialize version, table_name
-            @version = version
+          def initialize table_name
             @table_name = table_name
           end
 
-          def execute validators
+          def execute
             raise NotImplementedError
           end
         end

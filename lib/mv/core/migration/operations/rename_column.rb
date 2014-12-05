@@ -7,8 +7,8 @@ module Mv
         class RenameColumn < Base
           attr_reader :old_column_name, :new_column_name
           
-          def initialize(version, table_name, old_column_name, new_column_name)
-            super version, table_name
+          def initialize(table_name, old_column_name, new_column_name)
+            super table_name
             
             @old_column_name = old_column_name
             @new_column_name = new_column_name

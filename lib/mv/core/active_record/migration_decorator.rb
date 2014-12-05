@@ -5,7 +5,7 @@ module Mv
     module ActiveRecord
       module MigrationDecorator
         def exec_migration(conn, direction)
-          Mv::Core::Migration::Base.set_current(version)
+          Mv::Core::Migration::Base.set_current()
           super
           Mv::Core::Migration::Base.execute()
         end

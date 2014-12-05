@@ -10,14 +10,8 @@ module Mv
     module Migration
       module Operations
         class Factory
-          attr_reader :version
-
-          def initialize version
-            @version = version
-          end
-
           def create_operation operation_name, *args
-            "Mv::Core::Migration::Operations::#{operation_name.to_s.camelize}".constantize.new(version, *args)
+            "Mv::Core::Migration::Operations::#{operation_name.to_s.camelize}".constantize.new(*args)
           end
         end
       end

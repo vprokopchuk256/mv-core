@@ -22,69 +22,135 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
     # Mv::Core::Migration::Base.set_current('20141118164617')
   end
 
-  let(:migration) do
-    Class.new(::ActiveRecord::Migration) do
-      def up
-        create_table :table_name, id: false do |t|
-          t.string :column_name, validates: { length: { is: 5 } }
+  describe "change" do
+    let(:migration) do
+      Class.new(::ActiveRecord::Migration) do
+        def change
+          create_table :table_name, id: false do |t|
+            t.string :column_name, validates: { length: { is: 5 } }
+          end
         end
+      end.new('TestMigration', '20141118164617')
+    end
+    
+    describe "#up" do
+      subject(:migrate_up) { migration.migrate(:up) }
+
+      it "sets current migration" do
+        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
+        migrate_up
       end
 
-      def down
-        drop_table :table_name
+      it "calls original migration call" do
+        migrate_up
+        expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_truthy
       end
-    end.new('TestMigration', '20141118164617')
+
+      it "should call add_column on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:add_column).with(
+          "table_name", :column_name, length: { is: 5 }
+        )
+        migrate_up
+      end
+
+      it "should call execute on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:execute)
+        migrate_up
+      end
+    end
+
+    describe "#down" do
+      before { migration.migrate(:up) }
+
+      subject(:migrate_down) { migration.migrate(:down) }
+
+      it "sets current migration" do
+        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
+        migrate_down
+      end
+
+      it "calls original migration call" do
+        migrate_down
+        expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
+      end
+
+      it "should call add_column on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:drop_table).with("table_name")
+        migrate_down
+      end
+
+      it "should call execute on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:execute)
+        migrate_down
+      end
+    end
   end
+  
+  describe "up & down" do
+    let(:migration) do
+      Class.new(::ActiveRecord::Migration) do
+        def up
+          create_table :table_name, id: false do |t|
+            t.string :column_name, validates: { length: { is: 5 } }
+          end
+        end
 
-  describe "#up" do
-    subject(:migrate_up) { migration.migrate(:up) }
-
-    it "sets current migration" do
-      expect(Mv::Core::Migration::Base).to receive(:set_current).with('20141118164617').and_call_original
-      migrate_up
+        def down
+          drop_table :table_name
+        end
+      end.new('TestMigration', '20141118164617')
     end
 
-    it "calls original migration call" do
-      migrate_up
-      expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_truthy
+    describe "#up" do
+      subject(:migrate_up) { migration.migrate(:up) }
+
+      it "sets current migration" do
+        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
+        migrate_up
+      end
+
+      it "calls original migration call" do
+        migrate_up
+        expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_truthy
+      end
+
+      it "should call add_column on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:add_column).with(
+          "table_name", :column_name, length: { is: 5 }
+        )
+        migrate_up
+      end
+
+      it "should call execute on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:execute)
+        migrate_up
+      end
     end
 
-    it "should call add_column on migration presenter" do
-      expect(Mv::Core::Migration::Base).to receive(:add_column).with(
-        "table_name", :column_name, length: { is: 5 }
-      )
-      migrate_up
-    end
+    describe "#down" do
+      before { migration.migrate(:up) }
 
-    it "should call execute on migration presenter" do
-      expect(Mv::Core::Migration::Base).to receive(:execute)
-      migrate_up
-    end
-  end
+      subject(:migrate_down) { migration.migrate(:down) }
 
-  describe "#down" do
-    before { migration.migrate(:up) }
+      it "sets current migration" do
+        expect(Mv::Core::Migration::Base).to receive(:set_current).and_call_original
+        migrate_down
+      end
 
-    subject(:migrate_down) { migration.migrate(:down) }
+      it "calls original migration call" do
+        migrate_down
+        expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
+      end
 
-    it "sets current migration" do
-      expect(Mv::Core::Migration::Base).to receive(:set_current).with('20141118164617').and_call_original
-      migrate_down
-    end
+      it "should call add_column on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:drop_table).with("table_name")
+        migrate_down
+      end
 
-    it "calls original migration call" do
-      migrate_down
-      expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
-    end
-
-    it "should call add_column on migration presenter" do
-      expect(Mv::Core::Migration::Base).to receive(:drop_table).with("table_name")
-      migrate_down
-    end
-
-    it "should call execute on migration presenter" do
-      expect(Mv::Core::Migration::Base).to receive(:execute)
-      migrate_down
+      it "should call execute on migration presenter" do
+        expect(Mv::Core::Migration::Base).to receive(:execute)
+        migrate_down
+      end
     end
   end
 end

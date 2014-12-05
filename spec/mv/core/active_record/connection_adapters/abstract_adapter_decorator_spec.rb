@@ -8,7 +8,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
   before do
     ::ActiveRecord::Base.connection.class.send(:prepend, described_class)
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-    Mv::Core::Migration::Base.set_current('20141118164617')
+    Mv::Core::Migration::Base.set_current()
   end
 
   let(:conn) { ::ActiveRecord::Base.connection }
@@ -153,21 +153,42 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       end
     end
 
-    subject :drop_table do
-      conn.drop_table :table_name
+    describe "without params" do
+      subject :drop_table do
+        conn.drop_table :table_name
+      end
+
+      it "calls migration drop_table method" do
+        expect(Mv::Core::Migration::Base.current).to receive(:drop_table).with(
+          :table_name
+        )
+        drop_table
+      end
+
+      it "calls original drop_table method" do
+        drop_table
+
+        expect(conn.table_exists?(:table_name)).to be_falsey
+      end
     end
 
-    it "calls migration drop_table method" do
-      expect(Mv::Core::Migration::Base.current).to receive(:drop_table).with(
-        :table_name
-      )
-      drop_table
-    end
+    describe "with params" do
+      subject :drop_table do
+        conn.drop_table :table_name, id: false
+      end
 
-    it "calls original drop_table method" do
-      drop_table
+      it "calls migration drop_table method" do
+        expect(Mv::Core::Migration::Base.current).to receive(:drop_table).with(
+          :table_name
+        )
+        drop_table
+      end
 
-      expect(conn.table_exists?(:table_name)).to be_falsey
+      it "calls original drop_table method" do
+        drop_table
+
+        expect(conn.table_exists?(:table_name)).to be_falsey
+      end
     end
   end
 end

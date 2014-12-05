@@ -1,7 +1,7 @@
-module MigrationValidators
-  @migration_validators_table_name = :migration_validators
+# module MigrationValidators
+#   @migration_validators_table_name = :migration_validators
 
-  class << self
-    attr_accessor :migration_validators_table_name
-  end
-end
+#   class << self
+#     attr_accessor :migration_validators_table_name
+#   end
+# end

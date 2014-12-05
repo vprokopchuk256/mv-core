@@ -9,13 +9,12 @@ module Mv
         SUPPORTED_METHODS = %i{ add_column remove_column rename_column 
                                 change_column rename_table drop_table}
 
-        attr_reader :version, :operations_list, :operations_factory
+        attr_reader :operations_list, :operations_factory
 
         
-        def initialize(version)
-          @version = version
+        def initialize()
           @operations_list = Mv::Core::Migration::Operations::List.new
-          @operations_factory = Mv::Core::Migration::Operations::Factory.new(version)
+          @operations_factory = Mv::Core::Migration::Operations::Factory.new()
         end
 
         SUPPORTED_METHODS.each do |operation_name|
@@ -27,16 +26,14 @@ module Mv
         end
 
         def execute
-          operations_list.execute(
-            Mv::Core::Db::MigrationValidator.recent.collect{|mv| mv.dup_with_version(version) }
-          )
+          operations_list.execute()
         end
 
         class << self
           attr_reader :current
 
-          def set_current(version)
-            @current = new(version)
+          def set_current()
+            @current = new()
           end
 
           delegate *[SUPPORTED_METHODS, :execute].flatten, to: :current, allow_nil: true
