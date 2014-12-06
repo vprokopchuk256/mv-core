@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 require 'mv/core/db/migration_validator'
-require 'mv/core/migration/operations/base'
 require 'mv/core/migration/operations/factory'
 require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/migration/base'
@@ -24,9 +23,8 @@ describe Mv::Core::Migration::Base do
       ).and_call_original
 
 
-      expect(migration.operations_list).to receive(:add_operation).with(
-        kind_of(Mv::Core::Migration::Operations::Base)
-      )
+      expect(migration.operations_list).to receive(:add_operation)
+
       subject
     end
   end
@@ -42,9 +40,8 @@ describe Mv::Core::Migration::Base do
       ).and_call_original
 
 
-      expect(migration.operations_list).to receive(:add_operation).with(
-        kind_of(Mv::Core::Migration::Operations::Base)
-      )
+      expect(migration.operations_list).to receive(:add_operation)
+
       subject
     end
   end
@@ -60,9 +57,8 @@ describe Mv::Core::Migration::Base do
       ).and_call_original
 
 
-      expect(migration.operations_list).to receive(:add_operation).with(
-        kind_of(Mv::Core::Migration::Operations::Base)
-      )
+      expect(migration.operations_list).to receive(:add_operation)
+
       subject
     end
   end
@@ -78,9 +74,8 @@ describe Mv::Core::Migration::Base do
       ).and_call_original
 
 
-      expect(migration.operations_list).to receive(:add_operation).with(
-        kind_of(Mv::Core::Migration::Operations::Base)
-      )
+      expect(migration.operations_list).to receive(:add_operation)
+
       subject
     end
   end
@@ -96,9 +91,8 @@ describe Mv::Core::Migration::Base do
       ).and_call_original
 
 
-      expect(migration.operations_list).to receive(:add_operation).with(
-        kind_of(Mv::Core::Migration::Operations::Base)
-      )
+      expect(migration.operations_list).to receive(:add_operation)
+
       subject
     end
   end
@@ -114,9 +108,8 @@ describe Mv::Core::Migration::Base do
       ).and_call_original
 
 
-      expect(migration.operations_list).to receive(:add_operation).with(
-        kind_of(Mv::Core::Migration::Operations::Base)
-      )
+      expect(migration.operations_list).to receive(:add_operation)
+
       subject
     end
   end
@@ -137,6 +130,7 @@ describe Mv::Core::Migration::Base do
 
     it "should call list execute with the recent validators list" do
       expect(migration.operations_list).to receive(:execute)  
+      
       subject
     end
 

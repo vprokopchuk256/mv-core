@@ -31,7 +31,7 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
       let(:operation) { described_class.new(:table_name, :column_name, uniqueness: false) }
 
       it "deletes specified validator" do
-        expect(operation).to receive(:delete_migration_validator).with(:table_name, :column_name, :uniqueness)
+        expect(operation).to receive(:delete_migration_validator).with(:uniqueness)
                                                                  .and_call_original
         execute
       end
@@ -41,7 +41,7 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
       let(:operation) { described_class.new(:table_name, :column_name_1, uniqueness: { as: :index}) }
 
       it "adds specified validator" do
-        expect(operation).to receive(:create_migration_validator).with(:table_name, :column_name_1, :uniqueness, as: :index)
+        expect(operation).to receive(:create_migration_validator).with(:uniqueness, as: :index)
                                                                  .and_call_original
         execute
       end
@@ -51,7 +51,7 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
       let(:operation) { described_class.new(:table_name, :column_name, uniqueness: { as: :trigger}) }
 
       it "adds specified validator" do
-        expect(operation).to receive(:update_migration_validator).with(:table_name, :column_name, :uniqueness, as: :trigger)
+        expect(operation).to receive(:update_migration_validator).with(:uniqueness, as: :trigger)
                                                                  .and_call_original
         execute
       end

@@ -1,16 +1,15 @@
-require 'mv/core/migration/operations/base' 
+require 'mv/core/db/helpers/column_validators'
 
 module Mv
   module Core
     module Migration
       module Operations
-        class RemoveColumn < Base
-          attr_reader :column_name
-
+        class RemoveColumn
+          include Mv::Core::Db::Helpers::ColumnValidators
+          
           def initialize(table_name, column_name)
-            super table_name
-
-            @column_name = column_name
+            self.table_name = table_name
+            self.column_name = column_name
           end
         end
       end
