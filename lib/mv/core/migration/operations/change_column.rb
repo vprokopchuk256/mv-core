@@ -22,7 +22,7 @@ module Mv
                 next
               end
 
-              if column_validators.exists?
+              if column_validators.exists?(validator_name: validator_name)
                 update_column_validator(validator_name, validator_opts)
               else
                 create_column_validator(validator_name, validator_opts)

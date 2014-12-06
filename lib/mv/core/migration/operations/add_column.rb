@@ -1,4 +1,5 @@
 require 'mv/core/db/helpers/column_validators'
+require 'mv/core/error'
 
 module Mv
   module Core

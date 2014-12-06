@@ -14,9 +14,11 @@ module Mv
           end
 
           def create_column_validator validator_name, opts
-            return nil unless opts.present? 
+            raise_column_validation_error(validator_name, opts) if opts == false
 
-            column_validators.create!(validator_name: validator_name, options: normalize_opts(opts))
+            column_validators.where(validator_name: validator_name).first_or_initialize.tap do |validator|
+              validator.options = normalize_opts(opts)
+            end.save!
           end
 
           def delete_column_validator validator_name
@@ -33,6 +35,16 @@ module Mv
 
           def normalize_opts opts
             opts == true ? {} : opts
+          end
+
+          def raise_column_validation_error validator_name, opts
+            raise Mv::Core::Error.new(
+              table_name: table_name, 
+              column_name: column_name, 
+              validator_name: validator_name, 
+              options: opts,
+              error: 'Validator can not be removed when new column is being added'
+            )
           end
         end
       end
