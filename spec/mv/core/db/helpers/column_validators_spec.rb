@@ -148,4 +148,16 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
     end
   end 
+
+  describe "#rename_column" do
+    before { migration_validator.save! }
+
+    subject(:rename_column) { instance.rename_column(:column_name_1) }
+
+    it "should change validator column name" do
+      expect { rename_column }.to change{ migration_validator.reload.column_name }.from('column_name')
+                                                                            .to('column_name_1')
+      rename_column
+    end
+  end
 end

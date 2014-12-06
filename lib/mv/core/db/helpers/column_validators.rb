@@ -31,6 +31,10 @@ module Mv
             end.save!
           end
 
+          def rename_column new_column_name
+            column_validators.update_all(column_name: new_column_name)
+          end
+
           private
 
           def normalize_opts opts

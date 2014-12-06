@@ -15,6 +15,10 @@ module Mv
             
             @new_column_name = new_column_name
           end
+
+          def execute
+            rename_column(new_column_name)
+          end
         end
       end
     end
