@@ -13,17 +13,17 @@ module Mv
             table_validators.where(column_name: column_name)
           end
 
-          def create_migration_validator validator_name, opts
+          def create_column_validator validator_name, opts
             return nil unless opts.present? 
 
             column_validators.create!(validator_name: validator_name, options: normalize_opts(opts))
           end
 
-          def delete_migration_validator validator_name
+          def delete_column_validator validator_name
             column_validators.where(validator_name: validator_name).delete_all > 0
           end
           
-          def update_migration_validator validator_name, opts
+          def update_column_validator validator_name, opts
             return false unless opts.present? 
 
             column_validators.where(validator_name: validator_name).update_all(options: normalize_opts(opts)) > 0

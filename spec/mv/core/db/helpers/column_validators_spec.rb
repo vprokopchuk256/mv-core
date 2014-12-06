@@ -27,9 +27,9 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
                                              options: { as: :trigger })
   end
 
-  describe "#create_migration_validator" do
+  describe "#create_column_validator" do
     describe 'when remove validator directive is specified' do
-      subject { instance.create_migration_validator(:uniqueness, false) }
+      subject { instance.create_column_validator(:uniqueness, false) }
 
       it { is_expected.to be_nil }
 
@@ -40,7 +40,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
     describe 'simple add validator directive is passed' do
       subject do
-        instance.create_migration_validator(:uniqueness, true).reload
+        instance.create_column_validator(:uniqueness, true).reload
       end
 
       its(:table_name) { is_expected.to eq('table_name') }
@@ -54,7 +54,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe 'validator with options is passed' do
-      subject { instance.create_migration_validator(:length, is: 5).reload }
+      subject { instance.create_column_validator(:length, is: 5).reload }
 
       its(:table_name) { is_expected.to eq('table_name') }
       its(:column_name) { is_expected.to eq('column_name') }
@@ -67,9 +67,9 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
   end
 
-  describe "#update_migration_validator" do
+  describe "#update_column_validator" do
     describe 'when remove validator directive is specified' do
-      subject { instance.update_migration_validator(:uniqueness, false) }
+      subject { instance.update_column_validator(:uniqueness, false) }
 
       it { is_expected.to be_falsey }
 
@@ -79,7 +79,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe 'simple add validator directive is passed' do
-      subject { instance.update_migration_validator(:uniqueness, true) }
+      subject { instance.update_column_validator(:uniqueness, true) }
 
 
       it { is_expected.to be_truthy }
@@ -90,7 +90,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe 'validator with options is passed' do
-      subject { instance.update_migration_validator(:uniqueness, as: :index) }
+      subject { instance.update_column_validator(:uniqueness, as: :index) }
 
       it { is_expected.to be_truthy }
 
@@ -100,7 +100,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe 'non existing validator options is passed' do
-      subject { instance.update_migration_validator(:uniqueness, as: :index) }
+      subject { instance.update_column_validator(:uniqueness, as: :index) }
 
       before do
         migration_validator.update_attributes(column_name: :column_name_1)
@@ -114,9 +114,9 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
   end
 
-  describe "#delete_migration_validator" do
+  describe "#delete_column_validator" do
     describe "when validator exists" do
-      subject { instance.delete_migration_validator :uniqueness }
+      subject { instance.delete_column_validator :uniqueness }
 
       it { is_expected.to be_truthy }
       
@@ -127,7 +127,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe "when validator does not exist" do
-      subject { instance.delete_migration_validator :uniqueness }
+      subject { instance.delete_column_validator :uniqueness }
 
       before do
         migration_validator.update_attributes(column_name: :column_name_1)

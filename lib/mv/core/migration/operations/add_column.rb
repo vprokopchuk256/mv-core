@@ -17,7 +17,7 @@ module Mv
 
           def execute
             opts.each do |validator_name, validator_opts|
-              create_migration_validator(validator_name, validator_opts)
+              create_column_validator(validator_name, validator_opts)
             end
           end
         end

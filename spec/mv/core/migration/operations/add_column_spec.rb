@@ -22,7 +22,7 @@ describe Mv::Core::Migration::Operations::AddColumn do
     subject(:execute){ operation.execute }
 
     it "should create migration validators" do
-      expect(operation).to receive(:create_migration_validator).with(
+      expect(operation).to receive(:create_column_validator).with(
         :length, is: 5
       ).and_call_original
       execute

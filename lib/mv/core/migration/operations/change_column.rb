@@ -18,14 +18,14 @@ module Mv
           def execute
             opts.each do |validator_name, validator_opts|
               if validator_opts == false
-                delete_migration_validator(validator_name)
+                delete_column_validator(validator_name)
                 next
               end
 
               if column_validators.exists?
-                update_migration_validator(validator_name, validator_opts)
+                update_column_validator(validator_name, validator_opts)
               else
-                create_migration_validator(validator_name, validator_opts)
+                create_column_validator(validator_name, validator_opts)
               end
             end
           end
