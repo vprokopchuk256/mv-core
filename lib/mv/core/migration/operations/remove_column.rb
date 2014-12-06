@@ -11,6 +11,10 @@ module Mv
             self.table_name = table_name
             self.column_name = column_name
           end
+
+          def execute 
+            delete_column_validator(table_name, column_name)
+          end
         end
       end
     end
