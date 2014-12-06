@@ -21,15 +21,15 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
   end
 
   let(:migration_validator) do
-    Mv::Core::Db::MigrationValidator.create!(table_name: :table_name, 
-                                             column_name: :column_name, 
-                                             validator_name: :uniqueness, 
-                                             options: { as: :trigger })
+    Mv::Core::Db::MigrationValidator.new(table_name: :table_name, 
+                                         column_name: :column_name, 
+                                         validator_name: :uniqueness, 
+                                         options: { as: :trigger })
   end
 
   describe "#create_column_validator" do
      describe "with full options hash" do
-      subject(:operation){ instance.create_column_validator(:uniqueness, { as: :trigger}) }
+      subject(:create_column_validator){ instance.create_column_validator(:uniqueness, { as: :trigger}) }
       
       it "creates new migration validator" do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
@@ -37,7 +37,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
       describe "newly created validator" do
         subject(:validator) do
-          operation
+          create_column_validator
           Mv::Core::Db::MigrationValidator.last
         end
 
@@ -49,7 +49,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe "with true as create validator instruction" do
-      subject(:operation){ instance.create_column_validator(:uniqueness, true) }
+      subject(:create_column_validator){ instance.create_column_validator(:uniqueness, true) }
       
       it "creates new migration validator" do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
@@ -57,7 +57,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
       describe "newly created validator" do
         subject(:validator) do
-          operation
+          create_column_validator
           Mv::Core::Db::MigrationValidator.last
         end
 
@@ -66,10 +66,10 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe "with false as delete validator instruction" do
-      subject(:operation){ instance.create_column_validator(:uniqueness, false) }
+      subject(:create_column_validator){ instance.create_column_validator(:uniqueness, false) }
 
       it "raised an error" do
-        expect{ operation }.to raise_error(Mv::Core::Error)
+        expect{ create_column_validator }.to raise_error(Mv::Core::Error)
       end
       
     end
@@ -82,65 +82,46 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
                                                  options: { is: 5})
       end
 
-      subject(:operation){ instance.create_column_validator(:uniqueness, { is: 6}) }
+      subject(:create_column_validator){ instance.create_column_validator(:uniqueness, { is: 6}) }
 
       it "updates existing validator" do
-        expect{ operation }.to change{validator.reload.options}.from(is: 5).to(is: 6)
+        expect{ create_column_validator }.to change{validator.reload.options}.from(is: 5).to(is: 6)
       end
     end
   end
 
   describe "#update_column_validator" do
-    before { migration_validator }
+    describe 'when validator is to be removed' do
+      before { migration_validator.save! }
 
-    describe 'when remove validator directive is specified' do
-      subject { instance.update_column_validator(:uniqueness, false) }
+      subject(:update_column_validator) { instance.update_column_validator(:uniqueness, false) }
 
-      it { is_expected.to be_falsey }
-
-      it 'does nothing' do
-        expect{ subject }.not_to change{ migration_validator.options }
+      it "should remove existing validator" do
+        expect{ update_column_validator }.to change(Mv::Core::Db::MigrationValidator, :count).by(-1)
       end
     end
 
-    describe 'simple add validator directive is passed' do
-      subject { instance.update_column_validator(:uniqueness, true) }
+    describe 'when validator exists' do
+      before { migration_validator.save! }
 
+      subject(:update_column_validator) { instance.update_column_validator(:uniqueness, { as: :index }) }
 
-      it { is_expected.to be_truthy }
-
-      it 'changes validator options accordingly' do
-        expect{ subject }.to change{ migration_validator.reload.options }.from(as: :trigger).to({})
+      it "should update existing validator" do
+        expect{ update_column_validator }.to change{ migration_validator.reload.options }.from(as: :trigger).to(as: :index)
       end
     end
 
-    describe 'validator with options is passed' do
-      subject { instance.update_column_validator(:uniqueness, as: :index) }
+    describe 'when validator does not exist' do
+      subject(:update_column_validator) { instance.update_column_validator(:uniqueness, true) }
 
-      it { is_expected.to be_truthy }
-
-      it 'changes validator options accordingly' do
-        expect{ subject }.to change{ migration_validator.reload.options }.from(as: :trigger).to(as: :index)
-      end
-    end
-
-    describe 'non existing validator options is passed' do
-      subject { instance.update_column_validator(:uniqueness, as: :index) }
-
-      before do
-        migration_validator.update_attributes(column_name: :column_name_1)
-      end
-
-      it { is_expected.to be_falsey }
-
-      it 'does nothing' do
-        expect{ subject }.not_to change{ migration_validator.options }
+      it "should create new validator" do
+        expect{ update_column_validator }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
       end
     end
   end
 
   describe "#delete_column_validator" do
-    before { migration_validator }
+    before { migration_validator.save! }
 
     describe "when validator exists" do
       subject { instance.delete_column_validator :uniqueness }

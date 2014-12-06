@@ -9,8 +9,9 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
+  subject(:operation) { described_class.new(:table_name, :column_name, length: { is: 5} ) }
+
   describe "#initialize" do
-    subject { described_class.new(:table_name, :column_name, length: { is: 5} ) }
 
     its(:table_name) { is_expected.to eq(:table_name) }
     its(:column_name) { is_expected.to eq(:column_name) }
@@ -18,44 +19,10 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
   end
 
   describe "#execute" do
-    let!(:migration_validator) do  
-      Mv::Core::Db::MigrationValidator.create!(table_name: :table_name, 
-                                               column_name: :column_name, 
-                                               validator_name: :uniqueness, 
-                                               options: { as: :index } )
-    end
-
-    subject(:execute) { operation.execute }
-
-    describe "when validator exists and ought to be removed" do
-      let(:operation) { described_class.new(:table_name, :column_name, uniqueness: false) }
-
-      it "deletes specified validator" do
-        expect(operation).to receive(:delete_column_validator).with(:uniqueness)
-                                                                 .and_call_original
-        execute
-      end
-    end
-
-    describe "when validator does not exist and ought to be added" do
-      let(:operation) { described_class.new(:table_name, :column_name_1, uniqueness: { as: :index}) }
-
-      it "adds specified validator" do
-        expect(operation).to receive(:create_column_validator).with(:uniqueness, as: :index)
-                                                                 .and_call_original
-        execute
-      end
-    end
-
-    describe "when validator exists and ought to be updated" do
-      let(:operation) { described_class.new(:table_name, :column_name, uniqueness: { as: :trigger}) }
-
-      it "adds specified validator" do
-        expect(operation).to receive(:update_column_validator).with(:uniqueness, as: :trigger)
-                                                                 .and_call_original
-        execute
-      end
-
+    it "calls update_column_validator method with proper parameters" do
+      expect(operation).to receive(:update_column_validator).with(:length, { is: 5 })
+                                                            .and_call_original
+      operation.execute
     end
   end
 end

@@ -16,9 +16,7 @@ module Mv
           def create_column_validator validator_name, opts
             raise_column_validation_error(validator_name, opts) if opts == false
 
-            column_validators.where(validator_name: validator_name).first_or_initialize.tap do |validator|
-              validator.options = normalize_opts(opts)
-            end.save!
+            update_column_validator(validator_name, opts)
           end
 
           def delete_column_validator validator_name
@@ -26,9 +24,11 @@ module Mv
           end
           
           def update_column_validator validator_name, opts
-            return false unless opts.present? 
+            return delete_column_validator(validator_name) if opts == false
 
-            column_validators.where(validator_name: validator_name).update_all(options: normalize_opts(opts)) > 0
+            column_validators.where(validator_name: validator_name).first_or_initialize.tap do |validator|
+              validator.options = normalize_opts(opts)
+            end.save!
           end
 
           private

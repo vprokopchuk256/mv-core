@@ -17,16 +17,7 @@ module Mv
 
           def execute
             opts.each do |validator_name, validator_opts|
-              if validator_opts == false
-                delete_column_validator(validator_name)
-                next
-              end
-
-              if column_validators.exists?(validator_name: validator_name)
-                update_column_validator(validator_name, validator_opts)
-              else
-                create_column_validator(validator_name, validator_opts)
-              end
+              update_column_validator(validator_name, validator_opts)
             end
           end
         end
