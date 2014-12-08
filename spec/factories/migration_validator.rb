@@ -5,6 +5,7 @@ FactoryGirl.define do
     table_name     :table_name 
     column_name    :column_name
     validator_name :uniqueness
+    containers({ trg_table_name_update: :trigger })
     options({ as: :trigger })
   end
 end

@@ -7,7 +7,8 @@ describe Mv::Core::Db::MigrationValidator do
   subject(:migration_validator) { 
     described_class.create(table_name: :table_name, 
                            column_name: :column_name, 
-                           validator_name: :validator_name)}
+                           validator_name: :validator_name, 
+                           containers: { trg_table_name_update: :trigger })}
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
@@ -16,6 +17,7 @@ describe Mv::Core::Db::MigrationValidator do
     it { is_expected.to have_db_column(:table_name).with_options(null: false) }
     it { is_expected.to have_db_column(:column_name).with_options(null: false) }
     it { is_expected.to have_db_column(:validator_name).with_options(null: false) }
+    it { is_expected.to have_db_column(:containers).with_options(null: false) }
     it { is_expected.to have_db_column(:options) }
   end
 
@@ -23,6 +25,7 @@ describe Mv::Core::Db::MigrationValidator do
     it { is_expected.to validate_presence_of(:table_name) }
     it { is_expected.to validate_presence_of(:column_name) }
     it { is_expected.to validate_presence_of(:validator_name) }
+    # it { is_expected.to validate_presence_of(:containers) }
   end
 
   describe "options" do
