@@ -1,7 +1,7 @@
 module Mv
   module Core
-    module Constraints
-      class Router
+    module Router
+      class Base
         def initialize()
           
         end
