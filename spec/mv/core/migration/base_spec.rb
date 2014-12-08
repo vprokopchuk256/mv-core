@@ -115,20 +115,9 @@ describe Mv::Core::Migration::Base do
   end
 
   describe "#execute" do
-    let!(:old_migration_validator) { 
-        Mv::Core::Db::MigrationValidator.create(table_name: :table_name, 
-                                                column_name: :column_name, 
-                                                validator_name: :validator_name).reload
-        }
-    let!(:recent_migration_validator) { 
-        Mv::Core::Db::MigrationValidator.create(table_name: :table_name_1, 
-                                                column_name: :column_name_1, 
-                                                validator_name: :validator_name_1).reload
-        }
-
     subject(:migration_execute) { migration.execute }
 
-    it "should call list execute with the recent validators list" do
+    it "should call list executet" do
       expect(migration.operations_list).to receive(:execute)  
       
       subject

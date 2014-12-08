@@ -20,12 +20,7 @@ describe Mv::Core::Db::Helpers::TableValidators do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  let!(:migration_validator) do
-    Mv::Core::Db::MigrationValidator.create!(table_name: :table_name, 
-                                             column_name: :column_name, 
-                                             validator_name: :uniqueness, 
-                                             options: { as: :trigger })
-  end
+  let!(:migration_validator) { create(:migration_validator) }
 
   describe "#delete_table_validators" do
     subject(:delete_table_validators) { instance.delete_table_validators }

@@ -16,6 +16,7 @@ group :test, :development do
   gem 'shoulda'
   gem 'pry-debugger'
   gem 'mv-test', '~> 1.0'
+  gem 'factory_girl'
   gem 'coveralls', require: false
   if `uname` =~ /Darwin/
     gem 'rb-fsevent'

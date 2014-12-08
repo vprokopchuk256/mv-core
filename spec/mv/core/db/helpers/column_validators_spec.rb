@@ -20,12 +20,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  let(:migration_validator) do
-    Mv::Core::Db::MigrationValidator.new(table_name: :table_name, 
-                                         column_name: :column_name, 
-                                         validator_name: :uniqueness, 
-                                         options: { as: :trigger })
-  end
+  let(:migration_validator) { build(:migration_validator) }
 
   describe "#create_column_validator" do
      describe "with full options hash" do
@@ -76,16 +71,13 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
     describe "when such validator exists already" do
       let!(:validator) do
-        Mv::Core::Db::MigrationValidator.create!(table_name: :table_name, 
-                                                 column_name: :column_name, 
-                                                 validator_name: :uniqueness, 
-                                                 options: { is: 5})
+        create(:migration_validator, validator_name: :uniqueness, options: { as: :trigger })
       end
 
-      subject(:create_column_validator){ instance.create_column_validator(:uniqueness, { is: 6}) }
+      subject(:create_column_validator){ instance.create_column_validator(:uniqueness, { as: :index }) }
 
       it "updates existing validator" do
-        expect{ create_column_validator }.to change{validator.reload.options}.from(is: 5).to(is: 6)
+        expect{ create_column_validator }.to change{validator.reload.options}.from(as: :trigger).to(as: :index)
       end
     end
   end

@@ -15,10 +15,7 @@ describe Mv::Core::Migration::Operations::RenameColumn do
 
   describe "#execute" do
     let(:migration_validator) do
-      Mv::Core::Db::MigrationValidator.create!(table_name: :table_name, 
-                                               column_name: :column_name, 
-                                               validator_name: :uniqueness, 
-                                               options: true)
+      create(:migration_validator, options: true)
     end
 
     it "should call rename_column method internally" do
