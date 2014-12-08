@@ -15,7 +15,7 @@ describe Mv::Core::Router::Base do
   describe "#route" do
     it "redirects to specific router" do
       trigger_route = double
-      allow(trigger_route).to receive(:route).and_return( trg_table_name_update: :trigger )
+      allow(trigger_route).to receive(:route).with(migration_validator).and_return( trg_table_name_update: :trigger )
 
       allow_any_instance_of(Mv::Core::Router::Factory).to receive(:create_router).with(migration_validator).and_return(trigger_route)
 

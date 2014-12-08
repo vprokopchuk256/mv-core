@@ -17,7 +17,7 @@ describe Mv::Core::Router::Factory do
       let(:migration_validator) { create(:migration_validator, options: { as: :trigger })}
 
       it "initializes router with table_name, column_name, and options and returns correct instance" do
-        expect(Mv::Core::Router::Trigger).to receive(:new).with(:table_name, :column_name, as: :trigger).and_call_original
+        expect(Mv::Core::Router::Trigger).to receive(:new).and_call_original
         create_router
       end
 
@@ -28,7 +28,7 @@ describe Mv::Core::Router::Factory do
       let(:migration_validator) { create(:migration_validator, options: { as: :check })}
 
       it "initializes router with table_name, column_name, and options and returns correct instance" do
-        expect(Mv::Core::Router::Check).to receive(:new).with(:table_name, :column_name, as: :check).and_call_original
+        expect(Mv::Core::Router::Check).to receive(:new).and_call_original
         create_router
       end
 
@@ -39,7 +39,7 @@ describe Mv::Core::Router::Factory do
       let(:migration_validator) { create(:migration_validator, options: { as: :index })}
 
       it "initializes router with table_name, column_name, and options and returns correct instance" do
-        expect(Mv::Core::Router::Index).to receive(:new).with(:table_name, :column_name, as: :index).and_call_original
+        expect(Mv::Core::Router::Index).to receive(:new).and_call_original
         create_router
       end
 
