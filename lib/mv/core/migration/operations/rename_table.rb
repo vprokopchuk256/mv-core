@@ -14,6 +14,10 @@ module Mv
 
             @new_table_name = new_table_name
           end
+
+          def execute
+            update_table_validators(new_table_name)
+          end
         end
       end
     end
