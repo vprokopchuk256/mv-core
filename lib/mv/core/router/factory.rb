@@ -16,8 +16,6 @@ module Mv
           klass = "Mv::Core::Router::#{validator.options.with_indifferent_access.fetch(:as, default_route).to_s.camelize}".constantize
           klass.new(validator.table_name, validator.column_name, validator.options)
         end
-
-        protected
       end
     end
   end
