@@ -16,26 +16,28 @@ module Mv
 
         private
 
+        def opts validator
+          validator.options.with_indifferent_access
+        end
+
+        def event validator
+          opts(validator).fetch(:on, :save).to_s 
+        end
+
         def define_create_trigger? validator
-          ['save', 'create'].include?(validator.options.with_indifferent_access.fetch(:on, :save).to_s)
+          ['save', 'create'].include?(event(validator))
         end
 
         def define_update_trigger? validator
-          ['save', 'update'].include?(validator.options.with_indifferent_access.fetch(:on, :save).to_s)
+          ['save', 'update'].include?(event(validator))
         end
 
         def create_trigger_name validator
-          validator.options
-                   .with_indifferent_access
-                   .fetch(:create_trigger_name, :"trg_mv_#{validator.table_name}_ins")
-          
+          opts(validator).fetch(:create_trigger_name, :"trg_mv_#{validator.table_name}_ins")
         end
 
         def update_trigger_name validator
-          validator.options
-                   .with_indifferent_access
-                   .fetch(:update_trigger_name, :"trg_mv_#{validator.table_name}_upd")
-          
+          opts(validator).fetch(:update_trigger_name, :"trg_mv_#{validator.table_name}_upd")
         end
       end
     end

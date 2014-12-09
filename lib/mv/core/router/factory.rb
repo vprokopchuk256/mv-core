@@ -6,14 +6,8 @@ module Mv
   module Core
     module Router
       class Factory
-        attr_reader :default_route
-
-        def initialize default_route = :trigger
-          @default_route = default_route 
-        end
-
-        def create_router(validator)
-          klass = "Mv::Core::Router::#{validator.options.with_indifferent_access.fetch(:as, default_route).to_s.camelize}".constantize
+        def create_router(container_type)
+          klass = "Mv::Core::Router::#{container_type.to_s.camelize}".constantize
           klass.new
         end
       end

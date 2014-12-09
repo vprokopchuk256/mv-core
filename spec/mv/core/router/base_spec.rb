@@ -13,14 +13,91 @@ describe Mv::Core::Router::Base do
   end
 
   describe "#route" do
-    it "redirects to specific router" do
-      trigger_route = double
-      allow(trigger_route).to receive(:route).with(migration_validator).and_return( trg_table_name_update: :trigger )
+    subject(:route) { router.route(migration_validator) }
 
-      allow_any_instance_of(Mv::Core::Router::Factory).to receive(:create_router).with(migration_validator).and_return(trigger_route)
+    describe "default routing map" do
+      describe "uniqueness" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :uniqueness, options: {}) }
 
-      expect(router.route(migration_validator)).to eq(trg_table_name_update: :trigger)
+        it "routes to index" do
+          expect(router.instance.factory).to receive(:create_router).with(:index).and_call_original
+          route
+        end
+      end
+
+      describe "length" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :length) }
+
+        it "routes to trigger" do
+          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+          route
+        end
+      end
+
+      describe "inclusion" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :inclusion) }
+
+        it "routes to trigger" do
+          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+          route
+        end
+      end
+
+      describe "exclusion" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :exclusion) }
+
+        it "routes to trigger" do
+          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+          route
+        end
+      end
+
+      describe "presence" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :presence) }
+
+        it "routes to trigger" do
+          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+          route
+        end
+      end  
+
+      describe "format" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :format) }
+
+        it "routes to trigger" do
+          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+          route
+        end
+      end
+
+      describe "undefined validator_name" do
+        let(:migration_validator) { create(:migration_validator, validator_name: :some_strange_validator) }
+
+        it "routes to trigger" do
+          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+          route
+        end
+      end
+    end
+
+    describe "explicitly defined route" do
+      let(:migration_validator) { create(:migration_validator, validator_name: :uniqueness, options: { as: :trigger}) }
+      
+      it "routes to defined route" do
+        expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+        route
+      end
+    end
+
+    describe "custom defaul route" do
+      let(:migration_validator) { create(:migration_validator, validator_name: :uniqueness, options: {}) }
+
+      before { router.instance.set_route(:uniqueness, :trigger) }
+
+      it "routes to index" do
+        expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
+        route
+      end
     end
   end
-  
-end
+end   
