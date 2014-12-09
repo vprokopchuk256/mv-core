@@ -2,8 +2,15 @@ module Mv
   module Core
     module Router
       class Check
-        def initialize
-          
+        def route validator
+          { check_name(validator) => :check }
+        end
+
+        protected
+
+        def check_name validator
+          validator.options.with_indifferent_access[:check_name] ||
+           :"chk_#{validator.table_name}" 
         end
       end
     end
