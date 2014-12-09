@@ -10,7 +10,7 @@ module Mv
 
         def check_name validator
           validator.options.with_indifferent_access[:check_name] ||
-           :"chk_#{validator.table_name}" 
+           :"chk_mv_#{validator.table_name}" 
         end
       end
     end

@@ -10,7 +10,7 @@ module Mv
 
         def index_name validator
           validator.options.with_indifferent_access[:index_name] ||
-           :"idx_#{validator.table_name}_#{validator.column_name}_uniq" 
+           :"idx_mv_#{validator.table_name}_#{validator.column_name}_uniq" 
         end
       end
     end
