@@ -19,12 +19,12 @@ module Mv
             update_column_validator(validator_name, opts)
           end
 
-          def delete_column_validator validator_name
-            column_validators.where(validator_name: validator_name).delete_all > 0
+          def delete_column_validator 
+            column_validators.delete_all > 0
           end
           
           def update_column_validator validator_name, opts
-            return delete_column_validator(validator_name) if opts == false
+            return column_validators.where(validator_name: validator_name).delete_all if opts == false
 
             column_validators.where(validator_name: validator_name).first_or_initialize.tap do |validator|
               validator.options = normalize_opts(opts)

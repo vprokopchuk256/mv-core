@@ -10,10 +10,10 @@ module Mv
 
           attr_reader :opts
 
-          def initialize(table_name, column_name, opts)
+          def initialize(table_name, column_name, opts = nil)
             self.table_name = table_name
             self.column_name = column_name
-            @opts = opts
+            @opts = opts || {}
           end
 
           def execute

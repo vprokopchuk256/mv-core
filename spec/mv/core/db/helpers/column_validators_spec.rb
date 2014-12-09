@@ -116,7 +116,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     before { migration_validator.save! }
 
     describe "when validator exists" do
-      subject { instance.delete_column_validator :uniqueness }
+      subject { instance.delete_column_validator }
 
       it { is_expected.to be_truthy }
       
@@ -127,7 +127,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
     end
 
     describe "when validator does not exist" do
-      subject { instance.delete_column_validator :uniqueness }
+      subject { instance.delete_column_validator }
 
       before do
         migration_validator.update_attributes(column_name: :column_name_1)

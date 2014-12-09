@@ -14,7 +14,7 @@ describe Mv::Core::Migration::Operations::RemoveColumn do
 
   describe "#execute" do
     it "calls delete column method" do
-      expect(remove_column).to receive(:delete_column_validator).with(:table_name, :column_name)
+      expect(remove_column).to receive(:delete_column_validator)
       remove_column.execute
     end
   end

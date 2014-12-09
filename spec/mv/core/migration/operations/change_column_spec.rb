@@ -19,10 +19,22 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
   end
 
   describe "#execute" do
-    it "calls update_column_validator method with proper parameters" do
-      expect(operation).to receive(:update_column_validator).with(:length, { is: 5 })
-                                                            .and_call_original
-      operation.execute
+    describe "when opts are defined" do
+      it "calls update_column_validator method with proper parameters" do
+        expect(operation).to receive(:update_column_validator).with(:length, { is: 5 })
+                                                              .and_call_original
+        operation.execute
+      end
+    end
+    
+    describe "when opts are not defined" do
+      subject(:operation) do 
+        described_class.new(:table_name, :column_name)
+      end
+
+      it "does not raise an error" do
+        expect{ operation.execute }.not_to raise_error
+      end
     end
   end
 end

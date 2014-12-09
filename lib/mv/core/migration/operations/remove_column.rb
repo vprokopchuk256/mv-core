@@ -13,7 +13,7 @@ module Mv
           end
 
           def execute 
-            delete_column_validator(table_name, column_name)
+            delete_column_validator
           end
         end
       end
