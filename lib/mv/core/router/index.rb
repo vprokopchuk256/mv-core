@@ -3,7 +3,7 @@ module Mv
     module Router
       class Index
         def route validator
-          { index_name(validator) => :index }
+          { index_name(validator) => { type: :index } }
         end
 
         protected

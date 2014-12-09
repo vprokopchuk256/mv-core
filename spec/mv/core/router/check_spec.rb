@@ -15,7 +15,7 @@ describe Mv::Core::Router::Check do
       let(:migration_validator) { create(:migration_validator, options: { as: :check })}
 
       it "should route to default check name" do
-        expect(subject).to eq(chk_table_name: :check)
+        expect(subject).to eq(chk_table_name: { type: :check })
       end
     end
 
@@ -23,7 +23,7 @@ describe Mv::Core::Router::Check do
       let(:migration_validator) { create(:migration_validator, options: { as: :check, check_name: :check_name })}
 
       it "should route to default check name" do
-        expect(subject).to eq(check_name: :check)
+        expect(subject).to eq(check_name: { type: :check })
       end
     end
   end 

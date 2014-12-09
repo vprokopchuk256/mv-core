@@ -3,7 +3,7 @@ module Mv
     module Router
       class Check
         def route validator
-          { check_name(validator) => :check }
+          { check_name(validator) => { type: :check } }
         end
 
         protected
