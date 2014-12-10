@@ -13,11 +13,13 @@ describe Mv::Core::Router::Base do
   end
 
   describe "#route" do
-    subject(:route) { router.route(migration_validator) }
+    subject(:route) { router.route(:table_name, :column_name, validator_name, options) }
 
     describe "default routing map" do
+      let(:options) { {} }
+
       describe "uniqueness" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :uniqueness, options: {}) }
+        let(:validator_name) { :uniqueness }
 
         it "routes to index" do
           expect(router.instance.factory).to receive(:create_router).with(:index).and_call_original
@@ -26,7 +28,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "length" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :length) }
+        let(:validator_name) { :length }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -35,7 +37,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "inclusion" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :inclusion) }
+        let(:validator_name) { :inclusion }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -44,7 +46,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "exclusion" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :exclusion) }
+        let(:validator_name) { :exclusion }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -53,7 +55,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "presence" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :presence) }
+        let(:validator_name) { :exclusion }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -62,7 +64,7 @@ describe Mv::Core::Router::Base do
       end  
 
       describe "format" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :format) }
+        let(:validator_name) { :format }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -71,7 +73,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "undefined validator_name" do
-        let(:migration_validator) { create(:migration_validator, validator_name: :some_strange_validator) }
+        let(:validator_name) { :some_strange_validator }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -81,7 +83,8 @@ describe Mv::Core::Router::Base do
     end
 
     describe "explicitly defined route" do
-      let(:migration_validator) { create(:migration_validator, validator_name: :uniqueness, options: { as: :trigger}) }
+      let(:options) { { as: :trigger } }
+      let(:validator_name) { :uniqueness }
       
       it "routes to defined route" do
         expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -90,7 +93,8 @@ describe Mv::Core::Router::Base do
     end
 
     describe "custom defaul route" do
-      let(:migration_validator) { create(:migration_validator, validator_name: :uniqueness, options: {}) }
+      let(:options) { {} }
+      let(:validator_name) { :uniqueness }
 
       before { router.instance.set_route(:uniqueness, :trigger) }
 

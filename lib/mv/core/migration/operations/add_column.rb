@@ -1,5 +1,5 @@
 require 'mv/core/db/helpers/column_validators'
-require 'mv/core/error'
+require 'mv/core/router/base'
 
 module Mv
   module Core
@@ -18,7 +18,8 @@ module Mv
 
           def execute
             opts.each do |validator_name, validator_opts|
-              create_column_validator(validator_name, validator_opts)
+              containers_info = Mv::Core::Router::Base.route(table_name, column_name, validator_name, validator_opts)
+              create_column_validator(validator_name, validator_opts, containers_info)
             end
           end
         end

@@ -9,11 +9,11 @@ describe Mv::Core::Router::Trigger do
   end
 
   describe "#route" do
-    subject { described_class.new.route(migration_validator) }
+    subject { described_class.new.route(:table_name, :column_name, :validator_name, options) }
 
     describe "when validation event is not defined" do
       describe "when neither create_trigger_name nor update_trigger_name are not defined" do
-        let(:migration_validator) { create(:migration_validator, options: {as: :trigger}) }
+        let(:options) { {as: :trigger} }
         
         it "routes to default update and insert trigger" do
           expect(subject).to eq(
@@ -26,7 +26,7 @@ describe Mv::Core::Router::Trigger do
       end
 
       describe "when create_trigger name is defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, create_trigger_name: :create_trigger_name }) }
+        let(:options) { { as: :trigger, create_trigger_name: :create_trigger_name } }
         
         it "routes to default update trigger and create trigger with the specified name" do
           expect(subject).to eq(
@@ -39,7 +39,7 @@ describe Mv::Core::Router::Trigger do
       end
 
       describe "when update_trigger name is defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, update_trigger_name: :update_trigger_name }) }
+        let(:options) { { as: :trigger, update_trigger_name: :update_trigger_name } }
         
         it "routes to default create trigger and update trigger with the specified name" do
           expect(subject).to eq(
@@ -54,7 +54,7 @@ describe Mv::Core::Router::Trigger do
 
     describe "when validation event == :save" do
        describe "when neither create_trigger_name nor update_trigger_name are not defined" do
-        let(:migration_validator) { create(:migration_validator, options: {as: :trigger}) }
+        let(:options) { {as: :trigger} }
         
         it "routes to default update and insert trigger" do
           expect(subject).to eq(
@@ -67,7 +67,7 @@ describe Mv::Core::Router::Trigger do
       end
 
       describe "when create_trigger name is defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, create_trigger_name: :create_trigger_name }) }
+        let(:options) { { as: :trigger, create_trigger_name: :create_trigger_name } }
         
         it "routes to default update trigger and create trigger with the specified name" do
           expect(subject).to eq(
@@ -80,7 +80,7 @@ describe Mv::Core::Router::Trigger do
       end
 
       describe "when update_trigger name is defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, update_trigger_name: :update_trigger_name }) }
+        let(:options) { { as: :trigger, update_trigger_name: :update_trigger_name } }
         
         it "routes to default create trigger and update trigger with the specified name" do
           expect(subject).to eq(
@@ -95,7 +95,7 @@ describe Mv::Core::Router::Trigger do
 
     describe "when validation event == :create" do
        describe "when neither create_trigger_name is not defined" do
-        let(:migration_validator) { create(:migration_validator, options: {as: :trigger, on: :create}) }
+        let(:options) { { as: :trigger, on: :create } }
         
         it "routes to default insert trigger" do
           expect(subject).to eq(
@@ -106,7 +106,7 @@ describe Mv::Core::Router::Trigger do
       end
 
       describe "when create_trigger name is defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, create_trigger_name: :create_trigger_name, on: :create }) }
+        let(:options) { { as: :trigger, create_trigger_name: :create_trigger_name, on: :create } }
         
         it "routes to create trigger with the specified name" do
           expect(subject).to eq(
@@ -119,7 +119,7 @@ describe Mv::Core::Router::Trigger do
 
     describe "when validation event == :update" do
        describe "when update_trigger_name is not defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, on: :update }) }
+        let(:options) { { as: :trigger, on: :update } }
         
         it "routes to default update trigger" do
           expect(subject).to eq(
@@ -130,7 +130,7 @@ describe Mv::Core::Router::Trigger do
       end
 
       describe "when update_trigger name is defined" do
-        let(:migration_validator) { create(:migration_validator, options: { as: :trigger, update_trigger_name: :update_trigger_name, on: :update }) }
+        let(:options) { { as: :trigger, update_trigger_name: :update_trigger_name, on: :update } }
         
         it "routes to update trigger with the specified name" do
           expect(subject).to eq(

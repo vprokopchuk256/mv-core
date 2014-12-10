@@ -2,15 +2,15 @@ module Mv
   module Core
     module Router
       class Trigger
-        def route validator
+        def route table_name, column_name, validator_name, options
           return {}.tap do |res|
             res.merge!(
-              create_trigger_name(validator) => { type: :trigger, event: :create }
-            ) if define_create_trigger?(validator)
+              create_trigger_name(table_name, options) => { type: :trigger, event: :create }
+            ) if define_create_trigger?(options)
 
             res.merge!(
-              update_trigger_name(validator) => { type: :trigger, event: :update }
-            ) if define_update_trigger?(validator)
+              update_trigger_name(table_name, options) => { type: :trigger, event: :update }
+            ) if define_update_trigger?(options)
           end
         end
 
@@ -20,24 +20,24 @@ module Mv
           validator.options.with_indifferent_access
         end
 
-        def event validator
-          opts(validator).fetch(:on, :save).to_s 
+        def event options
+          options.with_indifferent_access.fetch(:on, :save).to_s 
         end
 
-        def define_create_trigger? validator
-          ['save', 'create'].include?(event(validator))
+        def define_create_trigger? options
+          ['save', 'create'].include?(event(options))
         end
 
-        def define_update_trigger? validator
-          ['save', 'update'].include?(event(validator))
+        def define_update_trigger? options
+          ['save', 'update'].include?(event(options))
         end
 
-        def create_trigger_name validator
-          opts(validator).fetch(:create_trigger_name, :"trg_mv_#{validator.table_name}_ins")
+        def create_trigger_name table_name, options
+          options.with_indifferent_access.fetch(:create_trigger_name, :"trg_mv_#{table_name}_ins")
         end
 
-        def update_trigger_name validator
-          opts(validator).fetch(:update_trigger_name, :"trg_mv_#{validator.table_name}_upd")
+        def update_trigger_name table_name, options
+          options.with_indifferent_access.fetch(:update_trigger_name, :"trg_mv_#{table_name}_upd")
         end
       end
     end

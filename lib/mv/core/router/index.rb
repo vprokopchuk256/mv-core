@@ -2,15 +2,15 @@ module Mv
   module Core
     module Router
       class Index
-        def route validator
-          { index_name(validator) => { type: :index } }
+        def route table_name, column_name, validator_name, options
+          { index_name(table_name, column_name, options) => { type: :index } }
         end
 
         protected
 
-        def index_name validator
-          validator.options.with_indifferent_access[:index_name] ||
-           :"idx_mv_#{validator.table_name}_#{validator.column_name}_uniq" 
+        def index_name table_name, column_name, options
+          options.with_indifferent_access[:index_name] ||
+           :"idx_mv_#{table_name}_#{column_name}_uniq" 
         end
       end
     end

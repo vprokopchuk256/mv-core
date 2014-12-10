@@ -9,10 +9,11 @@ describe Mv::Core::Router::Check do
   end
   
   describe "#route" do
-    subject { described_class.new.route(migration_validator) }
+    subject { described_class.new.route(:table_name, :column_name, :uniqueness, options) }
 
     describe "when check name is not defined explicitly" do
-      let(:migration_validator) { create(:migration_validator, options: { as: :check })}
+      let(:options) { { as: :check } }
+      # let(:migration_validator) { create(:migration_validator, options: { as: :check })}
 
       it "routes to default check name" do
         expect(subject).to eq(chk_mv_table_name: { type: :check })
@@ -20,7 +21,8 @@ describe Mv::Core::Router::Check do
     end
 
     describe "when check name is not explicitly" do
-      let(:migration_validator) { create(:migration_validator, options: { as: :check, check_name: :check_name })}
+      let(:options) { { as: :check, check_name: :check_name } }
+      # let(:migration_validator) { create(:migration_validator, options: { as: :check, check_name: :check_name })}
 
       it "should route to default check name" do
         expect(subject).to eq(check_name: { type: :check })

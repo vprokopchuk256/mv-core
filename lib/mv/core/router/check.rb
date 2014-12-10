@@ -2,15 +2,15 @@ module Mv
   module Core
     module Router
       class Check
-        def route validator
-          { check_name(validator) => { type: :check } }
+        def route table_name, column_name, validator_name, options
+          { check_name(table_name, options) => { type: :check } }
         end
 
         protected
 
-        def check_name validator
-          validator.options.with_indifferent_access[:check_name] ||
-           :"chk_mv_#{validator.table_name}" 
+        def check_name table_name, options
+          options.with_indifferent_access[:check_name] ||
+           :"chk_mv_#{table_name}" 
         end
       end
     end

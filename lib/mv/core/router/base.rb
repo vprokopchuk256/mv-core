@@ -21,8 +21,10 @@ module Mv
           }.with_indifferent_access
         end
 
-        def route validator
-          factory.create_router(get_route(validator)).route(validator)
+        def route table_name, column_name, validator_name, opts
+          factory.create_router(get_route(validator_name, opts)).route(
+            table_name, column_name, validator_name, opts
+          )
         end
 
         def set_route validator_name, container_type
@@ -31,8 +33,8 @@ module Mv
 
         private
 
-        def get_route validator
-          validator.options[:as] || routing_map.fetch(validator.validator_name, :trigger)
+        def get_route validator_name, opts
+          opts[:as] || routing_map.fetch(validator_name, :trigger)
         end
 
         class << self
