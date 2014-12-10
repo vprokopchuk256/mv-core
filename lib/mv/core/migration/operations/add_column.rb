@@ -18,8 +18,11 @@ module Mv
 
           def execute
             opts.each do |validator_name, validator_opts|
-              containers_info = Mv::Core::Router::Base.route(table_name, column_name, validator_name, validator_opts)
-              create_column_validator(validator_name, validator_opts, containers_info)
+              create_column_validator(
+                validator_name, 
+                validator_opts, 
+                Mv::Core::Router::Base.route(table_name, column_name, validator_name, validator_opts)
+              )
             end
           end
         end

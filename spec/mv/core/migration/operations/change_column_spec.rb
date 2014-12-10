@@ -21,7 +21,12 @@ describe Mv::Core::Migration::Operations::ChangeColumn do
   describe "#execute" do
     describe "when opts are defined" do
       it "calls update_column_validator method with proper parameters" do
-        expect(operation).to receive(:update_column_validator).with(:length, { is: 5 })
+        expect(Mv::Core::Router::Base).to receive(:route)
+                                          .with(:table_name, :column_name, :length, { is: 5 })
+                                          .and_return(idx_mv_table_name_column_name_uniq: { type: :index })
+        expect(operation).to receive(:update_column_validator).with(:length, 
+                                                                    { is: 5 },
+                                                                    { idx_mv_table_name_column_name_uniq: { type: :index } })
                                                               .and_call_original
         operation.execute
       end
