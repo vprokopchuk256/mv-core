@@ -14,6 +14,9 @@ module Mv
             end
           end
 
+          def load_containers validators
+          end
+
           private
 
           def create_container name, options
