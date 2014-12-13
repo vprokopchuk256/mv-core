@@ -1,8 +1,13 @@
 require 'spec_helper'
 
+require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/constraints/containers/factory'
 
 describe Mv::Core::Constraints::Containers::Factory do
+  before do
+    Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
+  end
+
   describe "#create_containers" do
     describe "#trigger" do
       describe "one route" do
@@ -46,4 +51,33 @@ describe Mv::Core::Constraints::Containers::Factory do
       its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Containers::Index) }
     end    
   end 
+
+  describe "#load_containers" do
+    let!(:migration_validator) {
+      create(:migration_validator, containers: {
+          update_trigger_name: { type: :trigger, event: :update },
+          create_trigger_name: { type: :trigger, event: :create }
+      })
+    }
+
+    subject(:load_containers) { described_class.new.load_containers Mv::Core::Db::MigrationValidator.all }
+
+    its(:length) { is_expected.to eq(2) }
+
+    describe "distributes validators among 2 containers" do
+      describe "first container" do
+        subject { load_containers.first }
+
+        its(:name) { is_expected.to eq(:update_trigger_name) }
+        its(:event) { is_expected.to eq(:update) }
+      end
+
+      describe "last container" do
+        subject { load_containers.last }
+
+        its(:name) { is_expected.to eq(:create_trigger_name) }
+        its(:event) { is_expected.to eq(:create) }
+      end
+    end
+  end
 end
