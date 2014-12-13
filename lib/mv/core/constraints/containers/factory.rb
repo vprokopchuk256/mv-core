@@ -41,7 +41,7 @@ module Mv
           end
 
           def visit_containers containers, validator
-            containers.collect{ |container| container.visit(validator) }.compact
+            containers.collect{ |container| container.register(validator) }.compact
           end
         end
       end

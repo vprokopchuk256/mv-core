@@ -17,7 +17,7 @@ module Mv
           def delete
           end
 
-          def visit validator
+          def register validator
             route = validator.containers.find do |container_name, container_options| 
               routed_by?(container_name, container_options) 
             end

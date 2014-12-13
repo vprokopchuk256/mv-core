@@ -23,8 +23,8 @@ describe Mv::Core::Constraints::Containers::Trigger do
     it { is_expected.to respond_to(:delete) }
   end
 
-  describe "#visit" do
-    subject { trigger.visit(migration_validator) }
+  describe "#register" do
+    subject { trigger.register(migration_validator) }
 
     describe "when one of the routes leads to the current container" do
       let(:migration_validator) {

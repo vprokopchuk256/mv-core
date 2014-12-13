@@ -8,7 +8,7 @@ describe Mv::Core::Constraints::Containers::Check do
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
-  
+
   subject(:check) { described_class.new(:chk_mv_table_name, { type: :check }) }
 
   describe "#initialize" do
@@ -22,8 +22,8 @@ describe Mv::Core::Constraints::Containers::Check do
     it { is_expected.to respond_to(:delete) }
   end
 
-  describe "#visit" do
-    subject { check.visit(migration_validator) }
+  describe "#register" do
+    subject { check.register(migration_validator) }
 
     describe "when one of the routes leads to the current container" do
       let(:migration_validator) {

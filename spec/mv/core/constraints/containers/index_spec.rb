@@ -8,7 +8,7 @@ describe Mv::Core::Constraints::Containers::Index do
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
-  
+
   subject(:index) { described_class.new(:idx_mv_table_name, { type: :index }) }
 
   describe "#initialize" do
@@ -22,8 +22,8 @@ describe Mv::Core::Constraints::Containers::Index do
     it { is_expected.to respond_to(:delete) }
   end
 
-  describe "#visit" do
-    subject { index.visit(migration_validator) }
+  describe "#register" do
+    subject { index.register(migration_validator) }
 
     describe "when one of the routes leads to the current container" do
       let(:migration_validator) {
