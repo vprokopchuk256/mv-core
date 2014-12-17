@@ -1,6 +1,6 @@
 module Mv
   module Core
-    module Constraints
+    module Constraint
       class Description
         attr_reader :name, :type, :options
 

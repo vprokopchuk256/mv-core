@@ -1,6 +1,6 @@
 module Mv
   module Core
-    module Constraints
+    module Constraint
       class Base
         attr_reader :name, :options, :validators
 

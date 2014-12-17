@@ -1,8 +1,8 @@
-require 'mv/core/constraints/base'
+require 'mv/core/constraint/base'
 
 module Mv
   module Core
-    module Constraints
+    module Constraint
       class Index < Base
         def initialize(name, options)
           super name, options

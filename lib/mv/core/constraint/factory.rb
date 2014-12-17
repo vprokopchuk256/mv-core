@@ -1,10 +1,10 @@
-require 'mv/core/constraints/trigger'
-require 'mv/core/constraints/check'
-require 'mv/core/constraints/index'
+require 'mv/core/constraint/trigger'
+require 'mv/core/constraint/check'
+require 'mv/core/constraint/index'
 
 module Mv
   module Core
-    module Constraints
+    module Constraint
       class Factory
         def create_containers routes
           routes.inject([]) do |res, pair|
@@ -23,7 +23,7 @@ module Mv
 
         def create_container name, options
           type = options.with_indifferent_access[:type]
-          klass = "Mv::Core::Constraints::#{type.to_s.camelize}".constantize
+          klass = "Mv::Core::Constraint::#{type.to_s.camelize}".constantize
           klass.new(name, options)
         end
 
