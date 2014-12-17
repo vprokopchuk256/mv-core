@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 require 'mv/core/services/create_migration_validators_table'
-require 'mv/core/constraints/containers/factory'
+require 'mv/core/constraints/factory'
 
-describe Mv::Core::Constraints::Containers::Factory do
+describe Mv::Core::Constraints::Factory do
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
@@ -18,7 +18,7 @@ describe Mv::Core::Constraints::Containers::Factory do
         }
 
         its(:length) { is_expected.to eq(1) }
-        its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Containers::Trigger) }
+        its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Trigger) }
       end
 
       describe "two routes" do
@@ -39,7 +39,7 @@ describe Mv::Core::Constraints::Containers::Factory do
       }
 
       its(:length) { is_expected.to eq(1) }
-      its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Containers::Check) }
+      its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Check) }
     end    
 
     describe "#index" do
@@ -48,7 +48,7 @@ describe Mv::Core::Constraints::Containers::Factory do
       }
 
       its(:length) { is_expected.to eq(1) }
-      its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Containers::Index) }
+      its(:first) { is_expected.to be_instance_of(Mv::Core::Constraints::Index) }
     end    
   end 
 

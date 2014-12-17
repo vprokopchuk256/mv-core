@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-require 'mv/core/constraints/containers/container_info'
+require 'mv/core/constraints/container_info'
 
-describe Mv::Core::Constraints::Containers::ContainerInfo do
+describe Mv::Core::Constraints::ContainerInfo do
   subject { described_class.new(:name, :type, { event: :create })}
 
   describe '#initialize' do

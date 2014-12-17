@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 require 'mv/core/services/create_migration_validators_table'
-require 'mv/core/constraints/containers/trigger'
+require 'mv/core/constraints/trigger'
 require 'mv/core/error'
 
-describe Mv::Core::Constraints::Containers::Trigger do
+describe Mv::Core::Constraints::Trigger do
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
