@@ -3,7 +3,7 @@ module Mv
     module Db
       class MigrationValidator < ::ActiveRecord::Base
         serialize :options, Hash
-        serialize :containers, Hash
+        serialize :constraints, Hash
 
         validates :table_name, presence: true
         validates :column_name, presence: true

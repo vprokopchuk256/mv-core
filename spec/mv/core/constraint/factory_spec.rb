@@ -8,11 +8,11 @@ describe Mv::Core::Constraint::Factory do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  describe "#create_containers" do
+  describe "#create_constraints" do
     describe "#trigger" do
       describe "one route" do
-        subject(:create_containers) { 
-          described_class.new.create_containers(
+        subject(:create_constraints) { 
+          described_class.new.create_constraints(
             update_trigger_name: { type: :trigger, event: :update } 
           )
         }
@@ -22,8 +22,8 @@ describe Mv::Core::Constraint::Factory do
       end
 
       describe "two routes" do
-        subject(:create_containers) { 
-          described_class.new.create_containers(
+        subject(:create_constraints) { 
+          described_class.new.create_constraints(
             update_trigger_name: { type: :trigger, event: :update },
             create_trigger_name: { type: :trigger, event: :create } 
           )
@@ -34,8 +34,8 @@ describe Mv::Core::Constraint::Factory do
     end    
 
     describe "#check" do
-      subject(:create_containers) { 
-        described_class.new.create_containers(check_name: { type: :check })
+      subject(:create_constraints) { 
+        described_class.new.create_constraints(check_name: { type: :check })
       }
 
       its(:length) { is_expected.to eq(1) }
@@ -43,8 +43,8 @@ describe Mv::Core::Constraint::Factory do
     end    
 
     describe "#index" do
-      subject(:create_containers) { 
-        described_class.new.create_containers(check_name: { type: :index })
+      subject(:create_constraints) { 
+        described_class.new.create_constraints(check_name: { type: :index })
       }
 
       its(:length) { is_expected.to eq(1) }
@@ -52,28 +52,28 @@ describe Mv::Core::Constraint::Factory do
     end    
   end 
 
-  describe "#load_containers" do
+  describe "#load_constraints" do
     let!(:migration_validator) {
-      create(:migration_validator, containers: {
+      create(:migration_validator, constraints: {
           update_trigger_name: { type: :trigger, event: :update },
           create_trigger_name: { type: :trigger, event: :create }
       })
     }
 
-    subject(:load_containers) { described_class.new.load_containers Mv::Core::Db::MigrationValidator.all }
+    subject(:load_constraints) { described_class.new.load_constraints Mv::Core::Db::MigrationValidator.all }
 
     its(:length) { is_expected.to eq(2) }
 
-    describe "distributes validators among 2 containers" do
-      describe "first container" do
-        subject { load_containers.first }
+    describe "distributes validators among 2 constraints" do
+      describe "first constraint" do
+        subject { load_constraints.first }
 
         its(:name) { is_expected.to eq(:update_trigger_name) }
         its(:event) { is_expected.to eq(:update) }
       end
 
-      describe "last container" do
-        subject { load_containers.last }
+      describe "last constraint" do
+        subject { load_constraints.last }
 
         its(:name) { is_expected.to eq(:create_trigger_name) }
         its(:event) { is_expected.to eq(:create) }

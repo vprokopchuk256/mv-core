@@ -17,8 +17,8 @@ module Mv
         end
 
         def register validator
-          route = validator.containers.find do |container_name, container_options| 
-            routed_by?(container_name, container_options) 
+          route = validator.constraints.find do |constraint_name, constraint_options| 
+            routed_by?(constraint_name, constraint_options) 
           end
 
           validators << validator if route
@@ -28,11 +28,11 @@ module Mv
 
         private 
         
-        def routed_by? container_name, container_options
-          container_name.to_s == name.to_s && 
-          container_options.length == options.length &&
-          container_options.all? do |key, value| 
-            options.with_indifferent_access[key].to_s == container_options[key].to_s 
+        def routed_by? constraint_name, constraint_options
+          constraint_name.to_s == name.to_s && 
+          constraint_options.length == options.length &&
+          constraint_options.all? do |key, value| 
+            options.with_indifferent_access[key].to_s == constraint_options[key].to_s 
           end
         end
       end

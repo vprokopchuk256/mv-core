@@ -27,8 +27,8 @@ module Mv
           )
         end
 
-        def set_route validator_name, container_type
-          routing_map[validator_name] = container_type
+        def set_route validator_name, constraint_type
+          routing_map[validator_name] = constraint_type
         end
 
         private

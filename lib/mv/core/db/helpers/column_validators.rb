@@ -13,22 +13,22 @@ module Mv
             table_validators.where(column_name: column_name)
           end
 
-          def create_column_validator validator_name, opts, containers = {}
+          def create_column_validator validator_name, opts, constraints = {}
             raise_column_validation_error(validator_name, opts) if opts == false
 
-            update_column_validator(validator_name, opts, containers)
+            update_column_validator(validator_name, opts, constraints)
           end
 
           def delete_column_validator 
             column_validators.delete_all > 0
           end
           
-          def update_column_validator validator_name, opts, containers = {}
+          def update_column_validator validator_name, opts, constraints = {}
             return column_validators.where(validator_name: validator_name).delete_all if opts == false
 
             column_validators.where(validator_name: validator_name).first_or_initialize.tap do |validator|
               validator.options = normalize_opts(opts)
-              validator.containers = containers || {}
+              validator.constraints = constraints || {}
             end.save!
           end
 

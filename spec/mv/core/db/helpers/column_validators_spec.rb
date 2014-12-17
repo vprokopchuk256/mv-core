@@ -44,7 +44,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
         its(:column_name) { is_expected.to eq('column_name') }
         its(:validator_name) { is_expected.to eq('uniqueness') }
         its(:options) { is_expected.to eq(as: :trigger) }
-        its(:containers) { is_expected.to eq({ idx_mv_table_name_column_name_uniq: { type: :index } }) }
+        its(:constraints) { is_expected.to eq({ idx_mv_table_name_column_name_uniq: { type: :index } }) }
       end
     end
 
@@ -118,8 +118,8 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
         expect{ update_column_validator }.to change{ migration_validator.reload.options }.from(as: :trigger).to(as: :index)
       end
 
-      it "updates existing validator with passed containers" do
-        expect{ update_column_validator }.to change{ migration_validator.reload.containers }
+      it "updates existing validator with passed constraints" do
+        expect{ update_column_validator }.to change{ migration_validator.reload.constraints }
                                              .from(trg_table_name_update: :trigger)
                                              .to(idx_mv_table_name_column_name_uniq: { type: :index })
       end
@@ -146,7 +146,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
         its(:column_name) { is_expected.to eq('column_name') }
         its(:validator_name) { is_expected.to eq('uniqueness') }
         its(:options) { is_expected.to eq({}) }
-        its(:containers) { is_expected.to eq({ idx_mv_table_name_column_name_uniq: { type: :index } }) }
+        its(:constraints) { is_expected.to eq({ idx_mv_table_name_column_name_uniq: { type: :index } }) }
       end
     end
   end

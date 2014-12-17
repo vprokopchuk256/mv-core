@@ -6,31 +6,31 @@ module Mv
   module Core
     module Constraint
       class Factory
-        def create_containers routes
+        def create_constraints routes
           routes.inject([]) do |res, pair|
-            res << create_container(pair.first, pair.last)
+            res << create_constraint(pair.first, pair.last)
             res
           end
         end
 
-        def load_containers validators
-          return validators.inject([]) do |containers, validator|
-            containers + create_containers(distribute_valdator(containers, validator))
+        def load_constraints validators
+          return validators.inject([]) do |constraints, validator|
+            constraints + create_constraints(distribute_valdator(constraints, validator))
           end
         end
 
         private
 
-        def create_container name, options
+        def create_constraint name, options
           type = options.with_indifferent_access[:type]
           klass = "Mv::Core::Constraint::#{type.to_s.camelize}".constantize
           klass.new(name, options)
         end
 
-        def distribute_valdator containers, validator
-          distributed_routes = visit_containers(containers, validator)
+        def distribute_valdator constraints, validator
+          distributed_routes = visit_constraints(constraints, validator)
 
-          non_distributed_routes = validator.containers.clone
+          non_distributed_routes = validator.constraints.clone
 
           distributed_routes.each do |name_route_pair|
             non_distributed_routes.delete(name_route_pair.first)
@@ -39,8 +39,8 @@ module Mv
           non_distributed_routes
         end
 
-        def visit_containers containers, validator
-          containers.collect{ |container| container.register(validator) }.compact
+        def visit_constraints constraints, validator
+          constraints.collect{ |constraint| constraint.register(validator) }.compact
         end
       end
     end

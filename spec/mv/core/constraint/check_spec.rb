@@ -17,7 +17,7 @@ describe Mv::Core::Constraint::Check do
     its(:validators) { is_expected.to eq([]) }
   end
 
-  describe "#container interface" do
+  describe "#constraint interface" do
     it { is_expected.to respond_to(:create) }
     it { is_expected.to respond_to(:delete) }
   end
@@ -25,26 +25,26 @@ describe Mv::Core::Constraint::Check do
   describe "#register" do
     subject { check.register(migration_validator) }
 
-    describe "when one of the routes leads to the current container" do
+    describe "when one of the routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, containers: { chk_mv_table_name: { type: :check } })
+        create(:migration_validator, constraints: { chk_mv_table_name: { type: :check } })
       }
 
       it { is_expected.to eq([:chk_mv_table_name, { type: :check }]) }
 
-      it "adds validator to the container" do
+      it "adds validator to the constraint" do
         expect{ subject }.to change(check.validators, :count).by(1)
       end
     end
 
-    describe "when no routes leads to the current container" do
+    describe "when no routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, containers: { chk_mv_table_name_1: { type: :check } })
+        create(:migration_validator, constraints: { chk_mv_table_name_1: { type: :check } })
       }
 
       it { is_expected.to be_nil }
 
-      it "does not add validator to the container" do
+      it "does not add validator to the constraint" do
         expect{ subject }.not_to change(check.validators, :count)
       end
     end

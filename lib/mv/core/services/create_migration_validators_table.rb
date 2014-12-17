@@ -10,7 +10,7 @@ module Mv
               table.string :table_name, null: false
               table.string :column_name, null: false
               table.string :validator_name, null: false
-              table.string :containers, null: false
+              table.string :constraints, null: false
               table.string :options
             end 
 

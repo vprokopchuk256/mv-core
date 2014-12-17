@@ -17,7 +17,7 @@ describe Mv::Core::Constraint::Index do
     its(:validators) { is_expected.to eq([]) }
   end
 
-  describe "#container interface" do
+  describe "#constraint interface" do
     it { is_expected.to respond_to(:create) }
     it { is_expected.to respond_to(:delete) }
   end
@@ -25,26 +25,26 @@ describe Mv::Core::Constraint::Index do
   describe "#register" do
     subject { index.register(migration_validator) }
 
-    describe "when one of the routes leads to the current container" do
+    describe "when one of the routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, containers: { idx_mv_table_name: { type: :index } })
+        create(:migration_validator, constraints: { idx_mv_table_name: { type: :index } })
       }
 
       it { is_expected.to eq([:idx_mv_table_name, { type: :index }]) }
 
-      it "adds validator to the container" do
+      it "adds validator to the constraint" do
         expect{ subject }.to change(index.validators, :count).by(1)
       end
     end
 
-    describe "when no routes leads to the current container" do
+    describe "when no routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, containers: { idx_mv_table_name_1: { type: :index } })
+        create(:migration_validator, constraints: { idx_mv_table_name_1: { type: :index } })
       }
 
       it { is_expected.to be_nil }
 
-      it "does not add validator to the container" do
+      it "does not add validator to the constraint" do
         expect{ subject }.not_to change(index.validators, :count)
       end
     end

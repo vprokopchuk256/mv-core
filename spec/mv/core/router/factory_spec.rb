@@ -11,10 +11,10 @@ describe Mv::Core::Router::Factory do
   end
 
   describe "#create_router" do
-    subject(:create_router) { factory.create_router(container_type) }
+    subject(:create_router) { factory.create_router(constraint_type) }
 
     describe "#trigger" do
-      let(:container_type) { :trigger }
+      let(:constraint_type) { :trigger }
 
       it "initializes router with table_name, column_name, and options and returns correct instance" do
         expect(Mv::Core::Router::Trigger).to receive(:new).and_call_original
@@ -25,7 +25,7 @@ describe Mv::Core::Router::Factory do
     end
 
     describe "#check" do
-      let(:container_type) { :check }
+      let(:constraint_type) { :check }
 
       it "initializes router with table_name, column_name, and options and returns correct instance" do
         expect(Mv::Core::Router::Check).to receive(:new).and_call_original
@@ -36,7 +36,7 @@ describe Mv::Core::Router::Factory do
     end
 
     describe "#index" do
-      let(:container_type) { :index }
+      let(:constraint_type) { :index }
 
       it "initializes router with table_name, column_name, and options and returns correct instance" do
         expect(Mv::Core::Router::Index).to receive(:new).and_call_original
