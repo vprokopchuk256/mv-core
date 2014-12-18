@@ -23,8 +23,8 @@ module Mv
             @on = opts[:on] || default_on
             @create_trigger_name = opts[:create_trigger_name] || default_create_trigger_name
             @update_trigger_name = opts[:update_trigger_name] || default_update_trigger_name
-            @allow_nil = opts[:allow_nil] || false
-            @allow_blank = opts[:allow_blank] || false
+            @allow_nil = opts[:allow_nil] || default_allow_nil
+            @allow_blank = opts[:allow_blank] || default_allow_blank
             @as = opts[:as] || default_as
           end
         end
@@ -57,6 +57,14 @@ module Mv
 
         def default_update_trigger_name
           [:save, :update].include?(on.to_sym) ? "trg_mv_#{table_name}_upd" : nil
+        end
+
+        def default_allow_nil
+          false
+        end
+
+        def default_allow_blank
+          false
         end
       end
     end
