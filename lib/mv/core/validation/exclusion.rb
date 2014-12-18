@@ -41,7 +41,7 @@ module Mv
         end
 
         def default_message
-          "Format violated on the table #{table_name} column #{column_name}"
+          "Exclusion violated on the table #{table_name} column #{column_name}"
         end
 
         def default_on

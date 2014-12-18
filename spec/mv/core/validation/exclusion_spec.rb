@@ -46,7 +46,7 @@ describe Mv::Core::Validation::Exclusion do
     describe ":message" do
       subject { instance(message: nil) }
       
-      its(:message) { is_expected.to eq('Format violated on the table table_name column column_name') }
+      its(:message) { is_expected.to eq('Exclusion violated on the table table_name column column_name') }
     end
 
     describe ":on" do
