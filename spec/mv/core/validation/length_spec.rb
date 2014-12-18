@@ -4,7 +4,8 @@ require 'mv/core/validation/length'
 
 describe Mv::Core::Validation::Length do
   describe "#initialize" do
-    subject { described_class.new(in: :in, 
+    subject { described_class.new(:table_name, :column_name,
+                                  in: :in, 
                                   within: :within, 
                                   is: :is, 
                                   maximum: :maximum, 
@@ -19,6 +20,8 @@ describe Mv::Core::Validation::Length do
                                   allow_blank: :allow_blank, 
                                   as: :as) }
 
+    its(:table_name) { is_expected.to eq(:table_name) }
+    its(:column_name) { is_expected.to eq(:column_name) }
     its(:in) { is_expected.to eq(:in) }
     its(:within) { is_expected.to eq(:within) }
     its(:is) { is_expected.to eq(:is) }
