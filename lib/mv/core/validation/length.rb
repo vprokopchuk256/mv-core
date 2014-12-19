@@ -1,3 +1,5 @@
+require 'mv/core/validation/validators/integers_array_validator'
+
 module Mv
   module Core
     module Validation
@@ -13,20 +15,8 @@ module Mv
         validates :allow_nil, :allow_blank, inclusion: { in: [true, false] }
         validates :as, inclusion: { in: :available_as }
 
-        validates :in, :within, presence: true, allow_nil: true
+        validates :in, :within, presence: true, allow_nil: true, integers_array: true
         validates :is, :minimum, :maximum, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
-
-        validates_each :in, :within do |record, attr, value|
-          if value.respond_to?(:to_a)
-            record.errors.add(:attr, 
-                              'must contain positive integers only') unless value.to_a.all?{|v| v.kind_of?(Integer) && v >=0  }
-
-          else
-            record.errors.add(:attr, 
-                              'must support conversion to Array (respond to :to_a method)') unless value.respond_to?(:to_a)
-          end
-        end
-
 
         def initialize(table_name, column_name, opts)
           @table_name = table_name
