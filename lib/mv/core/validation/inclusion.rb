@@ -53,11 +53,11 @@ module Mv
         end
 
         def default_create_trigger_name
-          [:save, :create].include?(on.to_sym) ? "trg_mv_#{table_name}_ins" : nil
+          "trg_mv_#{table_name}_ins"
         end
 
         def default_update_trigger_name
-          [:save, :update].include?(on.to_sym) ? "trg_mv_#{table_name}_upd" : nil
+          "trg_mv_#{table_name}_upd"
         end
 
         def default_allow_nil

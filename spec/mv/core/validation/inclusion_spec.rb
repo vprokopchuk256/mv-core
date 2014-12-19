@@ -62,43 +62,15 @@ describe Mv::Core::Validation::Inclusion do
     end
 
     describe ":create_trigger_name" do
-      describe "when :on == :save" do
-        subject { instance(on: :save, create_trigger_name: nil) }
+      subject { instance(create_trigger_name: nil) }
 
-        its(:create_trigger_name) { is_expected.to eq('trg_mv_table_name_ins') }
-      end
-
-      describe "when :on == :create" do
-        subject { instance(on: :create, create_trigger_name: nil) }
-        
-        its(:create_trigger_name) { is_expected.to eq('trg_mv_table_name_ins') }
-      end
-
-      describe "when :on == :update" do
-        subject { instance(on: :update, create_trigger_name: nil) }
-        
-        its(:create_trigger_name) { is_expected.to be_nil }
-      end
+      its(:create_trigger_name) { is_expected.to eq('trg_mv_table_name_ins') }
     end
 
     describe ":update_trigger_name" do
-      describe "when :on == :save" do
-        subject { instance(on: :save, update_trigger_name: nil) }
+      subject { instance(update_trigger_name: nil) }
 
-        its(:update_trigger_name) { is_expected.to eq('trg_mv_table_name_upd') }
-      end
-
-      describe "when :on == :create" do
-        subject { instance(on: :create, update_trigger_name: nil) }
-        
-        its(:update_trigger_name) { is_expected.to be_nil }
-      end
-
-      describe "when :on == :update" do
-        subject { instance(on: :update, update_trigger_name: nil) }
-        
-        its(:update_trigger_name) { is_expected.to eq('trg_mv_table_name_upd') }
-      end
+      its(:update_trigger_name) { is_expected.to eq('trg_mv_table_name_upd') }
     end
   end
 
