@@ -10,7 +10,6 @@ module Mv
         validates :on, inclusion: { in: :available_on }, allow_nil: true
         validates :allow_nil, :allow_blank, inclusion: { in: [true, false] }
         validates :as, inclusion: { in: :available_as }
-        validates :in, presence: true
 
         validate :on_allowance,
                  :create_trigger_name_allowance, 
@@ -42,7 +41,7 @@ module Mv
         end
 
         def default_message
-          "Exclusion violated on the table #{table_name} column #{column_name}"
+          "#{self.class.name.split('::').last} violated on the table #{table_name} column #{column_name}"
         end
 
         def default_on

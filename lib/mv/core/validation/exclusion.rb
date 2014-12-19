@@ -8,6 +8,7 @@ module Mv
 
         attr_reader :in
 
+        validates :in, presence: true
         validate :in_type
 
         def initialize(table_name, column_name, opts)
