@@ -1,4 +1,5 @@
 require 'mv/core/validation/base'
+require 'mv/core/validation/validators/array_validator'
 
 module Mv
   module Core
@@ -8,19 +9,12 @@ module Mv
 
         attr_reader :in
 
-        validates :in, presence: true
-        validate :in_type
+        validates :in, presence: true, array: true
 
         def initialize(table_name, column_name, opts)
           super(table_name, column_name, opts)
 
           @in = opts.with_indifferent_access[:in]
-        end
-
-        private
-
-        def in_type
-          errors.add(:in, 'must support conversion to Array (respond to :to_a method)') unless self.in.respond_to?(:to_a)
         end
       end
     end
