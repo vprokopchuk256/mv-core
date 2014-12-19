@@ -113,14 +113,6 @@ describe Mv::Core::Validation::Exclusion do
   describe "validation" do
     it { is_expected.to be_valid }
 
-    describe ":on" do
-      describe "when :as == :check" do
-        subject { instance(on: :create, as: :check, create_trigger_name: nil, update_trigger_name: nil) }
-        
-        it { is_expected.to be_invalid }
-      end 
-    end
-
     describe ":create_trigger_name" do
       describe "when :as == :check" do
         subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, as: :check) }
@@ -187,6 +179,12 @@ describe Mv::Core::Validation::Exclusion do
        
         it { is_expected.to be_invalid }
       end
+
+      describe "when :as == :check" do
+        subject { instance(on: :create, as: :check, create_trigger_name: nil, update_trigger_name: nil) }
+        
+        it { is_expected.to be_invalid }
+      end 
     end
 
     describe ":allow_nil" do
