@@ -18,6 +18,9 @@ group :test, :development do
   gem 'mv-test', '~> 1.0'
   gem 'factory_girl'
   gem 'coveralls', require: false
+end
+
+group :test do
   if `uname` =~ /Darwin/
     gem 'rb-fsevent'
     gem 'terminal-notifier-guard'
