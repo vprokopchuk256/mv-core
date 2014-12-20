@@ -9,7 +9,7 @@ describe Mv::Core::Router::Trigger do
   end
 
   describe "#route" do
-    subject { described_class.new.route(:table_name, :column_name, :validator_name, options) }
+    subject { described_class.new.route(:table_name, :column_name, :validation_type, options) }
 
     describe "when validation event is not defined" do
       describe "when neither create_trigger_name nor update_trigger_name are not defined" do

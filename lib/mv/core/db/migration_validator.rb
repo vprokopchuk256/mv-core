@@ -7,7 +7,7 @@ module Mv
 
         validates :table_name, presence: true
         validates :column_name, presence: true
-        validates :validator_name, presence: true
+        validates :validation_type, presence: true
       end
     end
   end

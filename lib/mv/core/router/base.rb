@@ -21,20 +21,20 @@ module Mv
           }.with_indifferent_access
         end
 
-        def route table_name, column_name, validator_name, opts
-          factory.create_router(get_route(validator_name, opts)).route(
-            table_name, column_name, validator_name, opts
+        def route table_name, column_name, validation_type, opts
+          factory.create_router(get_route(validation_type, opts)).route(
+            table_name, column_name, validation_type, opts
           )
         end
 
-        def set_route validator_name, constraint_type
-          routing_map[validator_name] = constraint_type
+        def set_route validation_type, constraint_type
+          routing_map[validation_type] = constraint_type
         end
 
         private
 
-        def get_route validator_name, opts
-          opts[:as] || routing_map.fetch(validator_name, :trigger)
+        def get_route validation_type, opts
+          opts[:as] || routing_map.fetch(validation_type, :trigger)
         end
 
         class << self

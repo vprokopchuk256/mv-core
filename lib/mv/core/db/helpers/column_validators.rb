@@ -13,20 +13,20 @@ module Mv
             table_validators.where(column_name: column_name)
           end
 
-          def create_column_validator validator_name, opts, constraints = {}
-            raise_column_validation_error(validator_name, opts) if opts == false
+          def create_column_validator validation_type, opts, constraints = {}
+            raise_column_validation_error(validation_type, opts) if opts == false
 
-            update_column_validator(validator_name, opts, constraints)
+            update_column_validator(validation_type, opts, constraints)
           end
 
           def delete_column_validator 
             column_validators.delete_all > 0
           end
           
-          def update_column_validator validator_name, opts, constraints = {}
-            return column_validators.where(validator_name: validator_name).delete_all if opts == false
+          def update_column_validator validation_type, opts, constraints = {}
+            return column_validators.where(validation_type: validation_type).delete_all if opts == false
 
-            column_validators.where(validator_name: validator_name).first_or_initialize.tap do |validator|
+            column_validators.where(validation_type: validation_type).first_or_initialize.tap do |validator|
               validator.options = normalize_opts(opts)
               validator.constraints = constraints || {}
             end.save!
@@ -42,11 +42,11 @@ module Mv
             opts == true ? {} : opts
           end
 
-          def raise_column_validation_error validator_name, opts
+          def raise_column_validation_error validation_type, opts
             raise Mv::Core::Error.new(
               table_name: table_name, 
               column_name: column_name, 
-              validator_name: validator_name, 
+              validation_type: validation_type, 
               options: opts,
               error: 'Validator can not be removed when new column is being added'
             )

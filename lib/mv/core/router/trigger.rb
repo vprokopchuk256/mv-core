@@ -2,7 +2,7 @@ module Mv
   module Core
     module Router
       class Trigger
-        def route table_name, column_name, validator_name, options
+        def route table_name, column_name, validation_type, options
           return {}.tap do |res|
             res.merge!(
               create_trigger_name(table_name, options) => { type: :trigger, event: :create }

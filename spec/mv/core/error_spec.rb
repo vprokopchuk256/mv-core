@@ -6,7 +6,7 @@ describe Mv::Core::Error do
   subject(:error) do 
     described_class.new(table_name: :table_name, 
                         column_name: :column_name, 
-                        validator_name: :uniqueness, 
+                        validation_type: :uniqueness, 
                         options: { as: :trigger}, 
                         error: "Some error happened") 
   end
@@ -24,14 +24,14 @@ describe Mv::Core::Error do
       subject(:error) do 
         described_class.new(table_name: :table_name, 
                             column_name: :column_name, 
-                            validator_name: :uniqueness, 
+                            validation_type: :uniqueness, 
                             options: { as: :trigger}, 
                             error: "Some error happened") 
       end
 
       its(:table_name) { is_expected.to eq(:table_name) }
       its(:column_name) { is_expected.to eq(:column_name) }
-      its(:validator_name) { is_expected.to eq(:uniqueness) }
+      its(:validation_type) { is_expected.to eq(:uniqueness) }
       its(:options) { is_expected.to eq('as' => :trigger)}
       its(:message) { 
        is_expected.to eq(

@@ -16,10 +16,10 @@ module Mv
           end
 
           def execute
-            opts.each do |validator_name, validator_opts|
-              update_column_validator(validator_name, 
+            opts.each do |validation_type, validator_opts|
+              update_column_validator(validation_type, 
                                       validator_opts,
-                                      Mv::Core::Router::Base.route(table_name, column_name, validator_name, validator_opts))
+                                      Mv::Core::Router::Base.route(table_name, column_name, validation_type, validator_opts))
             end
           end
         end

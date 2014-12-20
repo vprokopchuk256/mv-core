@@ -2,7 +2,7 @@ module Mv
   module Core
     module Router
       class Index
-        def route table_name, column_name, validator_name, options
+        def route table_name, column_name, validation_type, options
           { index_name(table_name, column_name, options) => { type: :index } }
         end
 
