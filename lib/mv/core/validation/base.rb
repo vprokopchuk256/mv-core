@@ -71,7 +71,7 @@ module Mv
         private
 
         def trigger?
-          as.to_sym == :trigger
+          as.try(:to_sym) == :trigger
         end
 
         def update?
@@ -88,14 +88,14 @@ module Mv
 
         def create_trigger_name_allowance
           if create_trigger_name.present? &&
-             (![:save, :create].include?(on.to_sym) || as.to_sym != :trigger)
+             !(create? && trigger?)
             errors.add(:create_trigger_name, 'allowed when :on in [:save, :create] and :as == :trigger')
           end
         end
 
         def update_trigger_name_allowance
           if update_trigger_name.present? &&
-             (![:save, :update].include?(on.to_sym) || as.to_sym != :trigger)
+             !(update? && trigger?)
             errors.add(:update_trigger_name, 'allowed when :on in [:save, :create] and :as == :trigger')
           end
         end
