@@ -1,5 +1,5 @@
 language: ruby
-install: bundle install --without test --deployment --jobs=3
+install: bundle install --without test --jobs=3
 rvm:
   - "2.0.0"
 script: bundle exec rspec spec
