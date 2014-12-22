@@ -60,10 +60,15 @@ describe Mv::Core::Db::MigrationValidator do
   end
 
   describe "constraint_descriptions" do
-    # subject { migration_validator.constraint_descriptions }
+    subject { migration_validator.constraint_descriptions }
 
-    # it { is_expected.to be_present }
-    # its(:length) { is_expected.to eq(1) }
+    it { is_expected.to be_present }
+    its(:length) { is_expected.to eq(1) }
+    its(:first) { 
+      is_expected.to eq(Mv::Core::Constraint::Description.new(:trg_table_name_update, 
+                                                              :trigger, 
+                                                              { event: :create }))
+    }
   end
 
 end

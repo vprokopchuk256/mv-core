@@ -1,4 +1,5 @@
 require 'mv/core/validation/factory'
+require 'mv/core/constraint/description'
 
 module Mv
   module Core
@@ -18,6 +19,10 @@ module Mv
                                                column_name, 
                                                validation_type, 
                                                options)
+        end
+
+        def constraint_descriptions
+          constraints.collect{ |c| Mv::Core::Constraint::Description.new(*c) }
         end
 
         private
