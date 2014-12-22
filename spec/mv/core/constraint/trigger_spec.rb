@@ -9,12 +9,14 @@ describe Mv::Core::Constraint::Trigger do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:trigger) { described_class.new(:update_trigger_name, { event: :update }) }
+  let(:trigger_description) { Mv::Core::Constraint::Description.new(:update_trigger_name, 
+                                                                    :trigger, 
+                                                                    { event: :update })}
+
+  subject(:trigger) { described_class.new(trigger_description) }
 
   describe "#initialize" do
-    its(:options) { is_expected.to eq(event: :update) }
-    its(:name) { is_expected.to eq(:update_trigger_name) }
-    its(:event) { is_expected.to eq(:update) }
+    its(:description) { is_expected.to eq(trigger_description) }
     its(:validators) { is_expected.to eq([]) }
   end
 

@@ -6,9 +6,9 @@ module Mv
       class Trigger < Base
         attr_reader :event
         
-        def initialize(name, options)
-          super name, :trigger, options
-          @event = @options.with_indifferent_access[:event]
+        def initialize description
+          super 
+          @event = @description.options[:event]
         end
       end
     end

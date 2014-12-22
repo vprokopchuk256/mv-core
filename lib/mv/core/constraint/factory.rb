@@ -6,40 +6,18 @@ module Mv
   module Core
     module Constraint
       class Factory
-        def create_constraints routes
-          routes.inject([]) do |res, route|
-            res << create_constraint(*route)
+        def create_constraints descriptions
+          descriptions.inject([]) do |res, description|
+            res << create_constraint(description)
             res
-          end
-        end
-
-        def load_constraints validators
-          return validators.inject([]) do |constraints, validator|
-            constraints + create_constraints(distribute_valdator(constraints, validator))
           end
         end
 
         private
 
-        def create_constraint name, type, options
-          klass = "Mv::Core::Constraint::#{type.to_s.camelize}".constantize
-          klass.new(name, options)
-        end
-
-        def distribute_valdator constraints, validator
-          distributed_routes = visit_constraints(constraints, validator)
-
-          non_distributed_routes = validator.constraints.clone
-
-          distributed_routes.each do |name_route_pair|
-            non_distributed_routes.delete(name_route_pair.first)
-          end
-
-          non_distributed_routes
-        end
-
-        def visit_constraints constraints, validator
-          constraints.collect{ |constraint| constraint.register(validator) }.compact
+        def create_constraint description
+          klass = "Mv::Core::Constraint::#{description.type.to_s.camelize}".constantize
+          klass.new(description)
         end
       end
     end

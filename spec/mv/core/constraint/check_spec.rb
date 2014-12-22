@@ -9,12 +9,12 @@ describe Mv::Core::Constraint::Check do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:check) { described_class.new(:chk_mv_table_name, {}) }
+  let(:check_description) { Mv::Core::Constraint::Description.new(:chk_mv_table_name, :check)}
+
+  subject(:check) { described_class.new(check_description) }
 
   describe "#initialize" do
-    its(:name) { is_expected.to eq(:chk_mv_table_name) }
-    its(:type) { is_expected.to eq(:check) }
-    its(:options) { is_expected.to eq({}) }
+    its(:description) { is_expected.to eq(check_description) }
     its(:validators) { is_expected.to eq([]) }
   end
 

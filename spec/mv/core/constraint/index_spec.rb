@@ -9,7 +9,9 @@ describe Mv::Core::Constraint::Index do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:index) { described_class.new(:idx_mv_table_name, {}) }
+  let(:index_description) { Mv::Core::Constraint::Description.new(:idx_mv_table_name, :index) }
+
+  subject(:index) { described_class.new(index_description) }
 
   describe "#initialize" do
     its(:options) { is_expected.to eq({}) }

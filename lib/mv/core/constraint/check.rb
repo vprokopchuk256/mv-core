@@ -4,8 +4,8 @@ module Mv
   module Core
     module Constraint
       class Check < Base
-        def initialize(name, options)
-          super name, :check, options
+        def initialize description
+          super
         end
       end
     end
