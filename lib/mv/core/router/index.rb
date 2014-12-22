@@ -1,9 +1,13 @@
+require 'mv/core/constraint/description'
+
 module Mv
   module Core
     module Router
       class Index
         def route table_name, column_name, validation_type, options
-          [[index_name(table_name, column_name, options), :index,  {}]]
+          [Mv::Core::Constraint::Description.new(index_name(table_name, column_name, options), 
+                                                 :index,  
+                                                 {})]
         end
 
         protected

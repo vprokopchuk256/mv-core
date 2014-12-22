@@ -15,7 +15,9 @@ describe Mv::Core::Router::Index do
       let(:options) { { as: :index } }
 
       it "routes to default index name" do
-        expect(subject).to eq([[:idx_mv_table_name_column_name_uniq, :index, {}]])
+        expect(subject).to eq([
+          Mv::Core::Constraint::Description.new(:idx_mv_table_name_column_name_uniq, :index)
+        ])
       end
     end
 
@@ -23,7 +25,9 @@ describe Mv::Core::Router::Index do
       let(:options) { { as: :index, index_name: :index_name } }
 
       it "should route to default index name" do
-        expect(subject).to eq([[:index_name, :index, {}]])
+        expect(subject).to eq([
+          Mv::Core::Constraint::Description.new(:index_name, :index)
+        ])
       end
     end
   end 

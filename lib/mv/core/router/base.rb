@@ -1,4 +1,5 @@
 require 'mv/core/router/factory'
+require 'mv/core/constraint/description'
 
 module Mv
   module Core

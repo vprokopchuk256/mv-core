@@ -1,9 +1,11 @@
+require 'mv/core/constraint/description'
+
 module Mv
   module Core
     module Router
       class Check
         def route table_name, column_name, validation_type, options
-          [[check_name(table_name, options), :check, {}]]
+          [Mv::Core::Constraint::Description.new(check_name(table_name, options), :check)]
         end
 
         protected

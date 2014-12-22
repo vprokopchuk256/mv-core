@@ -1,3 +1,5 @@
+require 'mv/core/constraint/description'
+
 module Mv
   module Core
     module Router
@@ -5,11 +7,15 @@ module Mv
         def route table_name, column_name, validation_type, options
           return [].tap do |res|
             if define_create_trigger?(options)
-              res << [create_trigger_name(table_name, options), :trigger, { event: :create }]
+              res << Mv::Core::Constraint::Description.new(create_trigger_name(table_name, options), 
+                                                           :trigger, 
+                                                           { event: :create })
             end
 
             if define_update_trigger?(options)
-              res << [update_trigger_name(table_name, options), :trigger, { event: :update }]
+              res << Mv::Core::Constraint::Description.new(update_trigger_name(table_name, options), 
+                                                           :trigger, 
+                                                           { event: :update })
             end
           end
         end

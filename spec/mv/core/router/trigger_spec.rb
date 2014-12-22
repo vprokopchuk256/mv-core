@@ -17,8 +17,8 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default update and insert trigger" do
           expect(subject).to eq([
-            [:trg_mv_table_name_ins, :trigger, { event: :create }], 
-            [:trg_mv_table_name_upd, :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, { event: :create }), 
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, { event: :update })
           ])
         end
       end
@@ -28,8 +28,8 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default update trigger and create trigger with the specified name" do
           expect(subject).to eq([
-            [:create_trigger_name,   :trigger, { event: :create }], 
-            [:trg_mv_table_name_upd, :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:create_trigger_name,   :trigger, { event: :create }), 
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, { event: :update })
           ])
         end
       end
@@ -39,8 +39,8 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default create trigger and update trigger with the specified name" do
           expect(subject).to eq([
-            [:trg_mv_table_name_ins, :trigger, { event: :create }], 
-            [:update_trigger_name,   :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, { event: :create }), 
+            Mv::Core::Constraint::Description.new(:update_trigger_name,   :trigger, { event: :update })
           ])
         end
       end
@@ -52,8 +52,8 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default update and insert trigger" do
           expect(subject).to eq([
-            [:trg_mv_table_name_ins, :trigger, { event: :create }], 
-            [:trg_mv_table_name_upd, :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, { event: :create }), 
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, { event: :update })
           ])
         end
       end
@@ -63,8 +63,8 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default update trigger and create trigger with the specified name" do
           expect(subject).to eq([
-            [:create_trigger_name,   :trigger, { event: :create }], 
-            [:trg_mv_table_name_upd, :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:create_trigger_name,   :trigger, { event: :create }), 
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, { event: :update })
           ])
         end
       end
@@ -74,8 +74,8 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default create trigger and update trigger with the specified name" do
           expect(subject).to eq([
-            [:trg_mv_table_name_ins, :trigger, { event: :create }],
-            [:update_trigger_name,   :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, { event: :create }),
+            Mv::Core::Constraint::Description.new(:update_trigger_name,   :trigger, { event: :update })
           ])
         end
       end
@@ -87,7 +87,7 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default insert trigger" do
           expect(subject).to eq([
-            [:trg_mv_table_name_ins, :trigger, { event: :create }]
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, { event: :create })
           ])
         end
       end
@@ -97,7 +97,7 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to create trigger with the specified name" do
           expect(subject).to eq([
-            [:create_trigger_name, :trigger, { event: :create }]
+            Mv::Core::Constraint::Description.new(:create_trigger_name, :trigger, { event: :create })
           ])
         end
       end
@@ -109,7 +109,7 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to default update trigger" do
           expect(subject).to eq([
-            [:trg_mv_table_name_upd, :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:trg_mv_table_name_upd, :trigger, { event: :update })
           ])
         end
       end
@@ -119,7 +119,7 @@ describe Mv::Core::Router::Trigger do
         
         it "routes to update trigger with the specified name" do
           expect(subject).to eq([
-            [:update_trigger_name, :trigger, { event: :update }]
+            Mv::Core::Constraint::Description.new(:update_trigger_name, :trigger, { event: :update })
           ])
         end
       end
