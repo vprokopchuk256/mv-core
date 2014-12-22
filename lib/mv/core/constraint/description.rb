@@ -2,30 +2,21 @@ module Mv
   module Core
     module Constraint
       class Description
+        include Comparable
+
         attr_reader :name, :type, :options
 
         def initialize name, type, options = {}
-          @name = name
-          @type = type
-          @options = options
-        end
-
-        def ==(description)
-          description &&
-          description.name.to_s == name.to_s &&
-          description.type.to_s == type.to_s &&
-          description.options.length == options.length &&
-          description.options.all?{ |key, value|
-            options.with_indifferent_access[key].to_s == value.to_s
-          }
-        end
-
-        def to_a
-          [name, type, options]
+          @name = name.to_sym
+          @type = type.to_sym
+          @options = options.inject({}) do |res, (name, value)|
+            res[name.to_sym] = value.to_s
+            res
+          end
         end
 
         def <=> other_info
-          to_a <=> other_info.to_a 
+          [name, type, options] <=> [other_info.name, other_info.type, other_info.options]
         end
       end
     end
