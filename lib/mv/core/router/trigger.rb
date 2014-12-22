@@ -3,14 +3,14 @@ module Mv
     module Router
       class Trigger
         def route table_name, column_name, validation_type, options
-          return {}.tap do |res|
-            res.merge!(
-              create_trigger_name(table_name, options) => { type: :trigger, event: :create }
-            ) if define_create_trigger?(options)
+          return [].tap do |res|
+            if define_create_trigger?(options)
+              res << [create_trigger_name(table_name, options), :trigger, { event: :create }]
+            end
 
-            res.merge!(
-              update_trigger_name(table_name, options) => { type: :trigger, event: :update }
-            ) if define_update_trigger?(options)
+            if define_update_trigger?(options)
+              res << [update_trigger_name(table_name, options), :trigger, { event: :update }]
+            end
           end
         end
 

@@ -2,10 +2,11 @@ module Mv
   module Core
     module Constraint
       class Base
-        attr_reader :name, :options, :validators
+        attr_reader :name, :type, :options, :validators
 
-        def initialize name, options
+        def initialize name, type, options
           @name = name
+          @type = type 
           @options = options
           @validators = []
         end
@@ -17,8 +18,8 @@ module Mv
         end
 
         def register validator
-          route = validator.constraints.find do |constraint_name, constraint_options| 
-            routed_by?(constraint_name, constraint_options) 
+          route = validator.constraints.find do |constraint_name, constraint_type, constraint_options| 
+            routed_by?(constraint_name, constraint_type, constraint_options) 
           end
 
           validators << validator if route
@@ -28,8 +29,9 @@ module Mv
 
         private 
         
-        def routed_by? constraint_name, constraint_options
+        def routed_by? constraint_name, constraint_type, constraint_options
           constraint_name.to_s == name.to_s && 
+          constraint_type.to_s == type.to_s && 
           constraint_options.length == options.length &&
           constraint_options.all? do |key, value| 
             options.with_indifferent_access[key].to_s == constraint_options[key].to_s 

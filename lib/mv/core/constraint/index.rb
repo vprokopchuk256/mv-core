@@ -5,7 +5,7 @@ module Mv
     module Constraint
       class Index < Base
         def initialize(name, options)
-          super name, options
+          super name, :index, options
         end
       end
     end

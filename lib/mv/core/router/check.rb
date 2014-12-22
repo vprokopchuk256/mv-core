@@ -3,7 +3,7 @@ module Mv
     module Router
       class Check
         def route table_name, column_name, validation_type, options
-          { check_name(table_name, options) => { type: :check } }
+          [[check_name(table_name, options), :check, {}]]
         end
 
         protected

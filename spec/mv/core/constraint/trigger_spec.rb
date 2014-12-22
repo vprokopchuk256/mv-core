@@ -9,10 +9,10 @@ describe Mv::Core::Constraint::Trigger do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:trigger) { described_class.new(:update_trigger_name, { type: :trigger, event: :update }) }
+  subject(:trigger) { described_class.new(:update_trigger_name, { event: :update }) }
 
   describe "#initialize" do
-    its(:options) { is_expected.to eq(type: :trigger, event: :update) }
+    its(:options) { is_expected.to eq(event: :update) }
     its(:name) { is_expected.to eq(:update_trigger_name) }
     its(:event) { is_expected.to eq(:update) }
     its(:validators) { is_expected.to eq([]) }
@@ -29,14 +29,14 @@ describe Mv::Core::Constraint::Trigger do
     describe "when one of the routes leads to the current constraint" do
       let(:migration_validator) {
         create(
-          :migration_validator, constraints: {
-            update_trigger_name: { type: :trigger, event: :update },
-            create_trigger_name: { type: :trigger, event: :create }
-          }
+          :migration_validator, constraints: [
+            [:update_trigger_name, :trigger, { event: :update }],
+            [:create_trigger_name, :trigger, { event: :create }]
+          ]
         )
       }
 
-      it { is_expected.to eq([:update_trigger_name, { type: :trigger, event: :update }]) }
+      it { is_expected.to eq([:update_trigger_name, :trigger, { event: :update }]) }
 
       it "adds validator to the constraint" do
         expect{ subject }.to change(trigger.validators, :count).by(1)
@@ -46,10 +46,10 @@ describe Mv::Core::Constraint::Trigger do
     describe "when no routes leads to the current constraint" do
       let(:migration_validator) {
         create(
-          :migration_validator, constraints: {
-            update_trigger_name_1: { type: :trigger, event: :update },
-            create_trigger_name_1: { type: :trigger, event: :create }
-          }
+          :migration_validator, constraints: [
+            [:update_trigger_name_1, :trigger, { event: :update }],
+            [:create_trigger_name_1, :trigger, { event: :create }]
+          ]
         )
       }
 

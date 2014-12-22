@@ -5,7 +5,7 @@ FactoryGirl.define do
     table_name      :table_name 
     column_name     :column_name
     validation_type :uniqueness
-    constraints({ trg_table_name_update: :trigger })
+    constraints     [[:trg_table_name_update, :trigger, { event: :create }]]
     options({ as: :trigger })
   end
 end

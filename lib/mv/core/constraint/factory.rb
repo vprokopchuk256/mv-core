@@ -7,8 +7,8 @@ module Mv
     module Constraint
       class Factory
         def create_constraints routes
-          routes.inject([]) do |res, pair|
-            res << create_constraint(pair.first, pair.last)
+          routes.inject([]) do |res, route|
+            res << create_constraint(*route)
             res
           end
         end
@@ -21,8 +21,7 @@ module Mv
 
         private
 
-        def create_constraint name, options
-          type = options.with_indifferent_access[:type]
+        def create_constraint name, type, options
           klass = "Mv::Core::Constraint::#{type.to_s.camelize}".constantize
           klass.new(name, options)
         end

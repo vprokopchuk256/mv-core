@@ -9,10 +9,10 @@ describe Mv::Core::Constraint::Index do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:index) { described_class.new(:idx_mv_table_name, { type: :index }) }
+  subject(:index) { described_class.new(:idx_mv_table_name, {}) }
 
   describe "#initialize" do
-    its(:options) { is_expected.to eq(type: :index) }
+    its(:options) { is_expected.to eq({}) }
     its(:name) { is_expected.to eq(:idx_mv_table_name) }
     its(:validators) { is_expected.to eq([]) }
   end
@@ -27,10 +27,10 @@ describe Mv::Core::Constraint::Index do
 
     describe "when one of the routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, constraints: { idx_mv_table_name: { type: :index } })
+        create(:migration_validator, constraints: [[:idx_mv_table_name, :index, {}]])
       }
 
-      it { is_expected.to eq([:idx_mv_table_name, { type: :index }]) }
+      it { is_expected.to eq([:idx_mv_table_name, :index, {}]) }
 
       it "adds validator to the constraint" do
         expect{ subject }.to change(index.validators, :count).by(1)
@@ -39,7 +39,7 @@ describe Mv::Core::Constraint::Index do
 
     describe "when no routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, constraints: { idx_mv_table_name_1: { type: :index } })
+        create(:migration_validator, constraints: [[:idx_mv_table_name_1, :index, {}]])
       }
 
       it { is_expected.to be_nil }

@@ -15,7 +15,7 @@ describe Mv::Core::Router::Check do
       let(:options) { { as: :check } }
 
       it "routes to default check name" do
-        expect(subject).to eq(chk_mv_table_name: { type: :check })
+        expect(subject).to eq([[:chk_mv_table_name, :check, {}]])
       end
     end
 
@@ -23,7 +23,7 @@ describe Mv::Core::Router::Check do
       let(:options) { { as: :check, check_name: :check_name } }
 
       it "should route to default check name" do
-        expect(subject).to eq(check_name: { type: :check })
+        expect(subject).to eq([[:check_name, :check, {}]])
       end
     end
   end 

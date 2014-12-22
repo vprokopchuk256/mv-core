@@ -9,11 +9,12 @@ describe Mv::Core::Constraint::Check do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  subject(:check) { described_class.new(:chk_mv_table_name, { type: :check }) }
+  subject(:check) { described_class.new(:chk_mv_table_name, {}) }
 
   describe "#initialize" do
-    its(:options) { is_expected.to eq(type: :check) }
     its(:name) { is_expected.to eq(:chk_mv_table_name) }
+    its(:type) { is_expected.to eq(:check) }
+    its(:options) { is_expected.to eq({}) }
     its(:validators) { is_expected.to eq([]) }
   end
 
@@ -27,10 +28,10 @@ describe Mv::Core::Constraint::Check do
 
     describe "when one of the routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, constraints: { chk_mv_table_name: { type: :check } })
+        create(:migration_validator, constraints: [[:chk_mv_table_name, :check, {}]])
       }
 
-      it { is_expected.to eq([:chk_mv_table_name, { type: :check }]) }
+      it { is_expected.to eq([:chk_mv_table_name, :check, {}]) }
 
       it "adds validator to the constraint" do
         expect{ subject }.to change(check.validators, :count).by(1)
@@ -39,7 +40,7 @@ describe Mv::Core::Constraint::Check do
 
     describe "when no routes leads to the current constraint" do
       let(:migration_validator) {
-        create(:migration_validator, constraints: { chk_mv_table_name_1: { type: :check } })
+        create(:migration_validator, constraints: [[:chk_mv_table_name_1, :check, {}]])
       }
 
       it { is_expected.to be_nil }

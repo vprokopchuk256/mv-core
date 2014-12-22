@@ -7,7 +7,7 @@ module Mv
         attr_reader :event
         
         def initialize(name, options)
-          super name, options
+          super name, :trigger, options
           @event = @options.with_indifferent_access[:event]
         end
       end

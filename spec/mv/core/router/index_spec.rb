@@ -13,19 +13,17 @@ describe Mv::Core::Router::Index do
 
     describe "when index name is not defined explicitly" do
       let(:options) { { as: :index } }
-      # let(:migration_validator) { create(:migration_validator, options: { as: :index })}
 
       it "routes to default index name" do
-        expect(subject).to eq(idx_mv_table_name_column_name_uniq: { type: :index } )
+        expect(subject).to eq([[:idx_mv_table_name_column_name_uniq, :index, {}]])
       end
     end
 
     describe "when index name is not explicitly" do
       let(:options) { { as: :index, index_name: :index_name } }
-      # let(:migration_validator) { create(:migration_validator, options: { as: :index, index_name: :index_name })}
 
       it "should route to default index name" do
-        expect(subject).to eq(index_name: { type: :index })
+        expect(subject).to eq([[:index_name, :index, {}]])
       end
     end
   end 

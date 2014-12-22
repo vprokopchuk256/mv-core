@@ -26,10 +26,10 @@ describe Mv::Core::Migration::Operations::AddColumn do
       it "calls create_column_validator method" do
         expect(Mv::Core::Router::Base).to receive(:route)
                                           .with(:table_name, :column_name, :uniqueness, {as: :trigger})
-                                          .and_return(idx_mv_table_name_column_name_uniq: { type: :index })
+                                          .and_return([[:idx_mv_table_name_column_name_uniq, :index, {}]])
         expect(operation).to receive(:create_column_validator).with(:uniqueness, 
                                                                     { as: :trigger }, 
-                                                                    { idx_mv_table_name_column_name_uniq: { type: :index } })
+                                                                    [[:idx_mv_table_name_column_name_uniq, :index, {}]])
                                                               .and_call_original
         operation.execute
       end

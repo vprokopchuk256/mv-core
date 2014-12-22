@@ -3,7 +3,7 @@ module Mv
     module Router
       class Index
         def route table_name, column_name, validation_type, options
-          { index_name(table_name, column_name, options) => { type: :index } }
+          [[index_name(table_name, column_name, options), :index,  {}]]
         end
 
         protected

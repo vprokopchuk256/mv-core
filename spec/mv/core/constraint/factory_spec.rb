@@ -12,9 +12,9 @@ describe Mv::Core::Constraint::Factory do
     describe "#trigger" do
       describe "one route" do
         subject(:create_constraints) { 
-          described_class.new.create_constraints(
-            update_trigger_name: { type: :trigger, event: :update } 
-          )
+          described_class.new.create_constraints([
+            [:update_trigger_name, :trigger, { event: :update }]
+          ])
         }
 
         its(:length) { is_expected.to eq(1) }
@@ -23,10 +23,10 @@ describe Mv::Core::Constraint::Factory do
 
       describe "two routes" do
         subject(:create_constraints) { 
-          described_class.new.create_constraints(
-            update_trigger_name: { type: :trigger, event: :update },
-            create_trigger_name: { type: :trigger, event: :create } 
-          )
+          described_class.new.create_constraints([
+            [:update_trigger_name, :trigger, { event: :update }],
+            [:create_trigger_name, :trigger, { event: :create }] 
+          ])
         }
 
         its(:length) { is_expected.to eq(2) }
@@ -35,7 +35,7 @@ describe Mv::Core::Constraint::Factory do
 
     describe "#check" do
       subject(:create_constraints) { 
-        described_class.new.create_constraints(check_name: { type: :check })
+        described_class.new.create_constraints([[:check_name, :check, {}]])
       }
 
       its(:length) { is_expected.to eq(1) }
@@ -44,7 +44,7 @@ describe Mv::Core::Constraint::Factory do
 
     describe "#index" do
       subject(:create_constraints) { 
-        described_class.new.create_constraints(check_name: { type: :index })
+        described_class.new.create_constraints([[:check_name, :index, {}]])
       }
 
       its(:length) { is_expected.to eq(1) }
@@ -54,10 +54,10 @@ describe Mv::Core::Constraint::Factory do
 
   describe "#load_constraints" do
     let!(:migration_validator) {
-      create(:migration_validator, constraints: {
-          update_trigger_name: { type: :trigger, event: :update },
-          create_trigger_name: { type: :trigger, event: :create }
-      })
+      create(:migration_validator, constraints: [
+        [:update_trigger_name, :trigger, { event: :update }],
+        [:create_trigger_name, :trigger, { event: :create }]
+      ])
     }
 
     subject(:load_constraints) { described_class.new.load_constraints Mv::Core::Db::MigrationValidator.all }
