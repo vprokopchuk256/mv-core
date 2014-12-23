@@ -6,11 +6,7 @@ describe Mv::Core::Validation::Length do
   def instance(opts = {})
     described_class.new(:table_name, :column_name,
                         { 
-                        #in: [1, 2, 3], 
-                        # within: [1, 2, 3], 
                         is: 5, 
-                        # maximum: 1,
-                        # minimum: 0, 
                         message: :message, 
                         too_long: :too_long, 
                         too_short: :too_short, 
@@ -23,6 +19,7 @@ describe Mv::Core::Validation::Length do
   end
 
   subject { instance }
+
   describe "#initialize" do
     its(:table_name) { is_expected.to eq(:table_name) }
     its(:column_name) { is_expected.to eq(:column_name) }
@@ -59,6 +56,12 @@ describe Mv::Core::Validation::Length do
       subject { instance(is: nil, minimum: 1) }
 
       its(:minimum) { is_expected.to eq(1) }
+    end
+
+    describe ":check_name" do
+      subject { instance(check_name: :check_name, as: :check) }
+      
+      its(:check_name) { is_expected.to eq(:check_name) }
     end
   end
 
@@ -146,10 +149,46 @@ describe Mv::Core::Validation::Length do
         its(:update_trigger_name) { is_expected.to be_nil }
       end
     end
+
+    describe ":check_name" do
+      describe "when :as == :trigger" do
+        subject { instance(update_trigger_name: nil, as: :trigger, check_name: nil) }
+
+        its(:check_name) { is_expected.to be_nil }
+      end
+
+      describe "when :as == :check" do
+        subject { instance(update_trigger_name: nil, as: :check, check_name: nil) }
+
+        its(:check_name) { is_expected.to eq('chk_mv_table_name_column_name')}
+      end
+    end
   end
 
   describe "validation" do
     it { is_expected.to be_valid }
+
+    
+    describe ":check_name" do
+      describe "when :as == :check" do
+        subject { instance(update_trigger_name: nil, 
+                           create_trigger_name: nil, 
+                           check_name: :check_name, 
+                           on: nil,
+                           as: :check) }
+        
+        it { is_expected.to be_valid }
+      end
+
+      describe "when :as == :trigger" do
+        subject { instance(update_trigger_name: nil, 
+                           create_trigger_name: nil, 
+                           check_name: :check_name, 
+                           as: :trigger) }
+        
+        it { is_expected.to be_invalid }
+      end
+    end
 
     describe ":on" do
       describe "when :as == :check" do

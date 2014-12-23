@@ -5,7 +5,7 @@ module Mv
         include ActiveModel::Validations
 
         attr_reader :table_name, :column_name, :message, :on, :create_trigger_name, 
-                    :update_trigger_name, :allow_nil, :allow_blank, :as
+                    :update_trigger_name, :allow_nil, :allow_blank, :as, :check_name
 
         validates :on, inclusion: { in: :available_on }, allow_nil: true
         validates :allow_nil, :allow_blank, inclusion: { in: [true, false] }
@@ -13,7 +13,8 @@ module Mv
 
         validate :on_allowance,
                  :create_trigger_name_allowance, 
-                 :update_trigger_name_allowance
+                 :update_trigger_name_allowance, 
+                 :check_name_allowance
 
         def initialize table_name, column_name, opts
           @table_name = table_name
@@ -27,6 +28,7 @@ module Mv
             @update_trigger_name = opts[:update_trigger_name] || default_update_trigger_name
             @allow_nil = opts[:allow_nil] || default_allow_nil
             @allow_blank = opts[:allow_blank] || default_allow_blank
+            @check_name = opts[:check_name] || default_check_name
           end
         end
 
@@ -68,7 +70,15 @@ module Mv
           false
         end
 
+        def default_check_name
+          "chk_mv_#{table_name}_#{column_name}"  if check?
+        end
+
         private
+
+        def check?
+          as.try(:to_sym) == :check
+        end
 
         def trigger?
           as.try(:to_sym) == :trigger
@@ -97,6 +107,12 @@ module Mv
           if update_trigger_name.present? &&
              !(update? && trigger?)
             errors.add(:update_trigger_name, 'allowed when :on in [:save, :create] and :as == :trigger')
+          end
+        end
+
+        def check_name_allowance
+          if check_name.present? && !check?
+            errors.add(:check_name, 'allowed when :as == :trigger')
           end
         end
       end
