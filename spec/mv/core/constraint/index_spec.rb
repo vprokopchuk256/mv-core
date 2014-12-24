@@ -16,7 +16,7 @@ describe Mv::Core::Constraint::Index do
   describe "#initialize" do
     its(:options) { is_expected.to eq({}) }
     its(:name) { is_expected.to eq(:idx_mv_table_name) }
-    its(:validators) { is_expected.to eq([]) }
+    its(:validations) { is_expected.to eq([]) }
   end
 
   describe "#constraint interface" do

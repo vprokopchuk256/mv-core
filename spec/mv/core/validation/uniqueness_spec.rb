@@ -4,7 +4,9 @@ require 'mv/core/validation/uniqueness'
 
 describe Mv::Core::Validation::Uniqueness do
   def instance(opts = {})
-    described_class.new(:table_name, :column_name, 
+    table_name = opts.with_indifferent_access.delete(:table_name) || :table_name
+    column_name = opts.with_indifferent_access.delete(:column_name) || :column_name
+    described_class.new(table_name, column_name, 
                         {message: :message, 
                         # index_name: :index_name, 
                         on: :save, 
@@ -12,7 +14,7 @@ describe Mv::Core::Validation::Uniqueness do
                         update_trigger_name: :update_trigger_name, 
                         allow_nil: true, 
                         allow_blank: true, 
-                        as: :trigger}.merge(opts))
+                        as: :trigger}.with_indifferent_access.merge(opts))
   end
 
   subject { instance }
@@ -38,6 +40,43 @@ describe Mv::Core::Validation::Uniqueness do
       subject { instance(check_name: :check_name, as: :check) }
       
       its(:check_name) { is_expected.to eq(:check_name) }
+    end
+  end
+
+  describe "#<==>" do
+    it { is_expected.to eq(instance) }
+    it { is_expected.to eq(instance({'table_name' => 'table_name', 
+                                     'column_name' => 'column_name',
+                                    'message' => 'message', 
+                                    'on' => 'save', 
+                                    'create_trigger_name' => 'create_trigger_name', 
+                                    'update_trigger_name' => 'update_trigger_name', 
+                                    'allow_nil' => true, 
+                                    'allow_blank' => true, 
+                                    'as' => 'trigger' } )) }
+
+    it { is_expected.not_to eq(instance(table_name: 'table_name_1')) }
+    it { is_expected.not_to eq(instance(column_name: 'column_name_1')) }
+    it { is_expected.not_to eq(instance(message: 'some_other_message')) }
+    it { is_expected.not_to eq(instance(on: 'create')) }
+    it { is_expected.not_to eq(instance(create_trigger_name: 'some_other_create_trigger_name')) }
+    it { is_expected.not_to eq(instance(update_trigger_name: 'some_other_update_trigger_name')) }
+    it { is_expected.not_to eq(instance(allow_nil: false)) }
+    it { is_expected.not_to eq(instance(allow_blank: false)) }
+    it { is_expected.not_to eq(instance(as: :check)) }
+    
+    describe ":check_name" do
+      subject { instance(check_name: :check_name, as: :check) }
+      
+      it { is_expected.to eq(instance(as: :check, 'check_name' => 'check_name')) }
+      it { is_expected.not_to eq(instance(as: :check, 'check_name' => 'check_name_1')) }
+    end
+
+    describe ":index_name" do
+      subject { instance(index_name: :index_name, as: :index) }
+      
+      it { is_expected.to eq(instance(as: :index, 'index_name' => 'index_name')) }
+      it { is_expected.not_to eq(instance(as: :index, 'index_name' => 'index_name_1')) }
     end
   end
 

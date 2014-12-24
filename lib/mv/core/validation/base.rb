@@ -2,6 +2,7 @@ module Mv
   module Core
     module Validation
       class Base
+        include Comparable
         include ActiveModel::Validations
 
         attr_reader :table_name, :column_name, :message, :on, :create_trigger_name, 
@@ -30,6 +31,15 @@ module Mv
             @allow_blank = opts[:allow_blank] || default_allow_blank
             @check_name = opts[:check_name] || default_check_name
           end
+        end
+
+        def to_a
+          [table_name.to_s, column_name.to_s, message.to_s, on.to_s, create_trigger_name.to_s, 
+           update_trigger_name.to_s, allow_nil, allow_blank, as.to_s, check_name.to_s]
+        end
+
+        def <=> other_validation
+          [self.class, to_a] <=> [other_validation.class, other_validation.to_a]
         end
         
         def update?

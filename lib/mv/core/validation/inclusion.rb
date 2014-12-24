@@ -16,6 +16,10 @@ module Mv
 
           @in = opts.with_indifferent_access[:in]
         end
+        
+        def to_a
+          super + [self.in.try(:sort)]
+        end
       end
     end
   end

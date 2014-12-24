@@ -29,6 +29,10 @@ module Mv
           end
         end
 
+        def to_a
+          super + [self.in.try(:sort), within.try(:sort), is.to_s, maximum.to_s, minimum.to_s, too_short.to_s, too_long.to_s]
+        end
+
         private
 
         def in_within_is_maximum_minimum_allowance

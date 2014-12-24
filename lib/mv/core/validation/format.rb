@@ -15,6 +15,10 @@ module Mv
 
           @with = opts.with_indifferent_access[:with]
         end
+
+        def to_a
+          super + [with.to_s]
+        end
       end
     end
   end

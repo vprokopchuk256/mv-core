@@ -17,7 +17,7 @@ describe Mv::Core::Constraint::Trigger do
 
   describe "#initialize" do
     its(:description) { is_expected.to eq(trigger_description) }
-    its(:validators) { is_expected.to eq([]) }
+    its(:validations) { is_expected.to eq([]) }
   end
 
   describe "#constraint interface" do

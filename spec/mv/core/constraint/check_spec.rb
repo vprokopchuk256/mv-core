@@ -15,7 +15,7 @@ describe Mv::Core::Constraint::Check do
 
   describe "#initialize" do
     its(:description) { is_expected.to eq(check_description) }
-    its(:validators) { is_expected.to eq([]) }
+    its(:validations) { is_expected.to eq([]) }
   end
 
   describe "#constraint interface" do

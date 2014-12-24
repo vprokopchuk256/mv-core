@@ -4,13 +4,13 @@ module Mv
   module Core
     module Constraint
       class Base
-        attr_reader :description, :validators
+        attr_reader :description, :validations
 
         delegate :name, :type, :options, to: :description
 
         def initialize description
           @description = description
-          @validators = []
+          @validations = []
         end
         
         def create

@@ -4,9 +4,10 @@ require 'mv/core/validation/length'
 
 describe Mv::Core::Validation::Length do
   def instance(opts = {})
-    described_class.new(:table_name, :column_name,
-                        { 
-                        is: 5, 
+    table_name = opts.with_indifferent_access.delete(:table_name) || :table_name
+    column_name = opts.with_indifferent_access.delete(:column_name) || :column_name
+    described_class.new(table_name, column_name,
+                        { is: 5, 
                         message: :message, 
                         too_long: :too_long, 
                         too_short: :too_short, 
@@ -62,6 +63,65 @@ describe Mv::Core::Validation::Length do
       subject { instance(check_name: :check_name, as: :check) }
       
       its(:check_name) { is_expected.to eq(:check_name) }
+    end
+  end
+
+  describe "#<==>" do
+    it { is_expected.to eq(instance) }
+    it { is_expected.to eq(instance({'table_name' => 'table_name',
+                                     'column_name' => 'column_name',
+                                    'is' => '5', 
+                                    'message' => 'message', 
+                                    'on' => 'save', 
+                                    'create_trigger_name' => 'create_trigger_name', 
+                                    'update_trigger_name' => 'update_trigger_name', 
+                                    'allow_nil' => true, 
+                                    'allow_blank' => true, 
+                                    'as' => 'trigger' } )) }
+
+    it { is_expected.not_to eq(instance(table_name: 'table_name_1')) }
+    it { is_expected.not_to eq(instance(column_name: 'column_name_1')) }
+    it { is_expected.not_to eq(instance(message: 'some_other_message')) }
+    it { is_expected.not_to eq(instance(on: 'create')) }
+    it { is_expected.not_to eq(instance(create_trigger_name: 'some_other_create_trigger_name')) }
+    it { is_expected.not_to eq(instance(update_trigger_name: 'some_other_update_trigger_name')) }
+    it { is_expected.not_to eq(instance(allow_nil: false)) }
+    it { is_expected.not_to eq(instance(allow_blank: false)) }
+    it { is_expected.not_to eq(instance(as: :check)) }
+
+    describe ":in" do
+      subject { instance(is: nil, in: [1, 2, 3]) }
+      
+      it { is_expected.to eq(instance(is: nil, 'in' => [3, 2, 1])) }
+      it { is_expected.not_to eq(instance(is: nil, 'in' => [1, 2, 3, 4])) }
+    end
+
+    describe ":within" do
+      subject { instance(is: nil, within: [1, 2, 3]) }
+      
+      it { is_expected.to eq(instance(is: nil, 'within' => [3, 2, 1])) }
+      it { is_expected.not_to eq(instance(is: nil, 'within' => [1, 2, 3, 4])) }
+    end
+
+    describe ":maximum" do
+      subject { instance(is: nil, maximum: 1) }
+
+      it { is_expected.to eq(instance(is: nil, 'maximum' => '1')) }
+      it { is_expected.not_to eq(instance(is: nil, 'maximum' => '2')) }
+    end
+
+    describe ":minimum" do
+      subject { instance(is: nil, minimum: 1) }
+
+      it { is_expected.to eq(instance(is: nil, 'minimum' => '1')) }
+      it { is_expected.not_to eq(instance(is: nil, 'minimum' => '2')) }
+    end
+
+    describe ":check_name" do
+      subject { instance(check_name: :check_name, as: :check) }
+      
+      it { is_expected.to eq(instance(as: :check, 'check_name' => 'check_name')) }
+      it { is_expected.not_to eq(instance(as: :check, 'check_name' => 'check_name_1')) }
     end
   end
 

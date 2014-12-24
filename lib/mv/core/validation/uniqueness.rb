@@ -16,6 +16,10 @@ module Mv
           @index_name = opts.with_indifferent_access[:index_name] || default_index_name
         end
 
+        def to_a
+          super + [index_name.to_s]
+        end
+
         protected 
 
         def available_as
