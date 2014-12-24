@@ -4,17 +4,8 @@ module Mv
   module Core
     module Router
       class Index
-        def route table_name, column_name, validation_type, options
-          [Mv::Core::Constraint::Description.new(index_name(table_name, column_name, options), 
-                                                 :index,  
-                                                 {})]
-        end
-
-        protected
-
-        def index_name table_name, column_name, options
-          options.with_indifferent_access[:index_name] ||
-           :"idx_mv_#{table_name}_#{column_name}_uniq" 
+        def route validation
+          [Mv::Core::Constraint::Description.new(validation.index_name, :index)]
         end
       end
     end

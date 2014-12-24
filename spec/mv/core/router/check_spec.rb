@@ -2,6 +2,7 @@ require 'spec_helper'
 
 require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/router/check'
+require 'mv/core/validation/uniqueness'
 
 describe Mv::Core::Router::Check do
   before do
@@ -9,22 +10,14 @@ describe Mv::Core::Router::Check do
   end
   
   describe "#route" do
-    subject { described_class.new.route(:table_name, :column_name, :uniqueness, options) }
+    let(:uniqueness) { Mv::Core::Validation::Uniqueness.new(:table_name, 
+                                                            :column_name,
+                                                            as: :check) }
 
-    describe "when check name is not defined explicitly" do
-      let(:options) { { as: :check } }
+    subject { described_class.new.route(uniqueness) }
 
-      it "routes to default check name" do
-        expect(subject).to eq([Mv::Core::Constraint::Description.new(:chk_mv_table_name, :check)])
-      end
-    end
-
-    describe "when check name is not explicitly" do
-      let(:options) { { as: :check, check_name: :check_name } }
-
-      it "should route to default check name" do
-        expect(subject).to eq([Mv::Core::Constraint::Description.new(:check_name, :check)])
-      end
-    end
-  end 
+    it { is_expected.to eq([
+      Mv::Core::Constraint::Description.new(uniqueness.check_name, :check)
+    ]) }
+  end
 end

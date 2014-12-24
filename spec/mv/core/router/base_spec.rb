@@ -13,13 +13,11 @@ describe Mv::Core::Router::Base do
   end
 
   describe "#route" do
-    subject(:route) { router.route(:table_name, :column_name, validation_type, options) }
+    subject(:route) { router.route(validation) }
 
     describe "default routing map" do
-      let(:options) { {} }
-
       describe "uniqueness" do
-        let(:validation_type) { :uniqueness }
+        let(:validation) { Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :index) }
 
         it "routes to index" do
           expect(router.instance.factory).to receive(:create_router).with(:index).and_call_original
@@ -28,7 +26,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "length" do
-        let(:validation_type) { :length }
+        let(:validation) { Mv::Core::Validation::Length.new(:table_name, :column_name, as: :trigger) }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -37,7 +35,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "inclusion" do
-        let(:validation_type) { :inclusion }
+        let(:validation) { Mv::Core::Validation::Inclusion.new(:table_name, :column_name, as: :trigger) }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -46,7 +44,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "exclusion" do
-        let(:validation_type) { :exclusion }
+        let(:validation) { Mv::Core::Validation::Exclusion.new(:table_name, :column_name, as: :trigger) }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -55,7 +53,7 @@ describe Mv::Core::Router::Base do
       end
 
       describe "presence" do
-        let(:validation_type) { :exclusion }
+        let(:validation) { Mv::Core::Validation::Presence.new(:table_name, :column_name, as: :trigger) }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
@@ -64,43 +62,12 @@ describe Mv::Core::Router::Base do
       end  
 
       describe "format" do
-        let(:validation_type) { :format }
+        let(:validation) { Mv::Core::Validation::Format.new(:table_name, :column_name, as: :trigger) }
 
         it "routes to trigger" do
           expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
           route
         end
-      end
-
-      describe "undefined validation_type" do
-        let(:validation_type) { :some_strange_validator }
-
-        it "routes to trigger" do
-          expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
-          route
-        end
-      end
-    end
-
-    describe "explicitly defined route" do
-      let(:options) { { as: :trigger } }
-      let(:validation_type) { :uniqueness }
-      
-      it "routes to defined route" do
-        expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
-        route
-      end
-    end
-
-    describe "custom defaul route" do
-      let(:options) { {} }
-      let(:validation_type) { :uniqueness }
-
-      before { router.instance.set_route(:uniqueness, :trigger) }
-
-      it "routes to index" do
-        expect(router.instance.factory).to receive(:create_router).with(:trigger).and_call_original
-        route
       end
     end
   end

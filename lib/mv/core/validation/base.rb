@@ -31,6 +31,14 @@ module Mv
             @check_name = opts[:check_name] || default_check_name
           end
         end
+        
+        def update?
+          [:save, :update].include?(on.try(:to_sym))
+        end
+
+        def create?
+          [:save, :create].include?(on.try(:to_sym))
+        end
 
         protected 
 
@@ -82,14 +90,6 @@ module Mv
 
         def trigger?
           as.try(:to_sym) == :trigger
-        end
-
-        def update?
-          [:save, :update].include?(on.try(:to_sym))
-        end
-
-        def create?
-          [:save, :create].include?(on.try(:to_sym))
         end
 
         def on_allowance  
