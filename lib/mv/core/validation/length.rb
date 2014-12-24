@@ -1,5 +1,5 @@
 require 'mv/core/validation/base'
-require 'mv/core/validation/validators/integers_array_validator'
+require 'mv/core/validators/integers_array_validator'
 
 module Mv
   module Core

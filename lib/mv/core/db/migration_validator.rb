@@ -1,5 +1,6 @@
 require 'mv/core/validation/factory'
 require 'mv/core/constraint/description'
+require 'mv/core/validators/valid_validator'
 
 module Mv
   module Core
@@ -11,7 +12,7 @@ module Mv
         validates :column_name, presence: true
         validates :validation_type, presence: true
 
-        validate :validation_validity
+        validates :validation, valid: true
 
         def validation
           validation_factory.create_validation(table_name, 
@@ -25,14 +26,6 @@ module Mv
         def validation_factory
           @validation_factory ||= Mv::Core::Validation::Factory.new
         end 
-
-        def validation_validity
-          if (v = validation).invalid?
-            v.errors.full_messages.each do |message|
-              errors.add(:validation, message)
-            end
-          end
-        end
       end
     end
   end
