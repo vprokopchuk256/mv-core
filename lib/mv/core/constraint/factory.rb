@@ -13,8 +13,6 @@ module Mv
           end
         end
 
-        private
-
         def create_constraint description
           klass = "Mv::Core::Constraint::#{description.type.to_s.camelize}".constantize
           klass.new(description)
