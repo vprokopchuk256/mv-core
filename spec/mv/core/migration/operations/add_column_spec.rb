@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-require 'mv/core/router/base'
 require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/migration/operations/add_column'
 

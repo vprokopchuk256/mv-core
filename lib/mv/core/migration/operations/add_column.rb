@@ -1,5 +1,4 @@
 require 'mv/core/db/helpers/column_validators'
-require 'mv/core/router/base'
 
 module Mv
   module Core
