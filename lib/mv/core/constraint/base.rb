@@ -4,6 +4,8 @@ module Mv
   module Core
     module Constraint
       class Base
+        include Comparable
+
         attr_reader :description, :validations
 
         delegate :name, :type, :options, to: :description
@@ -11,6 +13,10 @@ module Mv
         def initialize description
           @description = description
           @validations = []
+        end
+
+        def <=> other_constraint
+          [self.class.name, description, validations.sort] <=> [other_constraint.class.name, other_constraint.description, other_constraint.validations.sort]
         end
         
         def create

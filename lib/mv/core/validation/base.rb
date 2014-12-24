@@ -39,7 +39,7 @@ module Mv
         end
 
         def <=> other_validation
-          [self.class, to_a] <=> [other_validation.class, other_validation.to_a]
+          [self.class.name, to_a] <=> [other_validation.class.name, other_validation.to_a]
         end
         
         def update?
