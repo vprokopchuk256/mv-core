@@ -17,9 +17,7 @@ module Mv
 
           def execute
             opts.each do |validation_type, validator_opts|
-              update_column_validator(validation_type, 
-                                      validator_opts,
-                                      Mv::Core::Router::Base.route(table_name, column_name, validation_type, validator_opts))
+              update_column_validator(validation_type, validator_opts)
             end
           end
         end

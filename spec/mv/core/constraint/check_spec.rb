@@ -22,32 +22,4 @@ describe Mv::Core::Constraint::Check do
     it { is_expected.to respond_to(:create) }
     it { is_expected.to respond_to(:delete) }
   end
-
-  describe "#register" do
-    subject { check.register(migration_validator) }
-
-    describe "when one of the routes leads to the current constraint" do
-      let(:migration_validator) {
-        create(:migration_validator, constraints: [[:chk_mv_table_name, :check, {}]])
-      }
-
-      it { is_expected.to eq([:chk_mv_table_name, :check, {}]) }
-
-      it "adds validator to the constraint" do
-        expect{ subject }.to change(check.validators, :count).by(1)
-      end
-    end
-
-    describe "when no routes leads to the current constraint" do
-      let(:migration_validator) {
-        create(:migration_validator, constraints: [[:chk_mv_table_name_1, :check, {}]])
-      }
-
-      it { is_expected.to be_nil }
-
-      it "does not add validator to the constraint" do
-        expect{ subject }.not_to change(check.validators, :count)
-      end
-    end
-  end
 end

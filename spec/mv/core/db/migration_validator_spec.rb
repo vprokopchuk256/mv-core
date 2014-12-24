@@ -8,8 +8,9 @@ describe Mv::Core::Db::MigrationValidator do
     described_class.create(table_name: :table_name, 
                            column_name: :column_name, 
                            validation_type: :uniqueness, 
-                           options: { as: :trigger, update_trigger_name: :update_trigger_name}, 
-                           constraints: [[:trg_table_name_update, :trigger, { event: :create }]])}
+                           options: { as: :trigger, update_trigger_name: :update_trigger_name})
+  }
+
   before do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
@@ -19,14 +20,12 @@ describe Mv::Core::Db::MigrationValidator do
     its(:column_name) { is_expected.to eq("column_name") }
     its(:validation_type) { is_expected.to eq("uniqueness") }
     its(:options) { is_expected.to eq({ as: :trigger, update_trigger_name: :update_trigger_name}) }
-    its(:constraints) { is_expected.to eq([[:trg_table_name_update, :trigger, { event: :create }]]) }
   end
 
   describe "db" do
     it { is_expected.to have_db_column(:table_name).with_options(null: false) }
     it { is_expected.to have_db_column(:column_name).with_options(null: false) }
     it { is_expected.to have_db_column(:validation_type).with_options(null: false) }
-    it { is_expected.to have_db_column(:constraints).with_options(null: false) }
     it { is_expected.to have_db_column(:options) }
   end
 
@@ -58,17 +57,4 @@ describe Mv::Core::Db::MigrationValidator do
       end
     end
   end
-
-  describe "constraint_descriptions" do
-    subject { migration_validator.constraint_descriptions }
-
-    it { is_expected.to be_present }
-    its(:length) { is_expected.to eq(1) }
-    its(:first) { 
-      is_expected.to eq(Mv::Core::Constraint::Description.new(:trg_table_name_update, 
-                                                              :trigger, 
-                                                              { event: :create }))
-    }
-  end
-
 end

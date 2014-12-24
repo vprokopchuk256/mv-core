@@ -6,7 +6,6 @@ module Mv
     module Db
       class MigrationValidator < ::ActiveRecord::Base
         serialize :options, Hash
-        serialize :constraints, Array
 
         validates :table_name, presence: true
         validates :column_name, presence: true
@@ -19,10 +18,6 @@ module Mv
                                                column_name, 
                                                validation_type, 
                                                options)
-        end
-
-        def constraint_descriptions
-          constraints.collect{ |c| Mv::Core::Constraint::Description.new(*c) }
         end
 
         private
