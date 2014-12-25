@@ -24,6 +24,9 @@ module Mv
 
         def delete
         end
+
+        def update new_constraint
+        end
       end
     end
   end
