@@ -1,6 +1,9 @@
 require 'mv/core/db/migration_validator'
 require 'mv/core/migration/operations/list'
 require 'mv/core/migration/operations/factory'
+require 'mv/core/services/load_constraints'
+require 'mv/core/services/compare_constraints'
+require 'mv/core/services/synchronize_constraints'
 
 module Mv
   module Core
@@ -27,7 +30,21 @@ module Mv
         end
 
         def execute
+          constraints_loader = Mv::Core::Services::LoadConstraints.new(operations_list.tables)
+
+          old_constraints = constraints_loader.execute
+
           operations_list.execute()
+
+          new_constraints = constraints_loader.execute
+
+          constraints_comparizon = Mv::Core::Services::CompareConstraints.new(old_constraints, new_constraints)
+                                                                         .execute
+
+          Mv::Core::Services::SynchronizeConstraints.new(constraints_comparizon[:added], 
+                                                         constraints_comparizon[:updated], 
+                                                         constraints_comparizon[:deleted])
+                                                    .execute
         end
 
         class << self

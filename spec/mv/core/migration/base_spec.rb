@@ -117,7 +117,7 @@ describe Mv::Core::Migration::Base do
   describe "#execute" do
     subject(:migration_execute) { migration.execute }
 
-    it "should call list executet" do
+    it "should call list execute" do
       expect(migration.operations_list).to receive(:execute)  
       
       subject
