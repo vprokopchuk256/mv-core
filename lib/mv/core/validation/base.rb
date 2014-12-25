@@ -12,10 +12,10 @@ module Mv
         validates :allow_nil, :allow_blank, inclusion: { in: [true, false] }
         validates :as, inclusion: { in: :available_as }
 
-        validate :on_allowance,
-                 :create_trigger_name_allowance, 
-                 :update_trigger_name_allowance, 
-                 :check_name_allowance
+        validates :on, absence: { message: 'allowed when :as == :trigger' }, unless: :trigger?
+        validates :create_trigger_name, absence: { message: 'allowed when :on in [:save, :create] and :as == :trigger'}, unless: "create? && trigger?"
+        validates :update_trigger_name, absence: { message: 'allowed when :on in [:save, :update] and :as == :trigger'}, unless: "update? && trigger?"
+        validates :check_name, absence: { message: 'allowed when :as == :trigger' }, unless: :check?
 
         def initialize table_name, column_name, opts
           @table_name = table_name
@@ -100,30 +100,6 @@ module Mv
 
         def trigger?
           as.try(:to_sym) == :trigger
-        end
-
-        def on_allowance  
-          errors.add(:on, 'allowed when :as == :trigger') if on && !trigger? 
-        end
-
-        def create_trigger_name_allowance
-          if create_trigger_name.present? &&
-             !(create? && trigger?)
-            errors.add(:create_trigger_name, 'allowed when :on in [:save, :create] and :as == :trigger')
-          end
-        end
-
-        def update_trigger_name_allowance
-          if update_trigger_name.present? &&
-             !(update? && trigger?)
-            errors.add(:update_trigger_name, 'allowed when :on in [:save, :create] and :as == :trigger')
-          end
-        end
-
-        def check_name_allowance
-          if check_name.present? && !check?
-            errors.add(:check_name, 'allowed when :as == :trigger')
-          end
         end
       end
     end

@@ -8,7 +8,7 @@ module Mv
 
         attr_reader :index_name
 
-        validate :index_name_allowance
+        validates :index_name, absence: { message: 'allowed when :as == :index' }, unless: :index?
 
         def initialize(table_name, column_name, opts)
           super(table_name, column_name, opts)
@@ -38,12 +38,6 @@ module Mv
 
         def index?
           as.to_sym == :index
-        end
-
-        def index_name_allowance
-          if index_name.present? && as.to_sym != :index
-            errors.add(:create_trigger_name, 'allowed when :as == :index')
-          end
         end
       end
     end
