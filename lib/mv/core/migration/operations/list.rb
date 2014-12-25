@@ -13,8 +13,12 @@ module Mv
             operations << operation
           end
 
-          def execute()
+          def execute
             operations.each(&:execute)
+          end
+
+          def tables
+            operations.collect(&:table_name)
           end
         end
       end
