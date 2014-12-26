@@ -6,7 +6,6 @@ require 'mv-test'
 require 'mv-core'
 require 'shoulda'
 require 'factory_girl'
-require 'pry-debugger'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
