@@ -14,13 +14,11 @@ describe Mv::Core::Migration::Operations::RenameColumn do
   end
 
   describe "#execute" do
-    let(:migration_validator) do
-      create(:migration_validator, options: true)
-    end
+    subject(:execute) { rename_column.execute }
 
     it "should call rename_column method internally" do
       expect(rename_column).to receive(:rename_column).with(:new_column_name)
-      rename_column.execute
+      execute
     end
   end
 end

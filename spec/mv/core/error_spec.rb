@@ -3,22 +3,13 @@ require 'spec_helper'
 require 'mv/core/error'
 
 describe Mv::Core::Error do
-  subject(:error) do 
-    described_class.new(table_name: :table_name, 
-                        column_name: :column_name, 
-                        validation_type: :uniqueness, 
-                        options: { as: :trigger}, 
-                        error: "Some error happened") 
-  end
-
   describe "#initialization" do
     describe "default" do
       subject(:error) do 
         described_class.new()
-
-        its(:message) { is_expected.to be_blank }
       end
       
+      its(:message) { is_expected.to be_blank }
     end
     describe "full" do
       subject(:error) do 
