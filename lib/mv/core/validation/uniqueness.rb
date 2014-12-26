@@ -23,7 +23,7 @@ module Mv
         protected 
 
         def available_as
-          [:trigger, :check, :index]
+          super + [:index]
         end
 
         def default_as
