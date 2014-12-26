@@ -47,6 +47,13 @@ module Mv
                                                     .execute
         end
 
+        def add_column table_name, column_name, opts
+          return unless opts.present?
+          
+          operation = operations_factory.create_operation(:add_column, table_name, column_name, opts)
+          operations_list.add_operation(operation)
+        end
+
         class << self
           alias_method :current, :instance
 

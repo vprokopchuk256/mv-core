@@ -13,19 +13,30 @@ describe Mv::Core::Migration::Base do
   subject(:migration) { described_class.current }
 
   describe "#add_column" do
-    subject(:add_column) {
-      migration.add_column :table_name, :column_name, length: { is: 5 } 
-    }
+    describe "when validations are defined" do
+      subject(:add_column) {
+        migration.add_column :table_name, :column_name, length: { is: 5 } 
+      }
 
-    it "adds operation to the list" do
-      expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
-        :add_column, :table_name, :column_name, length: { is: 5 }
-      ).and_call_original
+      it "adds operation to the list" do
+        expect_any_instance_of(Mv::Core::Migration::Operations::Factory).to receive(:create_operation).with(
+          :add_column, :table_name, :column_name, length: { is: 5 }
+        ).and_call_original
 
+        expect(migration.operations_list).to receive(:add_operation)
+        add_column
+      end
+    end
 
-      expect(migration.operations_list).to receive(:add_operation)
+    describe "when validations are NOT defined" do
+      subject(:add_column) {
+        migration.add_column :table_name, :column_name, nil
+      }
 
-      subject
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        add_column
+      end
     end
   end
 
