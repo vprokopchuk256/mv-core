@@ -28,6 +28,19 @@ describe Mv::Core::Migration::Base do
       end
     end
 
+    describe "when validaions are suppressed" do
+      subject(:add_column) {
+        migration.with_suppressed_validations do
+          migration.add_column :table_name, :column_name, length: { is: 5 } 
+        end
+      }
+
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        add_column
+      end
+    end
+
     describe "when validations are NOT defined" do
       subject(:add_column) {
         migration.add_column :table_name, :column_name, nil
@@ -55,6 +68,19 @@ describe Mv::Core::Migration::Base do
 
       subject
     end
+
+    describe "when validaions are suppressed" do
+      subject(:remove_column) do
+        migration.with_suppressed_validations do
+          migration.remove_column :table_name, :column_name 
+        end
+      end
+
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        remove_column
+      end
+    end
   end
 
   describe "#rename_column" do
@@ -71,6 +97,19 @@ describe Mv::Core::Migration::Base do
       expect(migration.operations_list).to receive(:add_operation)
 
       subject
+    end
+
+    describe "when validaions are suppressed" do
+      subject(:rename_column) do
+        migration.with_suppressed_validations do
+          migration.rename_column :table_name, :old_column_name, :new_column_name 
+        end
+      end
+
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        rename_column
+      end
     end
   end
 
@@ -89,6 +128,19 @@ describe Mv::Core::Migration::Base do
 
       subject
     end
+
+    describe "when validaions are suppressed" do
+      subject(:change_column) do
+        migration.with_suppressed_validations do
+          migration.change_column :table_name, :column_name, length: { is: 5 }  
+        end
+      end
+
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        change_column
+      end
+    end
   end
 
   describe "#rename_table" do
@@ -105,6 +157,19 @@ describe Mv::Core::Migration::Base do
       expect(migration.operations_list).to receive(:add_operation)
 
       subject
+    end
+
+    describe "when validaions are suppressed" do
+      subject(:rename_table) do
+        migration.with_suppressed_validations do
+          migration.rename_table :old_table_name, :new_table_name
+        end
+      end
+
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        rename_table
+      end
     end
   end
 
@@ -123,6 +188,19 @@ describe Mv::Core::Migration::Base do
 
       subject
     end
+
+    describe "when validaions are suppressed" do
+      subject(:drop_table) do
+        migration.with_suppressed_validations do
+          migration.drop_table :table_name
+        end
+      end
+
+      it "does NOT add any operation to the list" do
+        expect(migration.operations_list).not_to receive(:add_operation)
+        drop_table
+      end
+    end
   end
 
   describe "#execute" do
@@ -133,6 +211,5 @@ describe Mv::Core::Migration::Base do
       
       subject
     end
-
   end
 end

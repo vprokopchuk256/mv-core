@@ -24,8 +24,10 @@ module Mv
         SUPPORTED_METHODS.each do |operation_name|
           define_method operation_name do |*args|
 
-            operation = operations_factory.create_operation(operation_name, *args)
-            operations_list.add_operation(operation)
+            unless disabled_validations?
+              operation = operations_factory.create_operation(operation_name, *args)
+              operations_list.add_operation(operation)
+            end
           end
         end
 
@@ -50,14 +52,36 @@ module Mv
         def add_column table_name, column_name, opts
           return unless opts.present?
           
-          operation = operations_factory.create_operation(:add_column, table_name, column_name, opts)
-          operations_list.add_operation(operation)
+          unless disabled_validations?
+            operation = operations_factory.create_operation(:add_column, table_name, column_name, opts)
+            operations_list.add_operation(operation)
+          end
+        end
+
+        def with_suppressed_validations
+          disable_validations!
+          yield
+          enable_validations!
         end
 
         class << self
           alias_method :current, :instance
 
-          delegate *[SUPPORTED_METHODS, :execute].flatten, to: :current, allow_nil: true
+          delegate *[SUPPORTED_METHODS, :execute, :with_suppressed_validations].flatten, to: :current, allow_nil: true
+        end
+
+        private
+
+        def disabled_validations?
+          !!@disabled_validations
+        end
+
+        def disable_validations!
+          @disabled_validations = true
+        end
+
+        def enable_validations!
+          @disabled_validations = false
         end
       end
     end
