@@ -2,6 +2,8 @@ require 'rails'
 require 'active_record'
 
 require 'mv/core/railtie'
+
+ActiveSupport.run_load_hooks(:mv_core)
 # require 'active_record/railtie'
 
 # require File.expand_path(File.dirname(__FILE__)) + '/options'
