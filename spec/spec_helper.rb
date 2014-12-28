@@ -5,6 +5,7 @@ require 'rspec/its'
 require 'mv-test'
 require 'mv-core'
 require 'shoulda'
+require 'pry-byebug'
 require 'factory_girl'
 
 # Requires supporting files with custom matchers and macros, etc,

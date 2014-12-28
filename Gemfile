@@ -17,7 +17,7 @@ group :development do
 end
 
 group :test do
-  gem 'pry-debugger'
+  gem 'pry-byebug'
   gem 'rb-fsevent'
   gem 'terminal-notifier-guard'
 end
