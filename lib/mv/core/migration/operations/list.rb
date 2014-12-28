@@ -15,6 +15,7 @@ module Mv
 
           def execute
             operations.each(&:execute)
+            operations.clear
           end
 
           def tables

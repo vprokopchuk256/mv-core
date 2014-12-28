@@ -10,12 +10,19 @@ describe Mv::Core::Migration::Operations::List do
   end
 
   describe "#execute" do
-    it "calls execute on all operations list" do
-      operation = double 
-      list.add_operation(operation)
+    let(:operation) { double(execute: true) }
 
+    before do
+      list.add_operation(operation)
+    end
+
+    it "calls execute on all operations list" do
       expect(operation).to receive(:execute).once
       list.execute
+    end
+
+    it "removes all operations after execute" do
+      expect{ list.execute }.to change(list.operations, :count).to(0)
     end
   end
 
