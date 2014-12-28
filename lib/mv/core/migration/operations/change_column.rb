@@ -16,8 +16,12 @@ module Mv
           end
 
           def execute
-            opts.each do |validation_type, validator_opts|
-              update_column_validator(validation_type, validator_opts)
+            if opts.present?
+              opts.each do |validation_type, validator_opts|
+                update_column_validator(validation_type, validator_opts)
+              end
+            elsif column_validators.exists?
+              delete_column_validator
             end
           end
         end
