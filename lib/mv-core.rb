@@ -3,7 +3,14 @@ require 'active_record'
 
 require 'mv/core/railtie'
 
-ActiveSupport.run_load_hooks(:mv_core)
+ActiveSupport.on_load(:active_record) do
+  ::ActiveRecord::ConnectionAdapters::TableDefinition.send(:prepend, Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator)
+  ::ActiveRecord::Migration.send(:prepend, Mv::Core::ActiveRecord::MigrationDecorator)
+  
+  ActiveSupport.run_load_hooks(:mv_core)
+end
+
+
 # require 'active_record/railtie'
 
 # require File.expand_path(File.dirname(__FILE__)) + '/options'
