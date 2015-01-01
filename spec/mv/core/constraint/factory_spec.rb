@@ -8,51 +8,45 @@ describe Mv::Core::Constraint::Factory do
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
-  describe "#create_constraints" do
-    describe "#trigger" do
-      describe "one route" do
-        subject(:create_constraints) { 
-          described_class.new.create_constraints([
-            Mv::Core::Constraint::Description.new(:update_trigger_name, :trigger, { event: :update })
-          ])
+  describe "#create_constraint" do
+    subject { described_class.create_constraint(description) }
+
+    describe "by default" do
+      describe "trigger" do
+        let(:description) { 
+          Mv::Core::Constraint::Description.new(:update_trigger_name, :trigger) 
         }
 
-        its(:length) { is_expected.to eq(1) }
-        its(:first) { is_expected.to be_instance_of(Mv::Core::Constraint::Trigger) }
+        it { is_expected.to be_instance_of(Mv::Core::Constraint::Trigger) }
       end
 
-      describe "two routes" do
-        subject(:create_constraints) { 
-          described_class.new.create_constraints([
-            Mv::Core::Constraint::Description.new(:update_trigger_name, :trigger, { event: :update }),
-            Mv::Core::Constraint::Description.new(:create_trigger_name, :trigger, { event: :create }) 
-          ])
+      describe "check" do
+        let(:description) { 
+          Mv::Core::Constraint::Description.new(:update_trigger_name, :check) 
         }
 
-        its(:length) { is_expected.to eq(2) }
+        it { is_expected.to be_instance_of(Mv::Core::Constraint::Check) }
       end
-    end    
 
-    describe "#check" do
-      subject(:create_constraints) { 
-        described_class.new.create_constraints([
-          Mv::Core::Constraint::Description.new(:check_name, :check)
-        ])
+      describe "index" do
+        let(:description) { 
+          Mv::Core::Constraint::Description.new(:update_trigger_name, :index) 
+        }
+
+        it { is_expected.to be_instance_of(Mv::Core::Constraint::Index) }
+      end
+    end
+
+    describe "when custom constraint provided" do
+      let(:klass) { Class.new(Mv::Core::Constraint::Trigger) }
+
+      let(:description) { 
+        Mv::Core::Constraint::Description.new(:update_trigger_name, :trigger) 
       }
 
-      its(:length) { is_expected.to eq(1) }
-      its(:first) { is_expected.to be_instance_of(Mv::Core::Constraint::Check) }
-    end    
-
-    describe "#index" do
-      subject(:create_constraints) { 
-        described_class.new.create_constraints([
-          Mv::Core::Constraint::Description.new(:check_name, :index, {})
-        ])
-      }
-
-      its(:length) { is_expected.to eq(1) }
-      its(:first) { is_expected.to be_instance_of(Mv::Core::Constraint::Index) }
-    end    
-  end 
+      before { described_class.register_constraint(:trigger, klass) }
+      
+      it { is_expected.to be_instance_of(klass) }
+    end
+  end
 end

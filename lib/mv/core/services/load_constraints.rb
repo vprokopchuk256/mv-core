@@ -29,15 +29,11 @@ module Mv
 
         private
 
-        def factory
-          @factory ||= Mv::Core::Constraint::Factory.new
-        end
-
         def add_constraint(constraints_list, description)
           res = constraints_list.find{|constraint| constraint.description == description}
 
           unless res
-            res = factory.create_constraint(description)
+            res = Mv::Core::Constraint::Factory.create_constraint(description)
             constraints_list << res
           end
 
