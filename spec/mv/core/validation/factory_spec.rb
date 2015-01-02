@@ -64,5 +64,30 @@ describe Mv::Core::Validation::Factory do
     it { is_expected.to be_kind_of(Mv::Core::Validation::Presence) }
     its(:as) { is_expected.to eq(:check) }
   end
-  
+
+  describe "when custom validation provided" do
+    let(:klass) { TestClass = Class.new(Mv::Core::Validation::Uniqueness) }
+
+    before { described_class.register_validation(:uniqueness, klass) }
+
+    subject { factory.create_validation(:table_name, 
+                                        :column_name, 
+                                        :uniqueness, 
+                                        { as: :check })}
+    
+    it { is_expected.to be_instance_of(klass) }
+  end
+
+  describe "when requested validation is not defined" do
+    subject { factory.create_validation(:table_name, 
+                                        :column_name, 
+                                        :unknown, 
+                                        { as: :check })}
+
+    it "raises an error" do
+      expect{ subject }.to raise_error(Mv::Core::Error)
+    end
+    # it { is_expected.to raise_error(Mv::Core::Error) }
+    
+  end
 end
