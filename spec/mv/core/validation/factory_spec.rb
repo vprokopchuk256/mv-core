@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'mv/core/validation/factory'
 
 describe Mv::Core::Validation::Factory do
-  subject(:factory) { described_class.new }
+  subject(:factory) { described_class }
 
   describe "exclusion" do
     subject { factory.create_validation(:table_name, 

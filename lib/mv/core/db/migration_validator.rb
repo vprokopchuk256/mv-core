@@ -15,17 +15,11 @@ module Mv
         validates :validation, valid: true
 
         def validation
-          validation_factory.create_validation(table_name, 
-                                               column_name, 
-                                               validation_type, 
-                                               options)
+          Mv::Core::Validation::Factory.create_validation(table_name, 
+                                                          column_name, 
+                                                          validation_type, 
+                                                          options)
         end
-
-        private
-
-        def validation_factory
-          @validation_factory ||= Mv::Core::Validation::Factory.new
-        end 
       end
     end
   end
