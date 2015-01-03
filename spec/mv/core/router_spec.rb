@@ -27,12 +27,6 @@ describe Mv::Core::Router do
       it { is_expected.to eq([Description.new(uniqueness.index_name, :index)]) }
     end
 
-    # describe "when :as == :check" do
-    #   let(:options) { { as: :check } }
-
-    #   it { is_expected.to eq([Description.new(uniqueness.check_name, :check)]) }
-    # end
-
     describe "when :as == :trigger" do
       describe "when :on == :save" do
         let(:options) { { as: :trigger, on: :save } }

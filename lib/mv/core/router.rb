@@ -1,35 +1,32 @@
 require 'mv/core/constraint/description'
 
+require 'mv/core/route/trigger'
+require 'mv/core/route/index'
+
 module Mv
   module Core
     class Router
       include Singleton
 
       def route validation
-        self.send("route_#{validation.as}", validation)
+        routing_table[validation.as.to_sym].new(validation).route
+      end
+
+      def define_route as, klass
+        routing_table[as.to_sym] = klass
       end
 
       private
 
-      def route_trigger validation
-        [validation.create? && Mv::Core::Constraint::Description.new(validation.create_trigger_name,
-                                                                     :trigger, 
-                                                                     { event: :create }),
-         validation.update? && Mv::Core::Constraint::Description.new(validation.update_trigger_name, 
-                                                                     :trigger, 
-                                                                     { event: :update })].select(&:present?)
-      end
-
-      # def route_check validation
-      #   [Mv::Core::Constraint::Description.new(validation.check_name, :check)]
-      # end
-
-      def route_index validation
-        [Mv::Core::Constraint::Description.new(validation.index_name, :index)]
+      def routing_table
+        @routing_table ||= {
+          trigger: Mv::Core::Route::Trigger, 
+          index: Mv::Core::Route::Index
+        }
       end
 
       class << self
-        delegate :route, to: :instance
+        delegate :route, :define_route, to: :instance
       end
     end
   end
