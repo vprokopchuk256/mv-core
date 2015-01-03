@@ -30,12 +30,6 @@ describe Mv::Core::Validation::Inclusion do
     its(:allow_nil) { is_expected.to eq(true) }
     its(:allow_blank) { is_expected.to eq(true) }
     its(:as) { is_expected.to eq(:trigger) }
-
-    describe ":check_name" do
-      subject { instance(check_name: :check_name, as: :check) }
-      
-      its(:check_name) { is_expected.to eq(:check_name) }
-    end
   end
 
   describe "#<==>" do
@@ -59,14 +53,8 @@ describe Mv::Core::Validation::Inclusion do
     it { is_expected.not_to eq(instance(update_trigger_name: 'some_other_update_trigger_name')) }
     it { is_expected.not_to eq(instance(allow_nil: false)) }
     it { is_expected.not_to eq(instance(allow_blank: false)) }
-    it { is_expected.not_to eq(instance(as: :check)) }
+    it { is_expected.not_to eq(instance(as: :index)) }
 
-    describe ":check_name" do
-      subject { instance(check_name: :check_name, as: :check) }
-      
-      it { is_expected.to eq(instance(as: :check, 'check_name' => 'check_name')) }
-      it { is_expected.not_to eq(instance(as: :check, 'check_name' => 'check_name_1')) }
-    end
     
     it { is_expected.to eq(instance(in: [2, 1])) }
     it { is_expected.not_to eq(instance(in: [1, 2, 3])) }
@@ -97,12 +85,6 @@ describe Mv::Core::Validation::Inclusion do
 
         its(:on) { is_expected.to eq(:save) }
       end
-
-      describe "when :as == :check" do
-        subject { instance(on: nil, as: :check) } 
-
-        its(:on) { is_expected.to be_nil }
-      end
     end
 
     describe ":as" do
@@ -116,12 +98,6 @@ describe Mv::Core::Validation::Inclusion do
         subject { instance(create_trigger_name: nil, as: :trigger) }
 
         its(:create_trigger_name) { is_expected.to eq('trg_mv_table_name_ins') }
-      end
-
-      describe "when :as == :check" do
-        subject { instance(create_trigger_name: nil, as: :check) }
-
-        its(:create_trigger_name) { is_expected.to be_nil }
       end
 
       describe "when :on == :update" do
@@ -138,30 +114,10 @@ describe Mv::Core::Validation::Inclusion do
         its(:update_trigger_name) { is_expected.to eq('trg_mv_table_name_upd') }
       end
 
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: nil, as: :check) }
-
-        its(:update_trigger_name) { is_expected.to be_nil }
-      end
-
       describe "when :on == :create" do
         subject { instance(update_trigger_name: nil, on: :create) }
 
         its(:update_trigger_name) { is_expected.to be_nil }
-      end
-    end
-
-    describe ":check_name" do
-      describe "when :as == :trigger" do
-        subject { instance(update_trigger_name: nil, as: :trigger, check_name: nil) }
-
-        its(:check_name) { is_expected.to be_nil }
-      end
-
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: nil, as: :check, check_name: nil) }
-
-        its(:check_name) { is_expected.to eq('chk_mv_table_name_column_name')}
       end
     end
   end
@@ -169,35 +125,8 @@ describe Mv::Core::Validation::Inclusion do
   describe "validation" do
     it { is_expected.to be_valid }
 
-    
-    describe ":check_name" do
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: nil, 
-                           create_trigger_name: nil, 
-                           check_name: :check_name, 
-                           on: nil,
-                           as: :check) }
-        
-        it { is_expected.to be_valid }
-      end
-
-      describe "when :as == :trigger" do
-        subject { instance(update_trigger_name: nil, 
-                           create_trigger_name: nil, 
-                           check_name: :check_name, 
-                           as: :trigger) }
-        
-        it { is_expected.to be_invalid }
-      end
-    end
 
     describe ":create_trigger_name" do
-      describe "when :as == :check" do
-        subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, as: :check) }
-        
-        it { is_expected.to be_invalid }
-      end
-
       describe "when :on == :update" do
         subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, on: :update) }
         
@@ -206,12 +135,6 @@ describe Mv::Core::Validation::Inclusion do
     end
 
     describe ":update_trigger_name" do
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, as: :check) }
-        
-        it { is_expected.to be_invalid }
-      end
-
       describe "when :on == :create" do
         subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, on: :create) }
         
@@ -257,12 +180,6 @@ describe Mv::Core::Validation::Inclusion do
        
         it { is_expected.to be_invalid }
       end
-
-      describe "when :as == :check" do
-        subject { instance(on: :create, as: :check, create_trigger_name: nil, update_trigger_name: nil) }
-        
-        it { is_expected.to be_invalid }
-      end 
     end
 
     describe ":allow_nil" do
@@ -298,12 +215,6 @@ describe Mv::Core::Validation::Inclusion do
     end
 
     describe ":as" do
-      describe "when :as == :check" do
-        subject { instance(as: :check, create_trigger_name: nil, update_trigger_name: nil, on: nil) }
-       
-        it { is_expected.to be_valid }
-      end
-
       describe "when :as == :invalid_constraint_type" do
         subject { instance(as: :invalid_constraint_type, create_trigger_name: nil, update_trigger_name: nil) }
        

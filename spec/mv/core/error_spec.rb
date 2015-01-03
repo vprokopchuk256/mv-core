@@ -26,7 +26,7 @@ describe Mv::Core::Error do
       its(:options) { is_expected.to eq('as' => :trigger)}
       its(:message) { 
        is_expected.to eq(
-        "table: 'table_name', column: 'column_name', validator: 'uniqueness', options: '{\"as\"=>:trigger}', error: 'Some error happened'"
+        "table: 'table_name', column: 'column_name', validation: 'uniqueness', options: '{\"as\"=>:trigger}', error: 'Some error happened'"
        )
       }
     end

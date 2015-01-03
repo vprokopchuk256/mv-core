@@ -35,12 +35,6 @@ describe Mv::Core::Validation::Uniqueness do
       
       its(:index_name) { is_expected.to eq(:index_name) }
     end
-
-    describe ":check_name" do
-      subject { instance(check_name: :check_name, as: :check) }
-      
-      its(:check_name) { is_expected.to eq(:check_name) }
-    end
   end
 
   describe "#<==>" do
@@ -63,15 +57,8 @@ describe Mv::Core::Validation::Uniqueness do
     it { is_expected.not_to eq(instance(update_trigger_name: 'some_other_update_trigger_name')) }
     it { is_expected.not_to eq(instance(allow_nil: false)) }
     it { is_expected.not_to eq(instance(allow_blank: false)) }
-    it { is_expected.not_to eq(instance(as: :check)) }
+    it { is_expected.not_to eq(instance(as: :index)) }
     
-    describe ":check_name" do
-      subject { instance(check_name: :check_name, as: :check) }
-      
-      it { is_expected.to eq(instance(as: :check, 'check_name' => 'check_name')) }
-      it { is_expected.not_to eq(instance(as: :check, 'check_name' => 'check_name_1')) }
-    end
-
     describe ":index_name" do
       subject { instance(index_name: :index_name, as: :index) }
       
@@ -106,12 +93,6 @@ describe Mv::Core::Validation::Uniqueness do
         its(:on) { is_expected.to eq(:save) }
       end
 
-      describe "when :as == :check" do
-        subject { instance(on: nil, as: :check) } 
-
-        its(:on) { is_expected.to be_nil }
-      end
-
       describe "when :as == :index" do
         subject { instance(on: nil, as: :index) } 
 
@@ -132,8 +113,8 @@ describe Mv::Core::Validation::Uniqueness do
         its(:create_trigger_name) { is_expected.to eq('trg_mv_table_name_ins') }
       end
 
-      describe "when :as == :check" do
-        subject { instance(create_trigger_name: nil, as: :check) }
+      describe "when :as == :index" do
+        subject { instance(create_trigger_name: nil, as: :index) }
 
         its(:create_trigger_name) { is_expected.to be_nil }
       end
@@ -152,8 +133,8 @@ describe Mv::Core::Validation::Uniqueness do
         its(:update_trigger_name) { is_expected.to eq('trg_mv_table_name_upd') }
       end
 
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: nil, as: :check) }
+      describe "when :as == :index" do
+        subject { instance(update_trigger_name: nil, as: :index) }
 
         its(:update_trigger_name) { is_expected.to be_nil }
       end
@@ -172,36 +153,10 @@ describe Mv::Core::Validation::Uniqueness do
         its(:index_name) { is_expected.to be_nil }
       end
 
-      describe "when :as == :check" do
-        subject { instance(index_name: nil, as: :check) }
-
-        its(:index_name) { is_expected.to be_nil }
-      end
-
       describe "when :as == :index" do
         subject { instance(index_name: nil, as: :index) }
 
         its(:index_name) { is_expected.to eq('idx_mv_table_name_column_name_uniq') }
-      end
-    end
-
-    describe ":check_name" do
-      describe "when :as == :trigger" do
-        subject { instance(update_trigger_name: nil, as: :trigger, check_name: nil) }
-
-        its(:check_name) { is_expected.to be_nil }
-      end
-
-      describe "when :as == :index" do
-        subject { instance(update_trigger_name: nil, as: :index, check_name: nil) }
-
-        its(:check_name) { is_expected.to be_nil }
-      end
-
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: nil, as: :check, check_name: nil) }
-
-        its(:check_name) { is_expected.to eq('chk_mv_table_name_column_name')}
       end
     end
   end
@@ -209,44 +164,7 @@ describe Mv::Core::Validation::Uniqueness do
   describe "validation" do
     it { is_expected.to be_valid }
 
-    describe ":check_name" do
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: nil, 
-                           create_trigger_name: nil, 
-                           check_name: :check_name, 
-                           on: nil,
-                           as: :check) }
-        
-        it { is_expected.to be_valid }
-      end
-
-      describe "when :as == :trigger" do
-        subject { instance(update_trigger_name: nil, 
-                           create_trigger_name: nil, 
-                           check_name: :check_name, 
-                           as: :trigger) }
-        
-        it { is_expected.to be_invalid }
-      end
-
-      describe "when :as == :index" do
-        subject { instance(update_trigger_name: nil, 
-                           create_trigger_name: nil, 
-                           check_name: :check_name, 
-                           on: nil,
-                           as: :index) }
-        
-        it { is_expected.to be_invalid }
-      end
-    end
-
     describe ":create_trigger_name" do
-      describe "when :as == :check" do
-        subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, as: :check) }
-        
-        it { is_expected.to be_invalid }
-      end
-
       describe "when :as == :index" do
         subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, as: :index) }
         
@@ -261,12 +179,6 @@ describe Mv::Core::Validation::Uniqueness do
     end
 
     describe ":update_trigger_name" do
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, as: :check) }
-        
-        it { is_expected.to be_invalid }
-      end
-
       describe "when :as == :index" do
         subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, as: :index) }
         
@@ -281,12 +193,6 @@ describe Mv::Core::Validation::Uniqueness do
     end
 
     describe ":index_name" do
-      describe "when :as == :check" do
-        subject { instance(update_trigger_name: :nil, create_trigger_name: nil, index_name: :index_name, as: :check) }
-        
-        it { is_expected.to be_invalid }
-      end
-
       describe "when :as == :trigger" do
         subject { instance(update_trigger_name: :nil, create_trigger_name: nil, index_name: :index_name, as: :trigger) }
         
@@ -325,12 +231,6 @@ describe Mv::Core::Validation::Uniqueness do
        
         it { is_expected.to be_invalid }
       end
-
-      describe "when :as == :check" do
-        subject { instance(on: :create, as: :check, create_trigger_name: nil, update_trigger_name: nil) }
-        
-        it { is_expected.to be_invalid }
-      end 
 
       describe "when :as == :index" do
         subject { instance(on: :nil, as: :index, create_trigger_name: nil, update_trigger_name: nil) }
@@ -372,12 +272,6 @@ describe Mv::Core::Validation::Uniqueness do
     end
 
     describe ":as" do
-      describe "when :as == :check" do
-        subject { instance(as: :check, create_trigger_name: nil, update_trigger_name: nil, on: nil) }
-       
-        it { is_expected.to be_valid }
-      end
-
       describe "when :as == :index" do
         subject { instance(as: :index, create_trigger_name: nil, update_trigger_name: nil, on: nil) }
        

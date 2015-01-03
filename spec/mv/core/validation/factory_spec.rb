@@ -25,16 +25,6 @@ describe Mv::Core::Validation::Factory do
     its(:as) { is_expected.to eq(:check) }
   end
 
-  describe "format" do
-    subject { factory.create_validation(:table_name, 
-                                        :column_name, 
-                                        :format, 
-                                        { as: :check })}
-
-    it { is_expected.to be_kind_of(Mv::Core::Validation::Format) }
-    its(:as) { is_expected.to eq(:check) }
-  end
-
   describe "inclusion" do
     subject { factory.create_validation(:table_name, 
                                         :column_name, 
@@ -76,6 +66,8 @@ describe Mv::Core::Validation::Factory do
                                         { as: :check })}
     
     it { is_expected.to be_instance_of(klass) }
+
+    after { described_class.register_validation(:uniqueness, Mv::Core::Validation::Uniqueness) }
   end
 
   describe "when requested validation is not defined" do
@@ -87,7 +79,5 @@ describe Mv::Core::Validation::Factory do
     it "raises an error" do
       expect{ subject }.to raise_error(Mv::Core::Error)
     end
-    # it { is_expected.to raise_error(Mv::Core::Error) }
-    
   end
 end

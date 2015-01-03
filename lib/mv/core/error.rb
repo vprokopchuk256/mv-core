@@ -15,7 +15,7 @@ module Mv
         super [
           @table_name ? "table: '#{@table_name}'" : nil,
           @column_name ? "column: '#{@column_name}'" : nil, 
-          @validation_type ? "validator: '#{@validation_type}'" : nil, 
+          @validation_type ? "validation: '#{@validation_type}'" : nil, 
           @options ? "options: '#{@options}'" : nil, 
           @error ? "error: '#{@error}'" : nil, 
         ].compact.join(', ')

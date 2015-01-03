@@ -2,21 +2,19 @@ require 'spec_helper'
 
 require 'mv/core/services/compare_constraints'
 require 'mv/core/constraint/description'
-require 'mv/core/constraint/check'
 require 'mv/core/validation/uniqueness'
 require 'mv/core/validation/presence'
 
 describe Mv::Core::Services::CompareConstraints do
   let(:description) { 
-    Mv::Core::Constraint::Description.new(:chk_mv_table_name_column_name, 
-                                          :check)
+    Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, event: :create)
   }
 
-  let(:uniqueness) { Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :check)}
-  let(:presence) { Mv::Core::Validation::Presence.new(:table_name, :column_name, as: :check)}
+  let(:uniqueness) { Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :trigger, on: :create)}
+  let(:presence) { Mv::Core::Validation::Presence.new(:table_name, :column_name, as: :trigger, on: :create)}
 
-  let(:old_constraint) { Mv::Core::Constraint::Check.new(description)}
-  let(:new_constraint) { Mv::Core::Constraint::Check.new(description)}
+  let(:old_constraint) { Mv::Core::Constraint::Trigger.new(description)}
+  let(:new_constraint) { Mv::Core::Constraint::Trigger.new(description)}
 
   before do
     old_constraint.validations << uniqueness

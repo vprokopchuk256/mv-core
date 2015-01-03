@@ -18,11 +18,11 @@ describe Mv::Core::Services::LoadConstraints do
   describe "#execute" do
 
     describe "1 migration validator, 1 validation => 1 constraint" do
-      let!(:migration_validator_check) { 
+      let!(:migration_validator_trigger) { 
         create(:migration_validator, table_name: :table_name, 
                                      column_name: :column_name, 
                                      validation_type: :uniqueness,
-                                     options: { as: :check })
+                                     options: { as: :trigger, on: :create })
       }
 
       subject(:constraints) { described_class.new([:table_name]).execute.sort } 
@@ -32,10 +32,10 @@ describe Mv::Core::Services::LoadConstraints do
       describe "first constraint" do
         subject { constraints.first }
 
-        its(:description) { is_expected.to eq(Mv::Core::Constraint::Description.new(:chk_mv_table_name_column_name, :check)) }
+        its(:description) { is_expected.to eq(Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, event: :create)) }
 
         its(:validations) { is_expected.to match_array([
-          Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :check)
+          Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :trigger, on: :create)
         ])}
 
       end
@@ -74,10 +74,10 @@ describe Mv::Core::Services::LoadConstraints do
     end
 
     describe "2 migration validators, 2 validations => 2 constraints" do
-      let!(:migration_validator_check) { 
+      let!(:migration_validator_trigger) { 
         create(:migration_validator, table_name: :table_name, 
                                      column_name: :column_name, 
-                                     options: { as: :check })
+                                     options: { as: :trigger, on: :create })
       }
 
       let!(:migration_validator_index) { 
@@ -92,21 +92,21 @@ describe Mv::Core::Services::LoadConstraints do
 
       describe "first constraint" do
         subject { constraints.first }
-
-        its(:description) { is_expected.to eq(Mv::Core::Constraint::Description.new(:chk_mv_table_name_column_name, :check)) }
-
-        its(:validations) { is_expected.to match_array([
-          Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :check)
-        ])}
-      end
-
-      describe "second constraint" do
-        subject { constraints.second }
         
         its(:description) { is_expected.to eq(Mv::Core::Constraint::Description.new(:idx_mv_table_name_1_column_name_uniq, :index)) }
 
         its(:validations) { is_expected.to match_array([
           Mv::Core::Validation::Uniqueness.new(:table_name_1, :column_name, as: :index)
+        ])}
+      end
+
+      describe "second constraint" do
+        subject { constraints.second }
+
+        its(:description) { is_expected.to eq(Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, event: :create)) }
+
+        its(:validations) { is_expected.to match_array([
+          Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, as: :trigger, on: :create)
         ])}
       end
 

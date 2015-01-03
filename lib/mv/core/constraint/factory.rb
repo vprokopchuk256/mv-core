@@ -1,5 +1,4 @@
 require 'mv/core/constraint/trigger'
-require 'mv/core/constraint/check'
 require 'mv/core/constraint/index'
 
 module Mv
@@ -25,7 +24,6 @@ module Mv
         def factory_map
           @factory_map ||= {
             trigger: Mv::Core::Constraint::Trigger,  
-            check: Mv::Core::Constraint::Check,  
             index: Mv::Core::Constraint::Index
           }
         end

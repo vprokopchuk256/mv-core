@@ -20,9 +20,9 @@ module Mv
                                                                      { event: :update })].select(&:present?)
       end
 
-      def route_check validation
-        [Mv::Core::Constraint::Description.new(validation.check_name, :check)]
-      end
+      # def route_check validation
+      #   [Mv::Core::Constraint::Description.new(validation.check_name, :check)]
+      # end
 
       def route_index validation
         [Mv::Core::Constraint::Description.new(validation.index_name, :index)]

@@ -20,14 +20,6 @@ describe Mv::Core::Constraint::Factory do
         it { is_expected.to be_instance_of(Mv::Core::Constraint::Trigger) }
       end
 
-      describe "check" do
-        let(:description) { 
-          Mv::Core::Constraint::Description.new(:update_trigger_name, :check) 
-        }
-
-        it { is_expected.to be_instance_of(Mv::Core::Constraint::Check) }
-      end
-
       describe "index" do
         let(:description) { 
           Mv::Core::Constraint::Description.new(:update_trigger_name, :index) 
@@ -47,6 +39,8 @@ describe Mv::Core::Constraint::Factory do
       before { described_class.register_constraint(:trigger, klass) }
       
       it { is_expected.to be_instance_of(klass) }
+
+      after { described_class.register_constraint(:trigger, Mv::Core::Constraint::Trigger)}
     end
   end
 end

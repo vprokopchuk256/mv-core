@@ -1,6 +1,5 @@
 require 'mv/core/validation/uniqueness'
 require 'mv/core/validation/exclusion'
-require 'mv/core/validation/format'
 require 'mv/core/validation/inclusion'
 require 'mv/core/validation/length'
 require 'mv/core/validation/presence'
@@ -18,7 +17,8 @@ module Mv
           raise Mv::Core::Error.new(table_name: table_name, 
                                     column_name: column_name, 
                                     validation_type: validation_type, 
-                                    opts: opts) unless validation_class
+                                    opts: opts, 
+                                    error: "Validation '#{validation_type}' is not supported") unless validation_class
 
           validation_class.new(table_name, column_name, opts)
         end 
@@ -37,7 +37,6 @@ module Mv
           @factory_map ||= {
             uniqueness: Mv::Core::Validation::Uniqueness, 
             exclusion: Mv::Core::Validation::Exclusion, 
-            format: Mv::Core::Validation::Format, 
             inclusion: Mv::Core::Validation::Inclusion, 
             length: Mv::Core::Validation::Length, 
             presence: Mv::Core::Validation::Presence
