@@ -12,7 +12,7 @@ describe Mv::Core::Validation::Presence do
                           create_trigger_name: :create_trigger_name, 
                           update_trigger_name: :update_trigger_name, 
                           allow_nil: true,
-                          allow_blank: true, 
+                          allow_blank: false, 
                           as: :trigger}.with_indifferent_access.merge(opts))
   end
 
@@ -26,7 +26,7 @@ describe Mv::Core::Validation::Presence do
     its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
     its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
     its(:allow_nil) { is_expected.to be_truthy }
-    its(:allow_blank) { is_expected.to be_truthy }
+    its(:allow_blank) { is_expected.to be_falsey }
     its(:as) { is_expected.to eq(:trigger) }
   end
 
@@ -39,7 +39,7 @@ describe Mv::Core::Validation::Presence do
                                     'create_trigger_name' => 'create_trigger_name', 
                                     'update_trigger_name' => 'update_trigger_name', 
                                     'allow_nil' => true, 
-                                    'allow_blank' => true, 
+                                    'allow_blank' => false, 
                                     'as' => 'trigger' } )) }
 
     it { is_expected.not_to eq(instance(table_name: 'table_name_1')) }
@@ -49,7 +49,7 @@ describe Mv::Core::Validation::Presence do
     it { is_expected.not_to eq(instance(create_trigger_name: 'some_other_create_trigger_name')) }
     it { is_expected.not_to eq(instance(update_trigger_name: 'some_other_update_trigger_name')) }
     it { is_expected.not_to eq(instance(allow_nil: false)) }
-    it { is_expected.not_to eq(instance(allow_blank: false)) }
+    it { is_expected.not_to eq(instance(allow_blank: true)) }
     it { is_expected.not_to eq(instance(as: :index)) }
   end
 
@@ -179,7 +179,7 @@ describe Mv::Core::Validation::Presence do
     describe ":allow_blank" do
       [true, false].each do |value|
         describe "when :allow_blank == #{value}" do
-          subject { instance(allow_blank: value) }
+          subject { instance(allow_nil: false, allow_blank: value) }
          
           it { is_expected.to be_valid }
         end
@@ -190,6 +190,12 @@ describe Mv::Core::Validation::Presence do
        
         it { is_expected.to be_invalid }
       end
+    end
+
+    describe "when both :allow_blank & :allow_nil are true" do
+      subject { instance(allow_blank: true, allow_nil: true) }
+
+      it { is_expected.to be_invalid }
     end
 
     describe ":as" do
