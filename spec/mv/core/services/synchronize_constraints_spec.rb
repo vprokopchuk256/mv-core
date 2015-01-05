@@ -2,6 +2,7 @@ require 'spec_helper'
 
 require 'mv/core/services/synchronize_constraints'
 require 'mv/core/constraint/trigger'
+require 'mv/core/constraint/builder/trigger'
 
 describe Mv::Core::Services::SynchronizeConstraints do
   let(:description) { 
@@ -28,7 +29,11 @@ describe Mv::Core::Services::SynchronizeConstraints do
       let(:sync) { described_class.new(nil, nil, [old_constraint])}
 
       it "calls #delete on old constraint" do
-        expect(old_constraint).to receive(:delete).and_call_original
+        builder = double
+
+        expect(builder).to receive(:delete)
+        expect(Mv::Core::Constraint::Builder::Trigger).to receive(:new).with(old_constraint).and_return(builder)
+
         execute
       end
     end
@@ -37,7 +42,11 @@ describe Mv::Core::Services::SynchronizeConstraints do
       let(:sync) { described_class.new(nil, [[old_constraint, new_constraint]], nil)}
 
       it "calls #update on old_constraint" do
-        expect(old_constraint).to receive(:update).with(*[new_constraint]).and_call_original
+        builder = double
+
+        expect(builder).to receive(:update)
+        expect(Mv::Core::Constraint::Builder::Trigger).to receive(:new).twice.and_return(builder)
+
         execute
       end
     end
@@ -45,8 +54,12 @@ describe Mv::Core::Services::SynchronizeConstraints do
     describe "additions" do
       let(:sync) { described_class.new([new_constraint], nil, nil)}
 
-      it "calls #delete on old constraint" do
-        expect(new_constraint).to receive(:create).and_call_original
+      it "calls #create on old constraint" do
+        builder = double
+
+        expect(builder).to receive(:create)
+        expect(Mv::Core::Constraint::Builder::Trigger).to receive(:new).with(new_constraint).and_return(builder)
+
         execute
       end
     end
