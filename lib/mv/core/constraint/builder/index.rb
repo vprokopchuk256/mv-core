@@ -1,19 +1,13 @@
-require 'mv/core/validation/builder/factory'
+require 'mv/core/constraint/builder/base'
 
 module Mv
   module Core
     module Constraint
       module Builder
-        class Index
-          attr_reader :constraint
-
-          delegate :name, to: :constraint
-
-          def initialize(constraint)
-            @constraint = constraint
-          end
-
+        class Index < Base
           def create
+            super
+
             constraint.validations.group_by(&:table_name).each do |table_name, validations|
               remove_index(table_name)
               add_index(table_name, validations.collect(&:column_name))
@@ -21,31 +15,21 @@ module Mv
           end
 
           def delete
+            super 
+
             constraint.validations.group_by(&:table_name).each do |table_name, validations|
               remove_index(table_name)
             end
           end
 
-          def update new_constraint
-            delete
-            new_constraint.create
-          end
+          def update new_constraint_builder
+            super 
 
-          def self.validation_builders_factory
-            @validation_builders_factory ||= Mv::Core::Validation::Builder::Factory.new
+            delete
+            new_constraint_builder.create
           end
 
           private
-
-          def validation_builders
-            @validation_builders ||= constraint.validations.collect do |validation|
-              self.class.validation_builders_factory.create_builder(validation)
-            end
-          end
-
-          def db
-            ::ActiveRecord::Base.connection
-          end
 
           def index_exists?(table_name)
             db.index_name_exists?(table_name, name, false) 
