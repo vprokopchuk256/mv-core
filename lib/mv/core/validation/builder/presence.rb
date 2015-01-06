@@ -5,13 +5,12 @@ module Mv
     module Validation
       module Builder
         class Presence < Base
-
-          def to_sql
+          def conditions
             null_stmt = "#{column_reference} #{allow_nil ? 'IS' : 'IS NOT'} NULL"
             blank_stmt = "LENGTH(TRIM(#{column_reference})) #{allow_blank ? '=' : '>'} 0"
             join_stmt = allow_nil || allow_blank ? 'OR' : 'AND'
 
-            [null_stmt, join_stmt, blank_stmt].join(' ')
+            [{ statement: [null_stmt, join_stmt, blank_stmt].join(' '), message: message }]
           end
         end
       end

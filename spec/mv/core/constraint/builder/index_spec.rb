@@ -78,7 +78,7 @@ describe Mv::Core::Constraint::Builder::Index do
                                                                                :column_name_1, 
                                                                                as: :index, 
                                                                                index_name: :idx_mv_table_name) 
-          index_builder.update(index_constraint)
+          index_builder.update(index_builder)
         end
 
         its(:columns) { is_expected.to eq(['column_name', 'column_name_1'])}

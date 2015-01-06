@@ -5,12 +5,12 @@ module Mv
     module Validation
       module Builder
         class Uniqueness < Base
-          def to_sql
+          def conditions
             res = "NOT EXISTS(SELECT #{column_name} 
                                 FROM #{table_name} 
                                WHERE #{column_reference} = #{column_name})"
 
-            apply_allow_nil_and_blank(res).squish
+            [{statement: apply_allow_nil_and_blank(res).squish, message: message}]
           end
         end
       end

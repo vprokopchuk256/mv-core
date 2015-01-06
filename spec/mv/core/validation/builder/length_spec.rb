@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Length do
   def length(opts = {})
     Mv::Core::Validation::Length.new(:table_name, 
                                      :column_name,
-                                     opts) 
+                                     { message: 'some error message' }.merge(opts))
   end
 
   describe "#initalize" do
@@ -23,22 +23,32 @@ describe Mv::Core::Validation::Builder::Length do
     its(:allow_nil) { is_expected.to eq(validation.allow_nil) }
     its(:allow_blank) { is_expected.to eq(validation.allow_blank) }
     its(:column_name) { is_expected.to eq(validation.column_name) }
+    its(:message) { is_expected.to eq(validation.message) }
+    its(:too_short) { is_expected.to eq(validation.too_short) }
+    its(:too_long) { is_expected.to eq(validation.too_long) }
   end
 
-  describe "#to_sql" do
-    subject { described_class.new(length(opts)).to_sql }
+  describe "conditions" do
+    subject { described_class.new(length(opts)).conditions }
+
 
     describe "when :in is defined" do
       describe "as array" do
         let(:opts) { { in: [1, 3] } }
 
-        it { is_expected.to eq('LENGTH(column_name) IN (1, 3)') }
+        it { is_expected.to eq([{
+          statement: 'LENGTH(column_name) IN (1, 3)', 
+          message: 'some error message'
+        }]) }
       end
 
       describe "as range" do
         let(:opts) { { in: 1..3 } }
 
-        it { is_expected.to eq('LENGTH(column_name) BETWEEN 1 AND 3') }
+        it { is_expected.to eq([{
+          statement: 'LENGTH(column_name) BETWEEN 1 AND 3', 
+          message: 'some error message'
+        }]) }
       end
     end
 
@@ -46,56 +56,99 @@ describe Mv::Core::Validation::Builder::Length do
       describe "as array" do
         let(:opts) { { within: [1, 3] } }
 
-        it { is_expected.to eq('LENGTH(column_name) IN (1, 3)') }
+        it { is_expected.to eq([{
+          statement: 'LENGTH(column_name) IN (1, 3)', 
+          message: 'some error message'
+        }]) }
       end
 
       describe "as range" do
         let(:opts) { { within: 1..3 } }
 
-        it { is_expected.to eq('LENGTH(column_name) BETWEEN 1 AND 3') }
+        it { is_expected.to eq([{
+          statement: 'LENGTH(column_name) BETWEEN 1 AND 3', 
+          message: 'some error message'
+        }]) }
       end
     end
 
     describe "when :is is defined" do
       let(:opts) { { is: 1 } }
 
-      it { is_expected.to eq('LENGTH(column_name) = 1') }
+      it { is_expected.to eq([{
+        statement: 'LENGTH(column_name) = 1', 
+        message: 'some error message'
+      }]) }
     end
 
     describe "when :maximum is defined" do
-      let(:opts) { { maximum: 3 } }
+      let(:opts) { { maximum: 3, too_long: 'too long error message' } }
 
-      it { is_expected.to eq('LENGTH(column_name) <= 3') }
+      it { is_expected.to eq([{
+        statement: 'LENGTH(column_name) <= 3', 
+        message: 'too long error message'
+      }]) }
     end
 
     describe "when :minimum is defined" do
-      let(:opts) { { minimum: 1 } }
+      let(:opts) { { minimum: 1, too_short: 'too short error message' } }
 
-      it { is_expected.to eq('LENGTH(column_name) >= 1') }
+      it { is_expected.to eq([{
+        statement: 'LENGTH(column_name) >= 1', 
+        message: 'too short error message'
+      }]) }
     end
 
     describe "when both :maximum & :minimum are defined" do
-      let(:opts) { { minimum: 1, maximum: 3 } }
+      # it { is_expected.to eq('LENGTH(column_name) BETWEEN 1 AND 3') }
+      describe "and too long and too short messages are the same" do
+        let(:opts) { { minimum: 1, maximum: 3, too_long: 'too long error message', too_short: 'too short error message' } }
 
-      it { is_expected.to eq('LENGTH(column_name) BETWEEN 1 AND 3') }
+        it { is_expected.to match_array([
+          { statement: 'LENGTH(column_name) >= 1', 
+            message: 'too short error message' },
+          { statement: 'LENGTH(column_name) <= 3', 
+            message: 'too long error message' }
+        ]) }
+        
+      end
+
+      describe "and too long and too short messages are different" do
+        let(:opts) { { minimum: 1, maximum: 3, too_long: 'some error message', too_short: 'some error message' } }
+        
+        it { is_expected.to eq([{
+          statement: 'LENGTH(column_name) BETWEEN 1 AND 3', 
+          message: 'some error message'
+        }]) }
+      end
     end
 
     describe "when nil is allowed" do
       let(:opts) { { is: 1, allow_nil: true } }
 
-      it { is_expected.to eq("LENGTH(column_name) = 1 OR column_name IS NULL") }
+
+      it { is_expected.to eq([{
+        statement: 'LENGTH(column_name) = 1 OR column_name IS NULL', 
+        message: 'some error message'
+      }]) }
     end
 
     describe "when blank is allowed" do
       let(:opts) { { is: 1, allow_blank: true } }
 
-      it { is_expected.to eq("LENGTH(column_name) = 1 OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0") }
+      it { is_expected.to eq([{
+        statement: 'LENGTH(column_name) = 1 OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
+        message: 'some error message'
+      }]) }
     end
 
     describe "when both nil & blank are allowed" do
       let(:opts) { { is: 1, allow_nil: true, allow_blank: true } }
 
-      it { is_expected.to eq("LENGTH(column_name) = 1 OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0") }
+      it { is_expected.to eq([{
+        statement: 'LENGTH(column_name) = 1 OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
+        message: 'some error message'
+      }]) }
     end
   end
 end

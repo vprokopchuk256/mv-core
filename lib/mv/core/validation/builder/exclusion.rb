@@ -7,8 +7,11 @@ module Mv
         class Exclusion < Base
           delegate :in, to: :validation
 
-          def to_sql
-            apply_allow_nil_and_blank(apply_in(column_reference))
+          def conditions
+            [{
+              statement: apply_allow_nil_and_blank(apply_in(column_reference)), 
+              message: message
+            }]
           end
 
           protected

@@ -7,6 +7,7 @@ module Mv
 
           delegate :table_name, 
                    :column_name, 
+                   :message, 
                    :allow_nil, 
                    :allow_blank, to: :validation
 
@@ -42,9 +43,7 @@ module Mv
           def apply_allow_blank stmt
             "#{stmt} OR LENGTH(TRIM(#{column_reference})) = 0"
           end
-          
         end
-        
       end
     end
   end
