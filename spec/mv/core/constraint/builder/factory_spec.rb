@@ -25,11 +25,11 @@ describe Mv::Core::Constraint::Builder::Factory do
       let(:klass) { Class.new(Mv::Core::Constraint::Builder::Trigger) }
       let(:constraint) { Mv::Core::Constraint::Trigger.new(trigger_description)}
 
-      before { described_class.define_builder(Mv::Core::Constraint::Trigger, klass) }
+      before { described_class.register_builder(Mv::Core::Constraint::Trigger, klass) }
 
       it { is_expected.to be_a_kind_of(klass) }
 
-      after { described_class.define_builder(Mv::Core::Constraint::Trigger, Mv::Core::Constraint::Builder::Trigger) }
+      after { described_class.register_builder(Mv::Core::Constraint::Trigger, Mv::Core::Constraint::Builder::Trigger) }
     end
   end
 end

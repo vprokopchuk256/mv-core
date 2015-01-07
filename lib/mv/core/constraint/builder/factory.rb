@@ -12,12 +12,12 @@ module Mv
             factory_map[constraint.class].new(constraint)
           end
 
-          def define_builder constraint_class, builder_class
+          def register_builder constraint_class, builder_class
             factory_map[constraint_class] = builder_class
           end
 
           class << self
-            delegate :create_builder, :define_builder, to: :instance
+            delegate :create_builder, :register_builder, to: :instance
           end
 
 
