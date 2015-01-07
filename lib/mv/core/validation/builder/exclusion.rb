@@ -17,8 +17,13 @@ module Mv
           protected
 
           def db_value value
-            return value if value.is_a?(Integer)
-            "'#{value.to_s}'"
+            return value if value.is_a?(Integer) or value.is_a?(Float)
+            return "'#{value.to_s}'" if value.is_a?(String)
+            raise Mv::Core::Error.new(table_name: table_name, 
+                                      column_name: column_name, 
+                                      validation_type: :inclusion, 
+                                      options: { in: value }, 
+                                      error: "#{value.class} is not supported as :in value")
           end
 
           def apply_in stmt

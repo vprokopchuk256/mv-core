@@ -51,6 +51,23 @@ describe Mv::Core::Validation::Builder::Inclusion do
       }]) }
     end
 
+    describe "when floats array passed" do
+      let(:opts) { {in: [1.5, 1.8]} }
+
+      it { is_expected.to eq([{
+        statement: "column_name IN (1.5, 1.8)", 
+        message: 'some error message'
+      }]) }
+    end
+    
+    describe "when not supported types array passed" do
+      let(:opts) { {in: [{}, {}]} }
+
+      it 'raises an error' do
+        expect{ subject }.to raise_error(Mv::Core::Error)
+      end
+    end
+
     describe "when nil is allowed" do
       let(:opts) { { in: [1, 5], allow_nil: true } }
 
