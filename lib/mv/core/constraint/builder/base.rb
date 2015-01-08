@@ -25,14 +25,15 @@ module Mv
           def self.validation_builders_factory
             @validation_builders_factory ||= Mv::Core::Validation::Builder::Factory.new
           end
-
-          protected
-
+          
           def validation_builders
             @validation_builders ||= constraint.validations.collect do |validation|
               self.class.validation_builders_factory.create_builder(validation)
             end
           end
+
+          protected
+
 
           def db
             ::ActiveRecord::Base.connection
