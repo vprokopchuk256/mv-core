@@ -13,7 +13,7 @@ module Mv
             factory_map[validation.class].new(validation)
           end
 
-          def define_builder validation_class, builder_class
+          def register_builder validation_class, builder_class
             factory_map[validation_class] = builder_class
           end
 
