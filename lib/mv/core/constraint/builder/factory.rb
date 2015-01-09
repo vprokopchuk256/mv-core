@@ -16,8 +16,14 @@ module Mv
             factory_map[constraint_class] = builder_class
           end
 
+          def register_builders opts
+            opts.each do |constraint_class, builder_class| 
+              register_builder(constraint_class, builder_class)
+            end
+          end
+
           class << self
-            delegate :create_builder, :register_builder, to: :instance
+            delegate :create_builder, :register_builder, :register_builders, to: :instance
           end
 
 
