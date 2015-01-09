@@ -51,4 +51,17 @@ describe Mv::Core::Validation::Builder::Factory do
 
     after { factory.register_builder(Mv::Core::Validation::Exclusion, Mv::Core::Validation::Builder::Exclusion) }
   end
+
+  describe "#register_builders" do
+    let(:klass) { CustomValidationBuilderClass = Class.new(Mv::Core::Validation::Builder::Exclusion) }
+    let(:validation) { Mv::Core::Validation::Exclusion.new(:table_name, :column_name, in: [1, 2]) }
+
+    before { factory.register_builders(Mv::Core::Validation::Exclusion => klass) }
+
+    subject { factory.create_builder(validation) }
+
+    it { is_expected.to be_an_instance_of(klass) }
+
+    after { factory.register_builders(Mv::Core::Validation::Exclusion => Mv::Core::Validation::Builder::Exclusion) }
+  end
 end

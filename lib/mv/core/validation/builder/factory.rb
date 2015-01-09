@@ -17,6 +17,12 @@ module Mv
             factory_map[validation_class] = builder_class
           end
 
+          def register_builders opts
+            opts.each do |validation_class, builder_class|
+              register_builder(validation_class, builder_class)
+            end
+          end
+
           private
 
           def factory_map
