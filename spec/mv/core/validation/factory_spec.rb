@@ -70,6 +70,21 @@ describe Mv::Core::Validation::Factory do
     after { described_class.register_validation(:uniqueness, Mv::Core::Validation::Uniqueness) }
   end
 
+  describe "when custom validations provided" do
+    let(:klass) { TestClass1 = Class.new(Mv::Core::Validation::Uniqueness) }
+
+    before { described_class.register_validations(:uniqueness => klass) }
+
+    subject { factory.create_validation(:table_name, 
+                                        :column_name, 
+                                        :uniqueness, 
+                                        { as: :check })}
+    
+    it { is_expected.to be_instance_of(klass) }
+
+    after { described_class.register_validations(:uniqueness => Mv::Core::Validation::Uniqueness) }
+  end
+
   describe "when requested validation is not defined" do
     subject { factory.create_validation(:table_name, 
                                         :column_name, 

@@ -27,8 +27,14 @@ module Mv
           factroy_map[validation_type.to_sym] = klass
         end
 
+        def register_validations opts
+          opts.each do |validation_type, klass|
+            register_validation(validation_type, klass)
+          end
+        end
+
         class << self
-          delegate :create_validation, :register_validation, to: :instance
+          delegate :create_validation, :register_validation, :register_validations, to: :instance
         end
 
         private 

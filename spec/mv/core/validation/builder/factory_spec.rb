@@ -53,7 +53,7 @@ describe Mv::Core::Validation::Builder::Factory do
   end
 
   describe "#register_builders" do
-    let(:klass) { CustomValidationBuilderClass = Class.new(Mv::Core::Validation::Builder::Exclusion) }
+    let(:klass) { CustomValidationBuilderClass1 = Class.new(Mv::Core::Validation::Builder::Exclusion) }
     let(:validation) { Mv::Core::Validation::Exclusion.new(:table_name, :column_name, in: [1, 2]) }
 
     before { factory.register_builders(Mv::Core::Validation::Exclusion => klass) }
