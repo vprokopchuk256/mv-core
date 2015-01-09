@@ -25,6 +25,31 @@ describe Mv::Core::Constraint::Trigger do
     it { is_expected.to respond_to(:delete) }
   end
 
+  describe "#update?" do
+    let(:trigger_description) { Mv::Core::Constraint::Description.new(:update_trigger_name, 
+                                                                      :trigger, 
+                                                                      opts)}
+    subject { trigger.update? }
+
+    describe "when :event == :create" do
+      let(:opts) { { event: :create } }
+
+      it { is_expected.to be_falsey } 
+    end
+
+    describe "when :event == :update" do
+      let(:opts) { { event: :update } }
+      
+      it { is_expected.to be_truthy } 
+    end
+
+    describe "when :event is not defined" do
+      let(:opts) { { } }
+      
+      it { is_expected.to be_falsey } 
+    end
+  end
+
   describe "#<=>" do
     let(:inclusion) { Mv::Core::Validation::Inclusion.new(:table_name, :column_name, in: [1, 2], as: :trigger) }
     let(:exclusion) { Mv::Core::Validation::Exclusion.new(:table_name, :column_name, in: [0, 3], as: :trigger) }

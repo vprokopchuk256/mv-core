@@ -8,7 +8,11 @@ module Mv
         
         def initialize description
           super 
-          @event = @description.options[:event]
+          @event = @description.options[:event].try(:to_sym)
+        end
+
+        def update?
+          event == :update
         end
       end
     end

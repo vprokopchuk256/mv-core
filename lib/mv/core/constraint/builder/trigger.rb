@@ -5,6 +5,7 @@ module Mv
     module Constraint
       module Builder
         class Trigger < Base
+          delegate :event, :update?, to: :constraint
         end
       end
     end
