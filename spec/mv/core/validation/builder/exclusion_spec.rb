@@ -42,6 +42,15 @@ describe Mv::Core::Validation::Builder::Exclusion do
       }]) }
     end
 
+    describe "when string range passed" do
+      let(:opts) { { in: 'a'..'c' } }
+      
+      it { is_expected.to eq([{
+        statement: "column_name IS NOT NULL AND column_name < 'a' OR column_name > 'c'", 
+        message: 'some error message'
+      }]) }
+    end
+
     describe "when strings array passed" do
       let(:opts) { {in: ['a', 'c']} }
 

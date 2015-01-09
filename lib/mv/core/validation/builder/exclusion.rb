@@ -28,7 +28,7 @@ module Mv
 
           def apply_in stmt
             if self.in.is_a?(Range)
-              "#{stmt} < #{self.in.min} OR #{stmt} > #{self.in.max}"
+              "#{stmt} < #{db_value(self.in.min)} OR #{stmt} > #{db_value(self.in.max)}"
             else
               prepared_in = self.in.to_a.collect{ |v| db_value(v) }
 

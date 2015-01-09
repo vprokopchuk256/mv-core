@@ -42,6 +42,15 @@ describe Mv::Core::Validation::Builder::Inclusion do
       }]) }
     end
 
+    describe "when string range passed" do
+      let(:opts) { { in: 'a'..'c' } }
+      
+      it { is_expected.to eq([{
+        statement: "column_name IS NOT NULL AND column_name BETWEEN 'a' AND 'c'", 
+        message: 'some error message'
+      }]) }
+    end
+
     describe "when strings array passed" do
       let(:opts) { {in: ['a', 'c']} }
 
