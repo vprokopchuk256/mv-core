@@ -35,7 +35,7 @@ describe Mv::Core::Validation::Builder::Uniqueness do
       let(:opts) { {} }
 
       it { is_expected.to eq([{
-        statement: "NOT EXISTS(SELECT column_name 
+        statement: "db_name IS NOT NULL AND NOT EXISTS(SELECT column_name 
                                  FROM table_name 
                                 WHERE db_name = column_name)".squish, 
         message: 'some error message'

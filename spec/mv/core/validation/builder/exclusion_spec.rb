@@ -28,7 +28,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       let(:opts) { { in: [1, 5], message: 'some error message' } }
 
       it { is_expected.to eq([{
-        statement: 'column_name NOT IN (1, 5)', 
+        statement: 'column_name IS NOT NULL AND column_name NOT IN (1, 5)', 
         message: 'some error message'
       }]) }
     end
@@ -37,7 +37,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       let(:opts) { { in: 1..3 } }
       
       it { is_expected.to eq([{
-        statement: 'column_name < 1 OR column_name > 3', 
+        statement: 'column_name IS NOT NULL AND column_name < 1 OR column_name > 3', 
         message: 'some error message'
       }]) }
     end
@@ -46,7 +46,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       let(:opts) { {in: ['a', 'c']} }
 
       it { is_expected.to eq([{
-        statement: "column_name NOT IN ('a', 'c')", 
+        statement: "column_name IS NOT NULL AND column_name NOT IN ('a', 'c')", 
         message: 'some error message'
       }]) }
     end
@@ -55,7 +55,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       let(:opts) { {in: [1.5, 1.8]} }
 
       it { is_expected.to eq([{
-        statement: "column_name NOT IN (1.5, 1.8)", 
+        statement: "column_name IS NOT NULL AND column_name NOT IN (1.5, 1.8)", 
         message: 'some error message'
       }]) }
     end

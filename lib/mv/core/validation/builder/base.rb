@@ -24,13 +24,17 @@ module Mv
           def apply_allow_nil_and_blank stmt
             res = stmt
 
-            if allow_nil
-              res = apply_allow_nil(res)
-            end
+            if allow_nil || allow_blank
+              if allow_nil
+                res = apply_allow_nil(res)
+              end
 
-            if allow_blank
-              res = apply_allow_nil(res) unless allow_nil
-              res = apply_allow_blank(res)
+              if allow_blank
+                res = apply_allow_nil(res) unless allow_nil
+                res = apply_allow_blank(res)
+              end
+            else
+              res = apply_neither_nil_or_blank_allowed(stmt)
             end
 
             res
@@ -42,6 +46,10 @@ module Mv
 
           def apply_allow_blank stmt
             "#{stmt} OR LENGTH(TRIM(#{column_reference})) = 0"
+          end
+
+          def apply_neither_nil_or_blank_allowed stmt
+            "#{column_reference} IS NOT NULL AND #{stmt}"
           end
         end
       end

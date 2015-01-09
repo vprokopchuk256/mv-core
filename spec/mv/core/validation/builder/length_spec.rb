@@ -37,7 +37,7 @@ describe Mv::Core::Validation::Builder::Length do
         let(:opts) { { in: [1, 3] } }
 
         it { is_expected.to eq([{
-          statement: 'LENGTH(column_name) IN (1, 3)', 
+          statement: 'column_name IS NOT NULL AND LENGTH(column_name) IN (1, 3)', 
           message: 'some error message'
         }]) }
       end
@@ -46,7 +46,7 @@ describe Mv::Core::Validation::Builder::Length do
         let(:opts) { { in: 1..3 } }
 
         it { is_expected.to eq([{
-          statement: 'LENGTH(column_name) BETWEEN 1 AND 3', 
+          statement: 'column_name IS NOT NULL AND LENGTH(column_name) BETWEEN 1 AND 3', 
           message: 'some error message'
         }]) }
       end
@@ -57,7 +57,7 @@ describe Mv::Core::Validation::Builder::Length do
         let(:opts) { { within: [1, 3] } }
 
         it { is_expected.to eq([{
-          statement: 'LENGTH(column_name) IN (1, 3)', 
+          statement: 'column_name IS NOT NULL AND LENGTH(column_name) IN (1, 3)', 
           message: 'some error message'
         }]) }
       end
@@ -66,7 +66,7 @@ describe Mv::Core::Validation::Builder::Length do
         let(:opts) { { within: 1..3 } }
 
         it { is_expected.to eq([{
-          statement: 'LENGTH(column_name) BETWEEN 1 AND 3', 
+          statement: 'column_name IS NOT NULL AND LENGTH(column_name) BETWEEN 1 AND 3', 
           message: 'some error message'
         }]) }
       end
@@ -76,7 +76,7 @@ describe Mv::Core::Validation::Builder::Length do
       let(:opts) { { is: 1 } }
 
       it { is_expected.to eq([{
-        statement: 'LENGTH(column_name) = 1', 
+        statement: 'column_name IS NOT NULL AND LENGTH(column_name) = 1', 
         message: 'some error message'
       }]) }
     end
@@ -85,7 +85,7 @@ describe Mv::Core::Validation::Builder::Length do
       let(:opts) { { maximum: 3, too_long: 'too long error message' } }
 
       it { is_expected.to eq([{
-        statement: 'LENGTH(column_name) <= 3', 
+        statement: 'column_name IS NOT NULL AND LENGTH(column_name) <= 3', 
         message: 'too long error message'
       }]) }
     end
@@ -94,7 +94,7 @@ describe Mv::Core::Validation::Builder::Length do
       let(:opts) { { minimum: 1, too_short: 'too short error message' } }
 
       it { is_expected.to eq([{
-        statement: 'LENGTH(column_name) >= 1', 
+        statement: 'column_name IS NOT NULL AND LENGTH(column_name) >= 1', 
         message: 'too short error message'
       }]) }
     end
@@ -105,9 +105,9 @@ describe Mv::Core::Validation::Builder::Length do
         let(:opts) { { minimum: 1, maximum: 3, too_long: 'too long error message', too_short: 'too short error message' } }
 
         it { is_expected.to match_array([
-          { statement: 'LENGTH(column_name) >= 1', 
+          { statement: 'column_name IS NOT NULL AND LENGTH(column_name) >= 1', 
             message: 'too short error message' },
-          { statement: 'LENGTH(column_name) <= 3', 
+          { statement: 'column_name IS NOT NULL AND LENGTH(column_name) <= 3', 
             message: 'too long error message' }
         ]) }
         
@@ -117,7 +117,7 @@ describe Mv::Core::Validation::Builder::Length do
         let(:opts) { { minimum: 1, maximum: 3, too_long: 'some error message', too_short: 'some error message' } }
         
         it { is_expected.to eq([{
-          statement: 'LENGTH(column_name) BETWEEN 1 AND 3', 
+          statement: 'column_name IS NOT NULL AND LENGTH(column_name) BETWEEN 1 AND 3', 
           message: 'some error message'
         }]) }
       end
