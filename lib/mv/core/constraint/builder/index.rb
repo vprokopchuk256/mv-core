@@ -40,7 +40,7 @@ module Mv
           end
 
           def add_index(table_name, columns)
-            db.add_index(table_name, columns, name: name)
+            db.add_index(table_name, columns, name: name, unique: true)
           end
         end
       end
