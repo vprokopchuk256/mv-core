@@ -56,6 +56,14 @@ describe Mv::Core::Validation::Exclusion do
 
     it { is_expected.to eq(instance(in: [2, 1])) }
     it { is_expected.not_to eq(instance(in: [1, 2, 3])) }
+    
+    describe "when in defined as non enumerable range" do
+      subject { instance(in: Time.new(2011, 1, 1, 1, 1, 1)..Time.new(2012, 2, 2, 2, 2, 2)) }
+
+      it { is_expected.to eq(instance(in: Time.new(2011, 1, 1, 1, 1, 1)..Time.new(2012, 2, 2, 2, 2, 2))) }
+      it { is_expected.not_to eq(instance(in: Time.new(2011, 1, 1, 1, 1, 1)...Time.new(2012, 2, 2, 2, 2, 2))) }
+      it { is_expected.not_to eq(instance(in: Time.new(2011, 1, 1, 1, 1, 1)...Time.new(2012, 2, 2, 2, 2, 3))) }
+    end
   end
 
   describe "default values" do

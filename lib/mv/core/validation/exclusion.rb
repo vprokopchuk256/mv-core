@@ -18,7 +18,8 @@ module Mv
         end
 
         def to_a
-          super + [self.in.try(:sort)]
+          prepared_in = self.in.is_a?(Range) ? [self.in.min, self.in.max] : self.in.try(:sort)
+          super + [prepared_in]
         end
       end
     end
