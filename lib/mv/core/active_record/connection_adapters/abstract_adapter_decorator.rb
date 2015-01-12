@@ -31,6 +31,10 @@ module Mv
             super
           end
 
+          def validates table_name, column_name, opts
+            Mv::Core::Migration::Base.change_column(table_name, column_name, opts)
+          end
+
           def rename_table old_table_name, new_table_name
             Mv::Core::Migration::Base.rename_table(old_table_name, new_table_name)
 

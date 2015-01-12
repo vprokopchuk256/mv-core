@@ -10,6 +10,10 @@ module Mv
 
             super
           end
+
+          def validates column_name, opts
+            Mv::Core::Migration::Base.change_column(name, column_name, opts)  
+          end
         end
       end
     end

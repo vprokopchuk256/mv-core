@@ -90,6 +90,25 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
     end
   end
 
+  describe "#validates" do
+    before do
+      td = conn.create_table :table_name do |t|
+        t.string :column_name
+      end
+    end
+
+    subject :validates do
+      conn.validates :table_name, :column_name, length: { is: 5 } 
+    end
+
+    it "calls migration change_column method" do
+      expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
+        :table_name, :column_name, length: { is: 5 } 
+      )
+      validates
+    end
+  end
+
   describe "#change_column" do
     before do
       td = conn.create_table :table_name do |t|
