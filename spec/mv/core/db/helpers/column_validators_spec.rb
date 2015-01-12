@@ -33,6 +33,11 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
       end
 
+      it "says to migration log" do
+        expect(::ActiveRecord::Migration).to receive(:say).with("create validation -- :uniqueness=>{:as=>:trigger} on table_name.column_name")
+        subject
+      end
+
       describe "newly created validator" do
         subject(:validator) do
           create_column_validator
@@ -95,6 +100,11 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       it "should remove existing validator" do
         expect{ update_column_validator }.to change(Mv::Core::Db::MigrationValidator, :count).by(-1)
       end
+
+      it "should say to migration log" do
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation -- :uniqueness=>{:as=>:trigger} on table_name.column_name")
+        update_column_validator
+      end
     end
 
     describe 'when validator exists' do
@@ -112,6 +122,11 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
       it "should create new validator" do
         expect{ update_column_validator }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
+      end
+
+      it "says to migration log" do
+        expect(::ActiveRecord::Migration).to receive(:say).with("create validation -- :uniqueness=>true on table_name.column_name")
+        subject
       end
 
       describe "newly created validator" do
@@ -136,10 +151,14 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
       it { is_expected.to be_truthy }
       
-      it "does nothing" do
+      it "removes validator" do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(-1)
       end
       
+      it "should say to migration log" do
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation -- :uniqueness=>{:as=>:trigger} on table_name.column_name")
+        subject
+      end
     end
 
     describe "when validator does not exist" do

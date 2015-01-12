@@ -57,4 +57,23 @@ describe Mv::Core::Db::MigrationValidator do
       end
     end
   end
+
+  describe "#to_say" do
+    describe "when options are defined" do
+      subject { migration_validator.to_say }
+
+      it { is_expected.to eq(':uniqueness=>{:as=>:trigger, :update_trigger_name=>:update_trigger_name} on table_name.column_name') }
+    end
+
+    describe "when simplified options are defined" do
+      subject(:migration_validator) { 
+        described_class.create(table_name: :table_name, 
+                               column_name: :column_name, 
+                               validation_type: :uniqueness, 
+                               options: {}).to_say
+      }
+      
+      it { is_expected.to eq(':uniqueness=>true on table_name.column_name') }
+    end
+  end
 end

@@ -20,14 +20,15 @@ module Mv
           end
 
           def delete_column_validator 
-            column_validators.delete_all > 0
+            delete_validators(column_validators) > 0
           end
           
           def update_column_validator validation_type, opts
-            return column_validators.where(validation_type: validation_type).delete_all if opts == false
+            return delete_validators(column_validators.where(validation_type: validation_type)) if opts == false
 
             column_validators.where(validation_type: validation_type).first_or_initialize.tap do |validator|
               validator.options = normalize_opts(opts)
+              say("create validation -- #{validator.to_say}")
             end.save!
           end
 
