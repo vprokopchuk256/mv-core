@@ -11,7 +11,6 @@ group :development do
   gem 'rspec', '~> 3.1'
   gem 'rspec-its'
   gem 'shoulda'
-  gem 'mv-test', '~> 1.0'
   gem 'factory_girl'
   gem 'coveralls', require: false
 end

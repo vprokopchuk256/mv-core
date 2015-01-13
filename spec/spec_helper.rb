@@ -2,7 +2,6 @@
 # $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'rspec/its'
-require 'mv-test'
 require 'mv-core'
 require 'shoulda'
 require 'factory_girl'
