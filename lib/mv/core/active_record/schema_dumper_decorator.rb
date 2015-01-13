@@ -17,11 +17,7 @@ module Mv
 
         def trailer(stream)
           Mv::Core::Db::MigrationValidator.all.each do |migration_validator|
-            stream.puts("
-              validates :#{migration_validator.table_name.to_sym}, 
-                        :#{migration_validator.column_name.to_sym}, 
-                        #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}
-            ".squish.prepend('  ')) 
+            stream.puts("#{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}".prepend('  ')) 
           end
 
           stream.puts('')

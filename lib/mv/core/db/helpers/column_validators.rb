@@ -28,7 +28,7 @@ module Mv
 
             column_validators.where(validation_type: validation_type).first_or_initialize.tap do |validator|
               validator.options = normalize_opts(opts)
-              say(Mv::Core::Presenter::MigrationValidator.new(validator).to_s)
+              say("create #{Mv::Core::Presenter::MigrationValidator.new(validator)}")
             end.save!
           end
 

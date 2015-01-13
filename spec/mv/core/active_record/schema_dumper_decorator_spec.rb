@@ -24,7 +24,7 @@ describe Mv::Core::ActiveRecord::SchemaDumperDecorator do
 
     subject { out.string }
 
-    it { is_expected.to include("validates :table_name, :column_name, #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}")}
+    it { is_expected.to include("#{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}")}
     it { is_expected.not_to include("create_table \"migration_validators\"") }
   end
 

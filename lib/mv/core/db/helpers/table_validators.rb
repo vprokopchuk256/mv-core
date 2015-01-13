@@ -23,7 +23,7 @@ module Mv
           private
 
           def say(message) 
-            ::ActiveRecord::Migration.say(message)
+            ::ActiveRecord::Migration.say(message, true)
           end
 
           def delete_validators validators

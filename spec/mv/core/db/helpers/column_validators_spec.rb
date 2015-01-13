@@ -34,7 +34,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
 
       it "says to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with(Mv::Core::Presenter::MigrationValidator.new(migration_validator).to_s)
+        expect(::ActiveRecord::Migration).to receive(:say).with("create #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}", true)
         subject
       end
 
@@ -102,7 +102,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
 
       it "should say to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}")
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}", true)
         update_column_validator
       end
     end
@@ -125,7 +125,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
 
       it "says to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("validates(\"table_name\", \"column_name\", uniqueness: true)")
+        expect(::ActiveRecord::Migration).to receive(:say).with("create validates(\"table_name\", \"column_name\", uniqueness: true)", true)
         subject
       end
 
@@ -156,7 +156,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
       
       it "should say to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}")
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}", true)
         subject
       end
     end
