@@ -51,11 +51,11 @@ module Mv
         end
 
         def time_to_str value
-          "Time.new(#{value.strftime("%Y, %-m, %-d, %-H, %-M, %-S, '%:z'")})"
+          "Time.new(#{value.strftime("%Y, %-m, %-d, %-H, %-M, %-S")})"
         end
 
         def datetime_to_str value
-          "DateTime.new(#{value.strftime("%Y, %-m, %-d, %-H, %-M, %-S, '%:z'")})"
+          "DateTime.new(#{value.utc.strftime("%Y, %-m, %-d, %-H, %-M, %-S")})"
         end
 
         def date_to_str value
