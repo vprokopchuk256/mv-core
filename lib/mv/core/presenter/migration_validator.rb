@@ -4,7 +4,7 @@ module Mv
       class MigrationValidator
         attr_reader :validator
 
-        delegate :validation_type, :options, to: :validator
+        delegate :validation_type, :table_name, :column_name, :options, to: :validator
 
         def initialize(validator)
           @validator = validator
@@ -12,7 +12,7 @@ module Mv
 
         def to_s
           options_as_str = options.blank? ? 'true' : "{ #{options_str} }"
-          "#{validation_type}: #{options_as_str} ".squish
+          "validates(\"#{table_name}\", \"#{column_name}\", #{validation_type}: #{options_as_str})".squish
         end
 
         private

@@ -31,7 +31,7 @@ describe Mv::Core::Db::Helpers::TableValidators do
       end
 
       it "say something to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation(#{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}) on table_name.column_name")
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}")
         delete_table_validators
       end
     end
