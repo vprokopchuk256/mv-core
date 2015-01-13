@@ -54,14 +54,14 @@ This gem is not intended to be installed directly and referenced from within the
   ```ruby
   change_table do |t|
     t.change :str_column, :integer, validates: { exclusion: { in: [1,2,3] }}
-    t.change_validates :column_name, inclusion: { in: 1..3 }
+    t.validates :column_name, inclusion: { in: 1..3 }
   end
   ```
 
   Update validator definition: 
 
   ```ruby
-  validate_column :table_name, :str_column, :exclusion: { in: [1,2,3] }
+  validates :table_name, :str_column, :exclusion: { in: [1,2,3] }
   ```
 
   Remove existing validators: 
@@ -70,7 +70,7 @@ This gem is not intended to be installed directly and referenced from within the
   change_table do |t|
     t.change :str_column, :integer, validates: { exclusion: false }
   end
-  validate_column table_name, :str_column, exclusion: false
+  validates :table_name, :str_column, exclusion: false
   ```
 
  There are many ways to define desired database constraint. And those ways might vary for each RDBMS. One could define the way how constaint should be 
@@ -79,15 +79,15 @@ This gem is not intended to be installed directly and referenced from within the
   as trigger:
 
   ```ruby
-  validate_column :table_name, :str_column, validates: { uniqueness: true, 
-                                                         as: :trigger }
+  validates :table_name, :str_column, validates: { uniqueness: true, 
+                                                   as: :trigger }
   ```
 
   as check constraint:
 
   ```ruby
-  validate_column :table_name, :str_column, validates: { uniqueness: true, 
-                                                         as: :check }
+  validates :table_name, :str_column, validates: { uniqueness: true, 
+                                                   as: :check }
   ```
 
   Also there is possibility to define when validations should occur: 
@@ -95,20 +95,18 @@ This gem is not intended to be installed directly and referenced from within the
   when new record created: 
 
   ```ruby
-  validate_column :table_name, :str_column, validates: { uniqueness: true, 
-                                                         on: :create }
+  validates :table_name, :str_column, validates: { uniqueness: true, 
+                                                   on: :create }
   ```
 
   or when existing record updated:
 
   ```ruby
-  validate_column :table_name, :str_column, validates: { uniqueness: true, 
-                                                         on: :update }
+  validates :table_name, :str_column, validates: { uniqueness: true, 
+                                                   on: :update }
   ```
 
   Supported validators and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
-
-  **WARNING:** `change` method is not supported in migrations yet. You should rather use `up` && `down` methods
 
 # Drivers
 
@@ -132,5 +130,5 @@ So - see detailed info here:
 
 ## Copyright
 
-Copyright (c) 2011 Valeriy Prokopchuk. See LICENSE.txt for
+Copyright (c) 2015 Valeriy Prokopchuk. See LICENSE.txt for
 further details.
