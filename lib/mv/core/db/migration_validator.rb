@@ -20,14 +20,6 @@ module Mv
                                                           validation_type, 
                                                           options)
         end
-
-        def to_param
-          ":#{validation_type.to_sym}=>#{options.blank? ? 'true' : options.to_s}"
-        end
-
-        def to_say
-          "#{to_param} on #{table_name}.#{column_name}"
-        end
       end
     end
   end

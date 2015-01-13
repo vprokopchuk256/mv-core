@@ -1,4 +1,5 @@
 require 'mv/core/db/migration_validator'
+require 'mv/core/presenter/migration_validator'
 
 module Mv
   module Core
@@ -27,7 +28,7 @@ module Mv
 
           def delete_validators validators
             validators.each do |validator|
-              say("remove validation -- #{validator.to_say}")
+              say("remove validation(#{Mv::Core::Presenter::MigrationValidator.new(validator)}) on #{validator.table_name}.#{validator.column_name}")
               validator.destroy
             end
             validators.length

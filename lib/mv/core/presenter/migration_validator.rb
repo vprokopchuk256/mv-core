@@ -11,7 +11,8 @@ module Mv
         end
 
         def to_s
-          "#{validation_type}: { #{options_str} } ".squish
+          options_as_str = options.blank? ? 'true' : "{ #{options_str} }"
+          "#{validation_type}: #{options_as_str} ".squish
         end
 
         private

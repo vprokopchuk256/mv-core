@@ -34,7 +34,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
 
       it "says to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("create validation -- :uniqueness=>{:as=>:trigger} on table_name.column_name")
+        expect(::ActiveRecord::Migration).to receive(:say).with("create validation(#{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}) on table_name.column_name")
         subject
       end
 
@@ -102,7 +102,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
 
       it "should say to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation -- :uniqueness=>{:as=>:trigger} on table_name.column_name")
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation(#{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}) on table_name.column_name")
         update_column_validator
       end
     end
@@ -125,7 +125,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
 
       it "says to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("create validation -- :uniqueness=>true on table_name.column_name")
+        expect(::ActiveRecord::Migration).to receive(:say).with("create validation(uniqueness: true) on table_name.column_name")
         subject
       end
 
@@ -156,7 +156,7 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
       
       it "should say to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation -- :uniqueness=>{:as=>:trigger} on table_name.column_name")
+        expect(::ActiveRecord::Migration).to receive(:say).with("remove validation(#{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}) on table_name.column_name")
         subject
       end
     end

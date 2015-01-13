@@ -139,5 +139,17 @@ describe Mv::Core::Presenter::MigrationValidator do
       
       it { is_expected.to eq("exclusion: { in: 'str'...'str2', as: :trigger, update_trigger_name: :update_trigger_name }") } 
     end
+
+    describe "with empty options hash" do
+      let(:migration_validator) { 
+        build(:migration_validator, 
+               table_name: :table_name, 
+               column_name: :column_name, 
+               validation_type: :exclusion, 
+               options: {})
+      }
+      
+      it { is_expected.to eq("exclusion: true") }
+    end
   end
 end

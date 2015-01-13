@@ -1,5 +1,6 @@
 require 'mv/core/db/migration_validator'
 require 'mv/core/services/create_migration_validators_table'
+require 'mv/core/presenter/migration_validator'
 
 module Mv
   module Core
@@ -19,7 +20,7 @@ module Mv
             stream.puts("
               validates :#{migration_validator.table_name.to_sym}, 
                         :#{migration_validator.column_name.to_sym}, 
-                        #{migration_validator.to_param}
+                        #{Mv::Core::Presenter::MigrationValidator.new(migration_validator)}
             ".squish.prepend('  ')) 
           end
 
