@@ -42,7 +42,7 @@ describe Mv::Core::Services::SayConstraintsDiff do
       end
 
       it "outputs constraint description as deleted and it's validations as deleted" do
-        expect(::ActiveRecord::Migration).to receive(:say_with_time).with("delete #{constraint_presenter}").and_call_original
+        expect(::ActiveRecord::Migration).to receive(:say_with_time).with("delete #{constraint_presenter} on table \"table_name\"").and_call_original
         expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("delete #{validation_presenter}", true)
         expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("internal code")
         subject
@@ -59,7 +59,7 @@ describe Mv::Core::Services::SayConstraintsDiff do
       end
 
       it "outputs constraint description as added and it's validations as added" do
-        expect(::ActiveRecord::Migration).to receive(:say_with_time).with("create #{constraint_presenter}").and_call_original
+        expect(::ActiveRecord::Migration).to receive(:say_with_time).with("create #{constraint_presenter} on table \"table_name\"").and_call_original
         expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("create #{validation_presenter}", true)
         expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("internal code")
         subject
@@ -77,7 +77,7 @@ describe Mv::Core::Services::SayConstraintsDiff do
         before { old_constraint.validations << uniqueness }
 
         it "outputs constraint description as deleted and it's validations as deleted" do
-          expect(::ActiveRecord::Migration).to receive(:say_with_time).with("update #{constraint_presenter}").and_call_original
+          expect(::ActiveRecord::Migration).to receive(:say_with_time).with("update #{constraint_presenter} on table \"table_name\"").and_call_original
           expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("delete #{validation_presenter}", true)
           expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("internal code")
           subject
@@ -88,7 +88,7 @@ describe Mv::Core::Services::SayConstraintsDiff do
         before { new_constraint.validations << uniqueness }
 
         it "outputs constraint description as added and it's validations as added" do
-          expect(::ActiveRecord::Migration).to receive(:say_with_time).with("update #{constraint_presenter}").and_call_original
+          expect(::ActiveRecord::Migration).to receive(:say_with_time).with("update #{constraint_presenter} on table \"table_name\"").and_call_original
           expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("create #{validation_presenter}", true)
           expect(::ActiveRecord::Migration).to receive(:say).once.ordered.with("internal code")
           subject

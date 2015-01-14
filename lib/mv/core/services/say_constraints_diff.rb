@@ -14,7 +14,7 @@ module Mv
         end
 
         def execute
-          ::ActiveRecord::Migration.say_with_time("#{constraint_operation} #{constraint_presenter}") do
+          ::ActiveRecord::Migration.say_with_time("#{constraint_operation} #{constraint_presenter} on table \"#{table_name}\"") do
             comparison[:deleted].each do |validation|
               say("delete #{validation_presenter(validation)}")
             end if comparison[:deleted]
@@ -33,6 +33,11 @@ module Mv
           return 'create' unless old_constraint
           return 'delete' unless new_constraint
           'update'
+        end
+
+        def table_name
+          old_constraint.try(:validations).try(:first).try(:table_name) ||
+          new_constraint.try(:validations).try(:first).try(:table_name)
         end
 
         def constraint_presenter
