@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-require 'mv/core/presenter/migration_validator'
+require 'mv/core/presenter/db/migration_validator'
 
-describe Mv::Core::Presenter::MigrationValidator do
+describe Mv::Core::Presenter::Db::MigrationValidator do
   let(:migration_validator) { 
     build(:migration_validator, 
            table_name: :table_name, 
