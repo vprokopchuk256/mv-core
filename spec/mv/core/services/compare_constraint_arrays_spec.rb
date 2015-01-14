@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-require 'mv/core/services/compare_constraints'
+require 'mv/core/services/compare_constraint_arrays'
 require 'mv/core/constraint/description'
 require 'mv/core/validation/uniqueness'
 require 'mv/core/validation/presence'
 
-describe Mv::Core::Services::CompareConstraints do
+describe Mv::Core::Services::CompareConstraintArrays do
   let(:description) { 
     Mv::Core::Constraint::Description.new(:trg_mv_table_name_ins, :trigger, event: :create)
   }

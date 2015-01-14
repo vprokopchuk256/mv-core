@@ -1,7 +1,7 @@
 module Mv
   module Core
     module Services
-      class CompareConstraints
+      class CompareConstraintArrays
         attr_reader :old_constraints, :new_constraints
 
         def initialize(old_constraints, new_constraints)
