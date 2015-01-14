@@ -28,7 +28,6 @@ module Mv
 
           def delete_validators validators
             validators.each do |validator|
-              say("remove #{Mv::Core::Presenter::Db::MigrationValidator.new(validator)}")
               validator.destroy
             end
             validators.length

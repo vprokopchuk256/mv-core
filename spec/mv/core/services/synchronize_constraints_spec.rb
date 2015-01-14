@@ -33,6 +33,7 @@ describe Mv::Core::Services::SynchronizeConstraints do
 
         expect(builder).to receive(:delete)
         expect(Mv::Core::Constraint::Builder::Trigger).to receive(:new).with(old_constraint).and_return(builder)
+        expect(Mv::Core::Services::SayConstraintsDiff).to receive(:new).with(*[old_constraint, nil]).and_call_original
 
         execute
       end
@@ -46,6 +47,7 @@ describe Mv::Core::Services::SynchronizeConstraints do
 
         expect(builder).to receive(:update)
         expect(Mv::Core::Constraint::Builder::Trigger).to receive(:new).twice.and_return(builder)
+        expect(Mv::Core::Services::SayConstraintsDiff).to receive(:new).with(*[old_constraint, new_constraint]).and_call_original
 
         execute
       end
@@ -59,6 +61,7 @@ describe Mv::Core::Services::SynchronizeConstraints do
 
         expect(builder).to receive(:create)
         expect(Mv::Core::Constraint::Builder::Trigger).to receive(:new).with(new_constraint).and_return(builder)
+        expect(Mv::Core::Services::SayConstraintsDiff).to receive(:new).with(*[nil, new_constraint]).and_call_original
 
         execute
       end

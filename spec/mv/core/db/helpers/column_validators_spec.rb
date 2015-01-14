@@ -33,11 +33,6 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
       end
 
-      it "says to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("create #{Mv::Core::Presenter::Db::MigrationValidator.new(migration_validator)}", true)
-        subject
-      end
-
       describe "newly created validator" do
         subject(:validator) do
           create_column_validator
@@ -100,11 +95,6 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       it "should remove existing validator" do
         expect{ update_column_validator }.to change(Mv::Core::Db::MigrationValidator, :count).by(-1)
       end
-
-      it "should say to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::Db::MigrationValidator.new(migration_validator)}", true)
-        update_column_validator
-      end
     end
 
     describe 'when validator exists' do
@@ -122,11 +112,6 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
 
       it "should create new validator" do
         expect{ update_column_validator }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
-      end
-
-      it "says to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("create validates(\"table_name\", \"column_name\", uniqueness: true)", true)
-        subject
       end
 
       describe "newly created validator" do
@@ -153,11 +138,6 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       
       it "removes validator" do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(-1)
-      end
-      
-      it "should say to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::Db::MigrationValidator.new(migration_validator)}", true)
-        subject
       end
     end
 

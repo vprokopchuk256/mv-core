@@ -29,11 +29,6 @@ describe Mv::Core::Db::Helpers::TableValidators do
       it "deletes validator" do
         expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(-1)
       end
-
-      it "say something to migration log" do
-        expect(::ActiveRecord::Migration).to receive(:say).with("remove #{Mv::Core::Presenter::Db::MigrationValidator.new(migration_validator)}", true)
-        delete_table_validators
-      end
     end
 
     describe "when other table validator exist" do

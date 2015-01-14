@@ -3,6 +3,7 @@ require 'rspec/its'
 require 'mv-core'
 require 'shoulda'
 require 'factory_girl'
+require 'pry-byebug'
 
 ActiveRecord::Migration.verbose = false
 
