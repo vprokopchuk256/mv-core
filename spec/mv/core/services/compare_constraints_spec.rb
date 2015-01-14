@@ -23,52 +23,54 @@ describe Mv::Core::Services::CompareConstraints do
     its(:new_constraint) { is_expected.to eq(new_constraint) }
   end
 
-  describe "when new constraint is not provided" do
-    before { old_constraint.validations << uniqueness }
-
-    subject { described_class.new(old_constraint, nil).execute }
-
-    it { is_expected.to eq(
-      deleted: [uniqueness]
-    )}
-  end
-
-  describe "when old constraint is not provided" do
-    before { new_constraint.validations << uniqueness }
-
-    subject { described_class.new(nil, new_constraint).execute }
-
-    it { is_expected.to eq(
-      added: [uniqueness]
-    )}
-  end
-
-  describe "when both new & old constraints are provided" do
-    subject { described_class.new(old_constraint, new_constraint).execute }
-
-    describe "when old constrains contains validation that is not included to the new one" do
+  describe "#execute" do
+    describe "when new constraint is not provided" do
       before { old_constraint.validations << uniqueness }
+
+      subject { described_class.new(old_constraint, nil).execute }
 
       it { is_expected.to eq(
         deleted: [uniqueness]
       )}
     end
 
-    describe "when new constraint contains validation that is not included to the old one" do
+    describe "when old constraint is not provided" do
       before { new_constraint.validations << uniqueness }
+
+      subject { described_class.new(nil, new_constraint).execute }
 
       it { is_expected.to eq(
         added: [uniqueness]
       )}
     end
 
-    describe "when both new & old constraint has the same validations list" do
-      before { 
-        new_constraint.validations << uniqueness 
-        old_constraint.validations << uniqueness 
-      }
+    describe "when both new & old constraints are provided" do
+      subject { described_class.new(old_constraint, new_constraint).execute }
 
-      it { is_expected.to be_empty }
+      describe "when old constrains contains validation that is not included to the new one" do
+        before { old_constraint.validations << uniqueness }
+
+        it { is_expected.to eq(
+          deleted: [uniqueness]
+        )}
+      end
+
+      describe "when new constraint contains validation that is not included to the old one" do
+        before { new_constraint.validations << uniqueness }
+
+        it { is_expected.to eq(
+          added: [uniqueness]
+        )}
+      end
+
+      describe "when both new & old constraint has the same validations list" do
+        before { 
+          new_constraint.validations << uniqueness 
+          old_constraint.validations << uniqueness 
+        }
+
+        it { is_expected.to be_empty }
+      end
     end
   end
 end

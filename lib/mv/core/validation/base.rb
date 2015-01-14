@@ -6,7 +6,7 @@ module Mv
         include ActiveModel::Validations
 
         attr_reader :table_name, :column_name, :message, :on, :create_trigger_name, 
-                    :update_trigger_name, :allow_nil, :allow_blank, :as
+                    :update_trigger_name, :allow_nil, :allow_blank, :as, :options
 
         validates :on, inclusion: { in: :available_on }, allow_nil: true
         validates :allow_nil, :allow_blank, inclusion: { in: [true, false] }
@@ -16,18 +16,19 @@ module Mv
         validates :create_trigger_name, absence: { message: 'allowed when :on in [:save, :create] and :as == :trigger'}, unless: "create? && trigger?"
         validates :update_trigger_name, absence: { message: 'allowed when :on in [:save, :update] and :as == :trigger'}, unless: "update? && trigger?"
 
-        def initialize table_name, column_name, opts
+        def initialize table_name, column_name, options
           @table_name = table_name
           @column_name = column_name
+          @options = options
 
-          opts.with_indifferent_access.tap do |opts|
-            @message = opts[:message] || default_message
-            @as = opts[:as] || default_as
-            @on = opts[:on] || default_on
-            @create_trigger_name = opts[:create_trigger_name] || default_create_trigger_name
-            @update_trigger_name = opts[:update_trigger_name] || default_update_trigger_name
-            @allow_nil = opts[:allow_nil] || default_allow_nil
-            @allow_blank = opts[:allow_blank] || default_allow_blank
+          options.with_indifferent_access.tap do |options|
+            @message = options[:message] || default_message
+            @as = options[:as] || default_as
+            @on = options[:on] || default_on
+            @create_trigger_name = options[:create_trigger_name] || default_create_trigger_name
+            @update_trigger_name = options[:update_trigger_name] || default_update_trigger_name
+            @allow_nil = options[:allow_nil] || default_allow_nil
+            @allow_blank = options[:allow_blank] || default_allow_blank
           end
         end
 
