@@ -2,12 +2,10 @@ require 'spec_helper'
 
 require 'mv/core/migration/base'
 require 'mv/core/active_record/connection_adapters/abstract_adapter_decorator'
-require 'mv/core/services/create_migration_validators_table'
 
 describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
   before do
     ::ActiveRecord::Base.connection.class.send(:prepend, described_class)
-    Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
   let(:conn) { ::ActiveRecord::Base.connection }

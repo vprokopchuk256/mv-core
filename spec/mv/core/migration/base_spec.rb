@@ -1,15 +1,8 @@
 require 'spec_helper'
 
-require 'mv/core/db/migration_validator'
-require 'mv/core/migration/operations/factory'
-require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/migration/base'
 
 describe Mv::Core::Migration::Base do
-  before do
-    Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-  end
-
   subject(:migration) { described_class.current }
 
   describe "#add_column" do
@@ -206,9 +199,15 @@ describe Mv::Core::Migration::Base do
   describe "#execute" do
     subject(:migration_execute) { migration.execute }
 
-    it "should call list execute" do
+    it "executes operations list" do
       expect(migration.operations_list).to receive(:execute)  
       
+      subject
+    end
+
+    it "checks and creates migration table" do
+      expect_any_instance_of(Mv::Core::Services::CreateMigrationValidatorsTable).to receive(:execute).and_call_original
+
       subject
     end
   end

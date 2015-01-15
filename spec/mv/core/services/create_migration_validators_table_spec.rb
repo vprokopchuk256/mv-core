@@ -12,6 +12,11 @@ describe Mv::Core::Services::CreateMigrationValidatorsTable do
           ActiveRecord::Base.connection.table_exists?(:migration_validators)
         }.from(false).to(true)
       end
+
+      it "says that table is created" do
+        expect(::ActiveRecord::Migration).to receive(:say_with_time).with('initialize migration_validators table')
+        subject
+      end
     end
 
     describe "when table already exist" do
@@ -21,6 +26,10 @@ describe Mv::Core::Services::CreateMigrationValidatorsTable do
 
       it "does not raise an error" do
         expect{ subject }.not_to raise_error
+      end
+
+      it "says nothing" do
+        expect(::ActiveRecord::Migration).not_to receive(:say_with_time)
       end
     end
   end

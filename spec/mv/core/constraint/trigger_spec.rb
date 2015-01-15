@@ -1,14 +1,9 @@
 require 'spec_helper'
 
-require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/constraint/trigger'
 require 'mv/core/error'
 
 describe Mv::Core::Constraint::Trigger do
-  before do
-    Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-  end
-
   let(:trigger_description) { Mv::Core::Constraint::Description.new(:update_trigger_name, 
                                                                     :trigger, 
                                                                     { event: :update })}

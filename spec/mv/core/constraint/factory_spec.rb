@@ -1,13 +1,8 @@
 require 'spec_helper'
 
-require 'mv/core/services/create_migration_validators_table'
 require 'mv/core/constraint/factory'
 
 describe Mv::Core::Constraint::Factory do
-  before do
-    Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-  end
-
   describe "#create_constraint" do
     subject { described_class.create_constraint(description) }
 

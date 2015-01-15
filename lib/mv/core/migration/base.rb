@@ -4,6 +4,7 @@ require 'mv/core/migration/operations/factory'
 require 'mv/core/services/load_constraints'
 require 'mv/core/services/compare_constraint_arrays'
 require 'mv/core/services/synchronize_constraints'
+require 'mv/core/services/create_migration_validators_table.rb'
 
 module Mv
   module Core
@@ -32,6 +33,8 @@ module Mv
         end
 
         def execute
+          Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
+          
           constraints_loader = Mv::Core::Services::LoadConstraints.new(operations_list.tables)
 
           old_constraints = constraints_loader.execute
