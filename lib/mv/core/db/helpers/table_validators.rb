@@ -1,5 +1,4 @@
 require 'mv/core/db/migration_validator'
-require 'mv/core/presenter/db/migration_validator'
 
 module Mv
   module Core
