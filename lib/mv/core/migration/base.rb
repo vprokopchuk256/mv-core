@@ -33,23 +33,25 @@ module Mv
         end
 
         def execute
-          Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-          
-          constraints_loader = Mv::Core::Services::LoadConstraints.new(operations_list.tables)
+          if operations_list.present?
+            Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
+            
+            constraints_loader = Mv::Core::Services::LoadConstraints.new(operations_list.tables)
 
-          old_constraints = constraints_loader.execute
+            old_constraints = constraints_loader.execute
 
-          operations_list.execute()
+            operations_list.execute()
 
-          new_constraints = constraints_loader.execute
+            new_constraints = constraints_loader.execute
 
-          constraints_comparizon = Mv::Core::Services::CompareConstraintArrays.new(old_constraints, new_constraints)
-                                                                                   .execute
+            constraints_comparizon = Mv::Core::Services::CompareConstraintArrays.new(old_constraints, new_constraints)
+                                                                                     .execute
 
-          Mv::Core::Services::SynchronizeConstraints.new(constraints_comparizon[:added], 
-                                                         constraints_comparizon[:updated], 
-                                                         constraints_comparizon[:deleted])
-                                                    .execute
+            Mv::Core::Services::SynchronizeConstraints.new(constraints_comparizon[:added], 
+                                                           constraints_comparizon[:updated], 
+                                                           constraints_comparizon[:deleted])
+                                                      .execute
+          end
         end
 
         def add_column table_name, column_name, opts
