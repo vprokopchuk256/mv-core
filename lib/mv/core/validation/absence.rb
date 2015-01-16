@@ -12,6 +12,16 @@ module Mv
           super(table_name, column_name, opts)
         end
 
+        protected
+
+        def default_allow_nil
+          true
+        end
+
+        def default_allow_blank
+          true
+        end
+
         private
 
         def nil_and_blank_can_not_be_both_denied

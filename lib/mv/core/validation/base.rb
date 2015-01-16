@@ -27,8 +27,8 @@ module Mv
             @on = options[:on] || default_on
             @create_trigger_name = options[:create_trigger_name] || default_create_trigger_name
             @update_trigger_name = options[:update_trigger_name] || default_update_trigger_name
-            @allow_nil = options[:allow_nil] || default_allow_nil
-            @allow_blank = options[:allow_blank] || default_allow_blank
+            @allow_nil = options[:allow_nil].nil? ? default_allow_nil : options[:allow_nil]
+            @allow_blank = options[:allow_blank].nil? ? default_allow_blank : options[:allow_blank]
           end
         end
 

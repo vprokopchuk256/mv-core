@@ -57,13 +57,13 @@ describe Mv::Core::Validation::Absence do
     describe ":allow_nil" do
       subject { instance(allow_nil: nil) }
       
-      its(:allow_nil) { is_expected.to be_falsey }
+      its(:allow_nil) { is_expected.to be_truthy }
     end
 
     describe ":allow_blank" do
       subject { instance(allow_blank: nil) }
       
-      its(:allow_blank) { is_expected.to be_falsey }
+      its(:allow_blank) { is_expected.to be_truthy }
     end
 
     describe ":message" do
