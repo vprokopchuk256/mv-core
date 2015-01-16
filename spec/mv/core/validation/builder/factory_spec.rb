@@ -27,13 +27,19 @@ describe Mv::Core::Validation::Builder::Factory do
     end
 
     describe "presence" do
-      let(:validation) { Mv::Core::Validation::Presence.new(:table_name, :column_name, in: [1, 2]) }
+      let(:validation) { Mv::Core::Validation::Presence.new(:table_name, :column_name, {}) }
 
       it { is_expected.to be_an_instance_of(Mv::Core::Validation::Builder::Presence) }
     end
 
+    describe "absence" do
+      let(:validation) { Mv::Core::Validation::Absence.new(:table_name, :column_name, {}) }
+
+      it { is_expected.to be_an_instance_of(Mv::Core::Validation::Builder::Absence) }
+    end
+
     describe "uniqueness" do
-      let(:validation) { Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, in: [1, 2]) }
+      let(:validation) { Mv::Core::Validation::Uniqueness.new(:table_name, :column_name, {}) }
 
       it { is_expected.to be_an_instance_of(Mv::Core::Validation::Builder::Uniqueness) }
     end

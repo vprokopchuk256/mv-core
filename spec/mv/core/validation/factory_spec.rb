@@ -55,6 +55,16 @@ describe Mv::Core::Validation::Factory do
     its(:as) { is_expected.to eq(:check) }
   end
 
+  describe "absence" do
+    subject { factory.create_validation(:table_name, 
+                                        :column_name, 
+                                        :absence, 
+                                        { as: :check })}
+
+    it { is_expected.to be_kind_of(Mv::Core::Validation::Absence) }
+    its(:as) { is_expected.to eq(:check) }
+  end
+
   describe "when custom validation provided" do
     let(:klass) { TestClass = Class.new(Mv::Core::Validation::Uniqueness) }
 
