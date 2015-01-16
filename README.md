@@ -108,6 +108,40 @@ This gem is not intended to be installed directly and referenced from within the
 
   Supported validators and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
 
+# Maintenance tasks
+
+  Remove all constraints on the specified tables:
+
+  ```ruby
+  bundle exec rake mv:delete_constraints['table_name other_table_name']
+  ```
+
+  or remove all constraints created in migration: 
+
+  ```ruby
+  bundle exec rake mv:delete_constraints
+  ```
+
+  Create / restore / update constraints on the specified tables: 
+
+  ```ruby
+  bundle exec rake mv:create_constraints['table_name other_table_name']
+  ```
+
+  or do it for the all tables: 
+
+  ```ruby
+  bundle exec rake mv:create_constraints
+  ```
+
+  Remove all constraints and drop `migration_validators` table: 
+
+  ```ruby
+  bundle exec rake mv:uninstall
+  ```
+
+
+
 # Drivers
 
 Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
