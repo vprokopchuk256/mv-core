@@ -11,10 +11,8 @@ module Mv
             super 
           end
 
-          def remove_column table_name, *column_names
-            column_names.flatten.each do |column_name|
-              Mv::Core::Migration::Base.remove_column table_name, column_name
-            end
+          def remove_column table_name, column_name, type = nil, options = {}
+            Mv::Core::Migration::Base.remove_column table_name, column_name
 
             super 
           end

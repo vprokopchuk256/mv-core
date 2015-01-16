@@ -45,15 +45,12 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
     end
     
     subject :remove_column do
-      conn.remove_column :table_name, :column_name, :column_name_1
+      conn.remove_column :table_name, :column_name, :string, {}
     end
 
     it "calls migration remove_column method" do
       expect(Mv::Core::Migration::Base.current).to receive(:remove_column).with(
         :table_name, :column_name
-      )
-      expect(Mv::Core::Migration::Base.current).to receive(:remove_column).with(
-        :table_name, :column_name_1
       )
       remove_column
     end
