@@ -6,7 +6,7 @@ module Mv
       class DeleteConstraints
         attr_reader :tables
 
-        def initialize(tables)
+        def initialize(tables = [])
           @tables = tables.present? ? tables : Mv::Core::Db::MigrationValidator.pluck(:table_name)
         end
 
