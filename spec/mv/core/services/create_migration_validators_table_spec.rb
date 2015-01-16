@@ -30,6 +30,7 @@ describe Mv::Core::Services::CreateMigrationValidatorsTable do
 
       it "says nothing" do
         expect(::ActiveRecord::Migration).not_to receive(:say_with_time)
+        subject
       end
     end
   end
