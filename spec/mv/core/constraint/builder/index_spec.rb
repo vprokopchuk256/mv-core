@@ -108,6 +108,14 @@ describe Mv::Core::Constraint::Builder::Index do
           expect{ index_builder.delete }.not_to raise_error
         end
       end
+
+      describe "when table does not exist" do
+        before { ActiveRecord::Base.connection.drop_table(:table_name) }
+
+        it "should not raise error"  do
+          expect{ index_builder.delete }.not_to raise_error
+        end
+      end
     end
   end
 end

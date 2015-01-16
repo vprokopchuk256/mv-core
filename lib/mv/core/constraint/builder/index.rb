@@ -32,6 +32,7 @@ module Mv
           private
 
           def index_exists?(table_name)
+            db.table_exists?(table_name) && 
             db.index_name_exists?(table_name, name, false) 
           end
 
