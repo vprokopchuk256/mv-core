@@ -29,11 +29,6 @@ describe Mv::Core::Services::Uninstall do
       expect{ subject }.to change{::ActiveRecord::Base.connection.table_exists?(:migration_validators)}.from(true).to(false)
     end
 
-    it "informs about removed migration validators table" do
-      expect(::ActiveRecord::Migration).to receive(:say_with_time).with('drop migration_validators table')
-      subject
-    end
-
     describe "when migration validators table does not exist" do
       before do
         ::ActiveRecord::Base.connection.drop_table(:migration_validators)
@@ -41,11 +36,6 @@ describe Mv::Core::Services::Uninstall do
 
       it "should not raise an error" do
         expect{ subject }.not_to raise_error
-      end
-      
-      it "says nothing" do
-        expect(::ActiveRecord::Migration).not_to receive(:say_with_time)
-        subject
       end
     end
   end
