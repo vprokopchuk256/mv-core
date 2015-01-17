@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Valeriy Prokopchuk"]
-  s.date = "2015-01-12"
+  s.date = "2015-01-17"
   s.description = "Migration Validators project. Core classes"
   s.email = "vprokopchuk@gmail.com"
   s.extra_rdoc_files = [
@@ -21,8 +21,12 @@ Gem::Specification.new do |s|
   s.files = [
     "lib/mv-core.rb",
     "lib/mv/core/active_record/connection_adapters/abstract_adapter_decorator.rb",
+    "lib/mv/core/active_record/connection_adapters/table_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/table_definition_decorator.rb",
+    "lib/mv/core/active_record/migration/command_recorder_decorator.rb",
     "lib/mv/core/active_record/migration_decorator.rb",
+    "lib/mv/core/active_record/schema_decorator.rb",
+    "lib/mv/core/active_record/schema_dumper_decorator.rb",
     "lib/mv/core/constraint/base.rb",
     "lib/mv/core/constraint/builder/base.rb",
     "lib/mv/core/constraint/builder/factory.rb",
@@ -45,16 +49,26 @@ Gem::Specification.new do |s|
     "lib/mv/core/migration/operations/remove_column.rb",
     "lib/mv/core/migration/operations/rename_column.rb",
     "lib/mv/core/migration/operations/rename_table.rb",
+    "lib/mv/core/presenter/constraint/description.rb",
+    "lib/mv/core/presenter/validation/base.rb",
     "lib/mv/core/railtie.rb",
     "lib/mv/core/route/base.rb",
     "lib/mv/core/route/index.rb",
     "lib/mv/core/route/trigger.rb",
     "lib/mv/core/router.rb",
+    "lib/mv/core/services/compare_constraint_arrays.rb",
     "lib/mv/core/services/compare_constraints.rb",
+    "lib/mv/core/services/create_constraints.rb",
     "lib/mv/core/services/create_migration_validators_table.rb",
+    "lib/mv/core/services/delete_constraints.rb",
     "lib/mv/core/services/load_constraints.rb",
+    "lib/mv/core/services/say_constraints_diff.rb",
+    "lib/mv/core/services/show_constraints.rb",
     "lib/mv/core/services/synchronize_constraints.rb",
+    "lib/mv/core/services/uninstall.rb",
+    "lib/mv/core/validation/absence.rb",
     "lib/mv/core/validation/base.rb",
+    "lib/mv/core/validation/builder/absence.rb",
     "lib/mv/core/validation/builder/base.rb",
     "lib/mv/core/validation/builder/exclusion.rb",
     "lib/mv/core/validation/builder/factory.rb",
@@ -90,7 +104,6 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, ["~> 3.1"])
       s.add_development_dependency(%q<rspec-its>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<mv-test>, ["~> 1.0"])
       s.add_development_dependency(%q<factory_girl>, [">= 0"])
       s.add_development_dependency(%q<coveralls>, [">= 0"])
     else
@@ -103,7 +116,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, ["~> 3.1"])
       s.add_dependency(%q<rspec-its>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<mv-test>, ["~> 1.0"])
       s.add_dependency(%q<factory_girl>, [">= 0"])
       s.add_dependency(%q<coveralls>, [">= 0"])
     end
@@ -117,7 +129,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, ["~> 3.1"])
     s.add_dependency(%q<rspec-its>, [">= 0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<mv-test>, ["~> 1.0"])
     s.add_dependency(%q<factory_girl>, [">= 0"])
     s.add_dependency(%q<coveralls>, [">= 0"])
   end
