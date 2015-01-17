@@ -1,8 +1,5 @@
 require 'spec_helper'
 
-require 'mv/core/migration/base'
-require 'mv/core/active_record/connection_adapters/abstract_adapter_decorator'
-
 describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
   before do
     ::ActiveRecord::Base.connection.class.send(:prepend, described_class)

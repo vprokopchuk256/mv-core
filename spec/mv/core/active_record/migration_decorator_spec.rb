@@ -10,47 +10,47 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
   end
 
   describe "change" do
-    # describe 'validates in change_table' do
-    #   before :each do
-    #     ::ActiveRecord::Base.connection.create_table :table_name, id: false do |t|
-    #       t.string :column_name #
-    #     end
-    #   end
+    describe 'validates in change_table' do
+      before :each do
+        ::ActiveRecord::Base.connection.create_table :table_name, id: false do |t|
+          t.string :column_name #
+        end
+      end
 
-    #   let(:migration) do
-    #     Class.new(::ActiveRecord::Migration) do
-    #       def change
-    #         change_table :table_name do |t|
-    #           t.validates :column_name, length: { is: 4 }
-    #         end
-    #       end
-    #     end.new('TestMigration', '20141118164617')
-    #   end
+      let(:migration) do
+        Class.new(::ActiveRecord::Migration) do
+          def change
+            change_table :table_name do |t|
+              t.validates :column_name, length: { is: 4 }
+            end
+          end
+        end.new('TestMigration', '20141118164617')
+      end
 
-    #   describe "#up" do
-    #     subject(:migrate_up) { migration.migrate(:up) }
+      describe "#up" do
+        subject(:migrate_up) { migration.migrate(:up) }
 
-    #     it "should call add_column on migration presenter" do
-    #       expect(Mv::Core::Migration::Base).to receive(:change_column).with(
-    #         "table_name", :column_name, length: { is: 4 }
-    #       )
-    #       migrate_up
-    #     end
+        it "should call add_column on migration presenter" do
+          expect(Mv::Core::Migration::Base).to receive(:change_column).with(
+            "table_name", :column_name, length: { is: 4 }
+          )
+          migrate_up
+        end
 
-    #     it "should call execute on migration presenter" do
-    #       expect(Mv::Core::Migration::Base).to receive(:execute)
-    #       migrate_up
-    #     end
-    #   end
+        it "should call execute on migration presenter" do
+          expect(Mv::Core::Migration::Base).to receive(:execute)
+          migrate_up
+        end
+      end
 
-    #   describe "#down" do
-    #     subject(:migrate_down) { migration.migrate(:down) }
+      describe "#down" do
+        subject(:migrate_down) { migration.migrate(:down) }
 
-    #     it "it should raise migration irreversible exception" do
-    #       expect { migrate_down }.to raise_error(::ActiveRecord::IrreversibleMigration)
-    #     end
-    #   end
-    # end
+        it "it should raise migration irreversible exception" do
+          expect { migrate_down }.to raise_error(::ActiveRecord::IrreversibleMigration)
+        end
+      end
+    end
     
     describe 'validates standalone' do
       before :each do

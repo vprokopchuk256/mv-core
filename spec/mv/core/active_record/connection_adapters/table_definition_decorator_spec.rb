@@ -1,13 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/migration/base'
-require 'mv/core/active_record/connection_adapters/table_definition_decorator.rb'
-
 describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator do
-  before do
-    ::ActiveRecord::ConnectionAdapters::TableDefinition.send(:prepend, described_class)
-  end
-
   let(:conn) { ::ActiveRecord::Base.connection }
 
   describe "#validates" do
