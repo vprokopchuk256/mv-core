@@ -2,17 +2,17 @@ source "http://rubygems.org"
 
 gem 'railties', '~> 4.1'
 gem 'activerecord', '~> 4.1'
-gem 'i18n', github: 'svenfuchs/i18n'
+gem 'i18n', '~> 0.7', github: 'svenfuchs/i18n'
 
 group :development do
   gem 'jeweler', '~> 2.0'
   gem 'sqlite3', '~> 1.3'
-  gem 'guard-rspec', require: false
+  gem 'guard-rspec', '~> 4.5', require: false
   gem 'rspec', '~> 3.1'
-  gem 'rspec-its'
-  gem 'shoulda'
-  gem 'factory_girl'
-  gem 'coveralls', require: false
+  gem 'rspec-its', '~> 1.1'
+  gem 'shoulda', '~> 3.5'
+  gem 'factory_girl', '~> 4.5'
+  gem 'coveralls', '~> 0.7', require: false
 end
 
 group :test do
