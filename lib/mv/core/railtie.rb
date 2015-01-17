@@ -1,6 +1,7 @@
 require 'mv/core/services/uninstall'
 require 'mv/core/services/delete_constraints'
 require 'mv/core/services/create_constraints'
+require 'mv/core/services/show_constraints'
 
 module Mv
   module Core
@@ -9,6 +10,10 @@ module Mv
         namespace :mv do
           task :uninstall => :environment  do
             Mv::Core::Services::Uninstall.new.execute
+          end
+
+          task :show_constraints, [:tables] => :environment do |task, args|
+            Mv::Core::Services::ShowConstraints.new((args[:tables] || '').split(/\s+/)).execute
           end
 
           task :delete_constraints, [:tables] => :environment do |task, args|
