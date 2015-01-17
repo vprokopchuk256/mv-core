@@ -10,7 +10,12 @@ module Mv
       rake_tasks do
         namespace :mv do
           task :uninstall => :environment  do
-            Mv::Core::Services::Uninstall.new.execute
+            STDOUT.puts "Uninstall is irreversible operation. All constraints descriptions and declarations will be removed. 
+                         You will have to either load schema or re - run all migrations to restore that info. Please enter YES if you want to continue anyway: ".squish
+
+            if STDIN.gets.chomp == "YES"
+              Mv::Core::Services::Uninstall.new.execute
+            end
           end
 
           task :install => :environment  do

@@ -110,13 +110,25 @@ This gem is not intended to be installed directly and referenced from within the
 
 # Maintenance tasks
 
+  Show all constraints on the specified tables:
+
+  ```ruby
+  bundle exec rake mv:show_constraints['table_name other_table_name']
+  ```
+
+  or show all constraints are created in migrations: 
+
+  ```ruby
+  bundle exec rake mv:show_constraints
+  ```
+
   Remove all constraints on the specified tables:
 
   ```ruby
   bundle exec rake mv:delete_constraints['table_name other_table_name']
   ```
 
-  or remove all constraints created in migration: 
+  or remove all constraints are created in migrations: 
 
   ```ruby
   bundle exec rake mv:delete_constraints
@@ -140,7 +152,11 @@ This gem is not intended to be installed directly and referenced from within the
   bundle exec rake mv:uninstall
   ```
 
+  Restore `migrations_validators` table:
 
+  ```ruby
+  bundle exec rake mv:install
+  ```
 
 # Drivers
 
