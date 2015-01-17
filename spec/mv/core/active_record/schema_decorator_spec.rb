@@ -1,10 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/active_record/schema_decorator'
-
 describe Mv::Core::ActiveRecord::SchemaDecorator do
-  before { ::ActiveRecord::Schema.send(:prepend, described_class) }
-
   subject(:define) { 
     ::ActiveRecord::Schema.define(version: 20150112161454) do 
       create_table :table_name do |t|

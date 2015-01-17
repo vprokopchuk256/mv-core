@@ -1,12 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/active_record/migration/command_recorder_decorator'
-
 describe Mv::Core::ActiveRecord::Migration::CommandRecorderDecorator do
-  before do
-    ::ActiveRecord::Migration::CommandRecorder.send(:prepend, described_class)
-  end
-
   let(:recorder) { ::ActiveRecord::Migration::CommandRecorder.new }
 
   describe "#validates" do

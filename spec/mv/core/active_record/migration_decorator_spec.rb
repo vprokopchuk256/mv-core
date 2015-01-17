@@ -1,21 +1,9 @@
 require 'spec_helper'
 
-require 'mv/core/active_record/migration_decorator'
-require 'mv/core/active_record/connection_adapters/table_definition_decorator'
-require 'mv/core/active_record/connection_adapters/abstract_adapter_decorator'
-
 describe Mv::Core::ActiveRecord::MigrationDecorator do
   before do
     ::ActiveRecord::Base.connection.class.send(
       :prepend, Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator
-    )
-
-    ::ActiveRecord::ConnectionAdapters::TableDefinition.send(
-      :prepend, Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator
-    )
-
-    ::ActiveRecord::Migration.send(
-      :prepend, Mv::Core::ActiveRecord::MigrationDecorator
     )
 
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute

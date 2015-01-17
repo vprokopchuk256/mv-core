@@ -1,11 +1,7 @@
 require 'spec_helper'
 
-require 'mv/core/active_record/schema_dumper_decorator'
-
 describe Mv::Core::ActiveRecord::SchemaDumperDecorator do
   before do
-    ::ActiveRecord::SchemaDumper.send(:prepend, described_class)
-
     ::ActiveRecord::Migration.verbose = false
   end
 
