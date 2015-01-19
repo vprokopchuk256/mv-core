@@ -1,6 +1,5 @@
 require 'rspec'
 require 'rspec/its'
-require 'mv-core'
 require 'shoulda'
 require 'factory_girl'
 

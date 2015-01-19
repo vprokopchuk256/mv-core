@@ -14,8 +14,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "mv-core"
   gem.homepage = "http://github.com/vprokopchuk256/mv-core"
   gem.license = "MIT"
-  gem.summary = "Migration Validators project core classes"
-  gem.description = "Migration Validators project. Core classes"
+  gem.summary = "Trigger & check constraints in migrations similiar to ActiveRecord validations. Core classes"
+  gem.description = "Trigger & check constraints in migrations. Allows developer to define database constraints in a ActiveRecord validation like manner. Almost all known validation are supported."
   gem.email = "vprokopchuk@gmail.com"
   gem.authors = ["Valeriy Prokopchuk"]
   gem.files = Dir.glob('lib/**/*.rb')
