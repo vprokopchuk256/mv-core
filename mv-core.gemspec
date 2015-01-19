@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.authors = ["Valeriy Prokopchuk"]
   s.date = "2015-01-19"
-  s.description = "Trigger & check constraints in migrations. Allows developer to define database constraints in a ActiveRecord validation like manner. Almost all known validation are supported."
+  s.description = "DB constraints in migrations similiar to ActiveRecord validations. Core classes"
   s.email = "vprokopchuk@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -89,7 +89,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/vprokopchuk256/mv-core"
   s.licenses = ["MIT"]
   s.rubygems_version = "2.4.4"
-  s.summary = "Trigger & check constraints in migrations similiar to ActiveRecord validations. Core classes"
+  s.summary = "DB constraints in migrations similiar to ActiveRecord validations. Core classes"
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
