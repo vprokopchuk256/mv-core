@@ -43,6 +43,12 @@ describe Mv::Core::Validation::Builder::Factory do
 
       it { is_expected.to be_an_instance_of(Mv::Core::Validation::Builder::Uniqueness) }
     end
+
+    describe "custom" do
+      let(:validation) { Mv::Core::Validation::Custom.new(:table_name, :column_name, { statement: 'column_name > 0'}) }
+
+      it { is_expected.to be_an_instance_of(Mv::Core::Validation::Builder::Custom) }
+    end
   end
 
   describe "#register_builder" do

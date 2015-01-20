@@ -4,6 +4,7 @@ require 'mv/core/validation/builder/length'
 require 'mv/core/validation/builder/presence'
 require 'mv/core/validation/builder/absence'
 require 'mv/core/validation/builder/uniqueness'
+require 'mv/core/validation/builder/custom'
 
 module Mv
   module Core
@@ -33,7 +34,8 @@ module Mv
               Mv::Core::Validation::Length => Mv::Core::Validation::Builder::Length,
               Mv::Core::Validation::Presence => Mv::Core::Validation::Builder::Presence,
               Mv::Core::Validation::Absence => Mv::Core::Validation::Builder::Absence,
-              Mv::Core::Validation::Uniqueness => Mv::Core::Validation::Builder::Uniqueness
+              Mv::Core::Validation::Uniqueness => Mv::Core::Validation::Builder::Uniqueness,
+              Mv::Core::Validation::Custom => Mv::Core::Validation::Builder::Custom
             }
           end
         end

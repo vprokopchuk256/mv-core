@@ -4,6 +4,7 @@ require 'mv/core/validation/inclusion'
 require 'mv/core/validation/length'
 require 'mv/core/validation/presence'
 require 'mv/core/validation/absence'
+require 'mv/core/validation/custom'
 require 'mv/core/error'
 
 module Mv
@@ -47,7 +48,8 @@ module Mv
             inclusion: Mv::Core::Validation::Inclusion, 
             length: Mv::Core::Validation::Length, 
             presence: Mv::Core::Validation::Presence,
-            absence: Mv::Core::Validation::Absence
+            absence: Mv::Core::Validation::Absence,
+            custom: Mv::Core::Validation::Custom
           }
         end
       end
