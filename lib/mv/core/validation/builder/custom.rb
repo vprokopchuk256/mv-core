@@ -17,9 +17,7 @@ module Mv
           private
 
           def preprocess_statement
-            statement.gsub(/\{\s*column_name\s*\}/, column_name.to_s)
-                     .gsub(/\{\s*column_value\s*\}/, column_reference.to_s)
-                     .gsub(/\{\s*table_name\s*\}/, table_name.to_s)
+            statement.gsub(/\{\s*#{column_name}\s*\}/, column_reference.to_s)
           end
         end
       end

@@ -33,39 +33,19 @@ describe Mv::Core::Validation::Builder::Custom do
     subject { builder_class.new(custom(opts)).conditions }
 
     describe "by default" do
-      describe "when column_name provided" do
-        let(:opts) { { statement: "{column_name} > 0" } }
+      let(:opts) { { statement: "{column_name} > 0"} }
 
-        it { is_expected.to eq([{
-          statement: "NEW.column_name IS NOT NULL AND (column_name > 0)", 
-          message: 'some error message'
-        }]) }
-      end
-
-      describe "when column_value provided" do
-        let(:opts) { { statement: "{column_value} > 0"} }
-
-        it { is_expected.to eq([{
-          statement: "NEW.column_name IS NOT NULL AND (NEW.column_name > 0)", 
-          message: 'some error message'
-        }]) }
-      end
-
-      describe "when table_name provided" do
-        let(:opts) { { statement: "{table_name}.{column_name} > 0"} }
-
-        it { is_expected.to eq([{
-          statement: "NEW.column_name IS NOT NULL AND (table_name.column_name > 0)", 
-          message: 'some error message'
-        }]) }
-      end
+      it { is_expected.to eq([{
+        statement: "NEW.column_name IS NOT NULL AND (NEW.column_name > 0)", 
+        message: 'some error message'
+      }]) }
     end
 
     describe "when nil is allowed" do
       let(:opts) { { statement: "{column_name} > 0", allow_nil: true } }
 
       it { is_expected.to eq([{
-        statement: "(column_name > 0) OR NEW.column_name IS NULL", 
+        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL", 
         message: 'some error message'
       }]) }
     end
@@ -74,7 +54,7 @@ describe Mv::Core::Validation::Builder::Custom do
       let(:opts) { { statement: "{column_name} > 0", allow_blank: true } }
 
       it { is_expected.to eq([{
-        statement: "(column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
+        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
         message: 'some error message'
       }]) }
     end
@@ -83,7 +63,7 @@ describe Mv::Core::Validation::Builder::Custom do
       let(:opts) { { statement: "{column_name} > 0", allow_blank: true, allow_nil: true } }
 
       it { is_expected.to eq([{
-        statement: "(column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
+        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
         message: 'some error message'
       }]) }
     end
