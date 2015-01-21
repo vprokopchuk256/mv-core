@@ -20,16 +20,24 @@ describe Mv::Core::Validation::Inclusion do
   subject { instance }
 
   describe "#initialize" do
-    its(:table_name) { is_expected.to eq(:table_name) }
-    its(:column_name) { is_expected.to eq(:column_name) }
-    its(:in) { is_expected.to eq([1, 2]) }
-    its(:message) { is_expected.to eq(:message) }
-    its(:on) { is_expected.to eq(:save) }
-    its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
-    its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
-    its(:allow_nil) { is_expected.to eq(true) }
-    its(:allow_blank) { is_expected.to eq(true) }
-    its(:as) { is_expected.to eq(:trigger) }
+    describe "by default" do
+      its(:table_name) { is_expected.to eq(:table_name) }
+      its(:column_name) { is_expected.to eq(:column_name) }
+      its(:in) { is_expected.to eq([1, 2]) }
+      its(:message) { is_expected.to eq(:message) }
+      its(:on) { is_expected.to eq(:save) }
+      its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
+      its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
+      its(:allow_nil) { is_expected.to eq(true) }
+      its(:allow_blank) { is_expected.to eq(true) }
+      its(:as) { is_expected.to eq(:trigger) }
+    end
+
+    describe "when simplification provided" do
+      subject { described_class.new(:table_name, :column_name, [1, 2])}
+
+      its(:in) { is_expected.to eq([1, 2]) }
+    end
   end
 
   describe "#<==>" do

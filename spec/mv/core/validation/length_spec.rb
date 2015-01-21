@@ -22,41 +22,63 @@ describe Mv::Core::Validation::Length do
   subject { instance }
 
   describe "#initialize" do
-    its(:table_name) { is_expected.to eq(:table_name) }
-    its(:column_name) { is_expected.to eq(:column_name) }
-    its(:is) { is_expected.to eq(5) }
-    its(:message) { is_expected.to eq(:message) }
-    its(:too_long) { is_expected.to eq(:too_long) }
-    its(:too_short) { is_expected.to eq(:too_short) }
-    its(:on) { is_expected.to eq(:save) }
-    its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
-    its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
-    its(:allow_nil) { is_expected.to be_truthy }
-    its(:allow_blank) { is_expected.to be_truthy }
-    its(:as) { is_expected.to eq(:trigger) }
+    describe "by default" do
+      its(:table_name) { is_expected.to eq(:table_name) }
+      its(:column_name) { is_expected.to eq(:column_name) }
+      its(:is) { is_expected.to eq(5) }
+      its(:message) { is_expected.to eq(:message) }
+      its(:too_long) { is_expected.to eq(:too_long) }
+      its(:too_short) { is_expected.to eq(:too_short) }
+      its(:on) { is_expected.to eq(:save) }
+      its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
+      its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
+      its(:allow_nil) { is_expected.to be_truthy }
+      its(:allow_blank) { is_expected.to be_truthy }
+      its(:as) { is_expected.to eq(:trigger) }
 
-    describe ":in" do
-      subject { instance(is: nil, in: [1, 2, 3]) }
-      
-      its(:in) { is_expected.to eq([1, 2, 3]) }
+      describe ":in" do
+        subject { instance(is: nil, in: [1, 2, 3]) }
+        
+        its(:in) { is_expected.to eq([1, 2, 3]) }
+      end
+
+      describe ":within" do
+        subject { instance(is: nil, within: [1, 2, 3]) }
+
+        its(:within) { is_expected.to eq([1, 2, 3]) }
+      end
+
+      describe ":maximum" do
+        subject { instance(is: nil, maximum: 1) }
+
+        its(:maximum) { is_expected.to eq(1) }
+      end
+
+      describe ":minimum" do
+        subject { instance(is: nil, minimum: 1) }
+
+        its(:minimum) { is_expected.to eq(1) }
+      end
     end
 
-    describe ":within" do
-      subject { instance(is: nil, within: [1, 2, 3]) }
+    describe "when simplification provided" do
+      describe "as array" do
+        subject { described_class.new(:table_name, :column_name, [1, 2])}
 
-      its(:within) { is_expected.to eq([1, 2, 3]) }
-    end
+        its(:in) { is_expected.to eq([1, 2]) }
+      end
 
-    describe ":maximum" do
-      subject { instance(is: nil, maximum: 1) }
+      describe "as range" do
+        subject { described_class.new(:table_name, :column_name, 1..2)}
+        
+        its(:in) { is_expected.to eq(1..2) }
+      end
 
-      its(:maximum) { is_expected.to eq(1) }
-    end
-
-    describe ":minimum" do
-      subject { instance(is: nil, minimum: 1) }
-
-      its(:minimum) { is_expected.to eq(1) }
+      describe "as integer" do
+        subject { described_class.new(:table_name, :column_name, 1)}
+        
+        its(:is) { is_expected.to eq(1) }
+      end
     end
   end
 

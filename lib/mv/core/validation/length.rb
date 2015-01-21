@@ -16,6 +16,11 @@ module Mv
         validate :in_within_is_maximum_minimum_allowance
 
         def initialize(table_name, column_name, opts)
+          unless opts.is_a?(Hash) 
+            opts = { in: opts } if opts.respond_to?(:to_a)
+            opts = { is: opts } if opts.is_a?(Integer)
+          end
+
           super(table_name, column_name, opts)
 
           opts.with_indifferent_access.tap do |opts|

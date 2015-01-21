@@ -12,6 +12,8 @@ module Mv
         validates :in, presence: true, array: true
 
         def initialize(table_name, column_name, opts)
+          opts = opts.is_a?(Hash) ? opts : { in: opts }
+          
           super(table_name, column_name, opts)
 
           @in = opts.with_indifferent_access[:in]
