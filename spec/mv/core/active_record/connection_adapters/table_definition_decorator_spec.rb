@@ -43,7 +43,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator do
     describe "when simplification provided" do
       subject :create_table do
         conn.create_table :table_name, id: false do |t|
-          t.string :column_name, length: { is: 5 }
+          t.column :column_name, :string, length: { is: 5 }
         end
       end
 
@@ -54,7 +54,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator do
         create_table
       end
 
-      it "should call original methos" do
+      it "should call original method" do
         create_table
         expect(conn.table_exists?(:table_name)).to be_truthy
       end

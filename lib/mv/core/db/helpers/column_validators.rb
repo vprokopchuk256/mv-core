@@ -1,3 +1,4 @@
+require 'mv/core/validation/factory'
 require 'mv/core/db/helpers/table_validators'
 
 module Mv
@@ -27,7 +28,7 @@ module Mv
             return delete_validators(column_validators.where(validation_type: validation_type)) if opts == false
 
             column_validators.where(validation_type: validation_type).first_or_initialize.tap do |validator|
-              validator.options = normalize_opts(opts)
+              validator.options = normalize_opts(validation_type, opts)
             end.save!
           end
 
@@ -37,8 +38,8 @@ module Mv
 
           private
 
-          def normalize_opts opts
-            opts == true ? {} : opts
+          def normalize_opts validation_type, opts
+            Mv::Core::Validation::Factory.create_validation(table_name, column_name, validation_type, opts).options
           end
 
           def raise_column_validation_error validation_type, opts

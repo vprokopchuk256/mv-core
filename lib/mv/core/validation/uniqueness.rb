@@ -11,6 +11,8 @@ module Mv
         validates :index_name, absence: { message: 'allowed when :as == :index' }, unless: :index?
 
         def initialize(table_name, column_name, opts)
+          opts = opts == true ? {} : opts
+
           super(table_name, column_name, opts)
           
           @index_name = opts.with_indifferent_access[:index_name] || default_index_name

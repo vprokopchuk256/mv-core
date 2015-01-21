@@ -9,7 +9,7 @@ module Mv
         validate :nil_and_blank_can_not_be_both_denied
 
         def initialize(table_name, column_name, opts)
-          super(table_name, column_name, opts)
+          super(table_name, column_name, opts == true ? {} : opts)
         end
 
         protected

@@ -19,15 +19,23 @@ describe Mv::Core::Validation::Absence do
   subject { instance }
 
   describe "#initialize" do
-    its(:table_name) { is_expected.to eq(:table_name) }
-    its(:column_name) { is_expected.to eq(:column_name) }
-    its(:message) { is_expected.to eq(:message) }
-    its(:on) { is_expected.to eq(:save) }
-    its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
-    its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
-    its(:allow_nil) { is_expected.to be_truthy }
-    its(:allow_blank) { is_expected.to be_falsey }
-    its(:as) { is_expected.to eq(:trigger) }
+    describe "by defatult" do
+      its(:table_name) { is_expected.to eq(:table_name) }
+      its(:column_name) { is_expected.to eq(:column_name) }
+      its(:message) { is_expected.to eq(:message) }
+      its(:on) { is_expected.to eq(:save) }
+      its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
+      its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
+      its(:allow_nil) { is_expected.to be_truthy }
+      its(:allow_blank) { is_expected.to be_falsey }
+      its(:as) { is_expected.to eq(:trigger) }
+    end
+    
+    describe "when simplification provided" do
+      subject { described_class.new(:table_name, :column_name, true) }
+
+      its(:options) { is_expected.to eq({}) } 
+    end
   end
 
   describe "#<==>" do

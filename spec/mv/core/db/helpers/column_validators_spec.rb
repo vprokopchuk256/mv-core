@@ -65,6 +65,25 @@ describe Mv::Core::Db::Helpers::ColumnValidators do
       end
     end
 
+    describe "with simplified option as create validator instruction" do
+      subject(:create_column_validator){ 
+        instance.create_column_validator(:length, 1..3) 
+      }
+      
+      it "creates new migration validator" do
+        expect{ subject }.to change(Mv::Core::Db::MigrationValidator, :count).by(1)
+      end
+
+      describe "newly created validator" do
+        subject(:validator) do
+          create_column_validator
+          Mv::Core::Db::MigrationValidator.last
+        end
+
+        its(:options) { is_expected.to eq(in: 1..3) }
+      end
+    end
+
     describe "with false as delete validator instruction" do
       subject(:create_column_validator){ instance.create_column_validator(:uniqueness, false) }
 
