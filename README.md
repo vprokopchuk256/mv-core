@@ -61,7 +61,7 @@ This gem is not intended to be installed directly and referenced from within the
   Update validator definition: 
 
   ```ruby
-  validates :table_name, :str_column, :exclusion: { in: [1,2,3] }
+  validates :table_name, :str_column, exclusion: { in: [1,2,3] }
   ```
 
   Remove existing validators: 
@@ -79,15 +79,13 @@ This gem is not intended to be installed directly and referenced from within the
   as trigger:
 
   ```ruby
-  validates :table_name, :str_column, validates: { uniqueness: true, 
-                                                   as: :trigger }
+  validates :table_name, :str_column, uniqueness: { as: :trigger }
   ```
 
   as check constraint:
 
   ```ruby
-  validates :table_name, :str_column, validates: { uniqueness: true, 
-                                                   as: :check }
+  validates :table_name, :str_column, uniqueness: { as: :check }
   ```
 
   Also there is possibility to define when validations should occur: 
@@ -95,18 +93,40 @@ This gem is not intended to be installed directly and referenced from within the
   when new record created: 
 
   ```ruby
-  validates :table_name, :str_column, validates: { uniqueness: true, 
-                                                   on: :create }
+  validates :table_name, :str_column, uniqueness: { on: :create }
   ```
 
   or when existing record updated:
 
   ```ruby
-  validates :table_name, :str_column, validates: { uniqueness: true, 
-                                                   on: :update }
+  validates :table_name, :str_column, uniqueness: { on: :update }
   ```
 
-  Supported validators and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
+  And if you need to define some custom validation you can use custom validation (version >= 2.1 is required): 
+
+  ```ruby
+  validates :table_name, :str_column, 
+                    custom: { statement: 'LENGTH(TRIM({str_column})) > 10', 
+                              on: :update }
+  ```
+
+  as result only values with length greater than 10 will be allowed and that condition will be implemented inside ON UPDATE trigger
+  
+  Almost all validations supports shorter notation (simplification) that is not compatible with ActiveRecord validation but much shorter (version >= 2.1 is required): 
+
+  ```ruby
+  validates :table_name, :str_column, uniqueness: true, presence: true
+  ```
+
+  ```ruby
+  validates :table_name, :str_column, length: 1..3
+  ```
+
+  ```ruby
+  validates :table_name, :str_column, custom: 'LENGTH(TRIM({str_column})) > 10'
+  ```
+
+  Supported validators, simplification and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
 
 # Maintenance tasks
 

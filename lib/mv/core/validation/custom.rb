@@ -9,6 +9,8 @@ module Mv
         validates :statement, presence: true
         
         def initialize(table_name, column_name, opts)
+          opts = opts.is_a?(Hash) ? opts : { statement: opts }
+          
           super(table_name, column_name, opts)
 
           @statement = opts.with_indifferent_access[:statement]
