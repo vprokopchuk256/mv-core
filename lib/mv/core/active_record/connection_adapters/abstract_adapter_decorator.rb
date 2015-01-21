@@ -1,4 +1,5 @@
 require 'mv/core/migration/base'
+require 'mv/core/services/parse_validation_options'
 
 module Mv
   module Core
@@ -6,7 +7,7 @@ module Mv
       module ConnectionAdapters
         module AbstractAdapterDecorator
           def add_column table_name, column_name, type, opts
-            Mv::Core::Migration::Base.add_column(table_name, column_name, opts.delete(:validates))  
+            Mv::Core::Migration::Base.add_column(table_name, column_name, params(opts))  
             
             super 
           end
@@ -24,7 +25,7 @@ module Mv
           end
 
           def change_column table_name, column_name, type, opts
-            Mv::Core::Migration::Base.change_column(table_name, column_name, opts.delete(:validates))
+            Mv::Core::Migration::Base.change_column(table_name, column_name, params(opts))
 
             super
           end
@@ -43,6 +44,12 @@ module Mv
             Mv::Core::Migration::Base.drop_table(table_name)
 
             super
+          end
+
+          private
+
+          def params opts
+            Mv::Core::Services::ParseValidationOptions.new(opts).execute
           end
         end
       end

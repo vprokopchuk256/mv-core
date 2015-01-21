@@ -14,7 +14,7 @@ module Mv
         include Singleton
 
         def create_validation table_name, column_name, validation_type, opts
-          validation_class = factroy_map[validation_type.to_sym]
+          validation_class = factory_map[validation_type.to_sym]
 
           raise Mv::Core::Error.new(table_name: table_name, 
                                     column_name: column_name, 
@@ -26,7 +26,7 @@ module Mv
         end 
 
         def register_validation validation_type, klass
-          factroy_map[validation_type.to_sym] = klass
+          factory_map[validation_type.to_sym] = klass
         end
 
         def register_validations opts
@@ -35,13 +35,20 @@ module Mv
           end
         end
 
+        def registered_validations
+          factory_map.keys
+        end
+
         class << self
-          delegate :create_validation, :register_validation, :register_validations, to: :instance
+          delegate :create_validation, 
+                   :registered_validations, 
+                   :register_validation,
+                   :register_validations, to: :instance
         end
 
         private 
 
-        def factroy_map
+        def factory_map
           @factory_map ||= {
             uniqueness: Mv::Core::Validation::Uniqueness, 
             exclusion: Mv::Core::Validation::Exclusion, 

@@ -8,27 +8,53 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
   let(:conn) { ::ActiveRecord::Base.connection }
 
   describe "#add_column" do
-    before do
-      conn.create_table :table_name do |t|
-        t.string :col_name
+    describe "by default" do
+      before do
+        conn.create_table :table_name do |t|
+          t.string :col_name
+        end
+      end
+
+      subject :add_column do
+        conn.add_column :table_name, :column_name, :string, 
+                        validates: { length: { is: 5 } }
+      end
+
+      it "calls migration add_column method" do
+        expect(Mv::Core::Migration::Base.current).to receive(:add_column).with(
+          :table_name, :column_name, length: { is: 5}
+        )
+        add_column
+      end
+
+      it "calls original method" do
+        add_column
+        expect(conn.column_exists?(:table_name, :column_name)).to be_truthy
       end
     end
 
-    subject :add_column do
-      conn.add_column :table_name, :column_name, :string, 
-                      validates: { length: { is: 5 } }
-    end
+    describe "when simplification provided" do
+      before do
+        conn.create_table :table_name do |t|
+          t.string :col_name
+        end
+      end
 
-    it "calls migration add_column method" do
-      expect(Mv::Core::Migration::Base.current).to receive(:add_column).with(
-        :table_name, :column_name, length: { is: 5}
-      )
-      add_column
-    end
+      subject :add_column do
+        conn.add_column :table_name, :column_name, :string, length: { is: 5 } 
+      end
 
-    it "calls original method" do
-      add_column
-      expect(conn.column_exists?(:table_name, :column_name)).to be_truthy
+      it "calls migration add_column method" do
+        expect(Mv::Core::Migration::Base.current).to receive(:add_column).with(
+          :table_name, :column_name, length: { is: 5}
+        )
+        add_column
+      end
+
+      it "calls original method" do
+        add_column
+        expect(conn.column_exists?(:table_name, :column_name)).to be_truthy
+      end
     end
   end 
 
@@ -102,32 +128,64 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
   end
 
   describe "#change_column" do
-    before do
-      td = conn.create_table :table_name do |t|
-        t.string :column_name
+    describe "by default" do
+      before do
+        td = conn.create_table :table_name do |t|
+          t.string :column_name
+        end
+      end
+
+      subject :change_column do
+        conn.change_column :table_name, :column_name, :integer, 
+                           validates: { length: { is: 5 } }
+      end
+
+      it "calls migratin change_column method" do
+        expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
+          :table_name, :column_name, length: { is: 5 } 
+        )
+        change_column
+      end
+
+      it "calls original method" do
+        change_column
+
+        cls = Class.new(::ActiveRecord::Base) do
+          self.table_name = "table_name"
+        end
+
+        expect(cls.columns_hash['column_name'].type).to eq(:integer)
       end
     end
 
-    subject :change_column do
-      conn.change_column :table_name, :column_name, :integer, 
-                         validates: { length: { is: 5 } }
-    end
-
-    it "calls migratin change_column method" do
-      expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
-        :table_name, :column_name, length: { is: 5 } 
-      )
-      change_column
-    end
-
-    it "calls original method" do
-      change_column
-
-      cls = Class.new(::ActiveRecord::Base) do
-        self.table_name = "table_name"
+    describe "when simplification provided" do
+      before do
+        td = conn.create_table :table_name do |t|
+          t.string :column_name
+        end
       end
 
-      expect(cls.columns_hash['column_name'].type).to eq(:integer)
+      subject :change_column do
+        conn.change_column :table_name, :column_name, :integer, length: { is: 5 } 
+      end
+
+      it "calls migratin change_column method" do
+        expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
+          :table_name, :column_name, length: { is: 5 } 
+        )
+        change_column
+      end
+
+      it "calls original method" do
+        change_column
+
+        cls = Class.new(::ActiveRecord::Base) do
+          self.table_name = "table_name"
+        end
+
+        expect(cls.columns_hash['column_name'].type).to eq(:integer)
+      end
+      
     end
   end
 
