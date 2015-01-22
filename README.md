@@ -42,35 +42,43 @@ This gem is not intended to be installed directly and referenced from within the
   Create new table:
 
   ```ruby
-  create_table do |t|
-    t.string :str_column, validates: { uniqueness: :true, 
-                                       inclusion: { in: 1..3 }}
-    t.column :column_name, :integer, validates: { exclusion: { in: [1,2,3]}}
+  def change 
+    create_table do |t|
+      t.string :str_column, validates: { uniqueness: :true, 
+                                         inclusion: { in: 1..3 }}
+      t.column :column_name, :integer, validates: { exclusion: { in: [1,2,3]}}
+    end
   end
   ```
 
   Modify existing table: 
   
   ```ruby
-  change_table do |t|
-    t.change :str_column, :integer, validates: { exclusion: { in: [1,2,3] }}
-    t.validates :column_name, inclusion: { in: 1..3 }
+  def up
+    change_table do |t|
+      t.change :str_column, :integer, validates: { exclusion: { in: [1,2,3] }}
+      t.validates :column_name, inclusion: { in: 1..3 }
+    end
+  end
+
+  def down
+    change_table do |t|
+      t.change :str_column, :integer, validates: { exclusion: false }
+      t.validates :column_name, inclusion: false
+    end
   end
   ```
 
   Update validator definition: 
 
   ```ruby
-  validates :table_name, :str_column, exclusion: { in: [1,2,3] }
-  ```
-
-  Remove existing validators: 
-
-  ```ruby
-  change_table do |t|
-    t.change :str_column, :integer, validates: { exclusion: false }
+  def up
+    validates :table_name, :str_column, exclusion: { in: [1,2,3] }
   end
-  validates :table_name, :str_column, exclusion: false
+
+  def down
+    validates :table_name, :str_column, exclusion: false
+  end
   ```
 
  There are many ways to define desired database constraint. And those ways might vary for each RDBMS. One could define the way how constaint should be 
@@ -79,13 +87,25 @@ This gem is not intended to be installed directly and referenced from within the
   as trigger:
 
   ```ruby
-  validates :table_name, :str_column, uniqueness: { as: :trigger }
+  def up
+    validates :table_name, :str_column, uniqueness: { as: :trigger }
+  end
+
+  def down
+    validates :table_name, :str_column, uniqueness: { as: :index }
+  end
   ```
 
   as check constraint:
 
   ```ruby
-  validates :table_name, :str_column, uniqueness: { as: :check }
+  def up
+    validates :table_name, :str_column, uniqueness: { as: :check }
+  end
+
+  def down
+    validates :table_name, :str_column, uniqueness: false
+  end
   ```
 
   Also there is possibility to define when validations should occur: 
@@ -93,21 +113,39 @@ This gem is not intended to be installed directly and referenced from within the
   when new record created: 
 
   ```ruby
-  validates :table_name, :str_column, uniqueness: { on: :create }
+  def up
+    validates :table_name, :str_column, uniqueness: { on: :create }
+  end
+
+  def down
+    validates :table_name, :str_column, uniqueness: false
+  end
   ```
 
   or when existing record updated:
 
   ```ruby
-  validates :table_name, :str_column, uniqueness: { on: :update }
+  def up
+    validates :table_name, :str_column, uniqueness: { on: :update }
+  end
+
+  def down
+    validates :table_name, :str_column, uniqueness: { on: :save }
+  end
   ```
 
   And if you need to define some custom validation you can use custom validation (version >= 2.1 is required): 
 
   ```ruby
-  validates :table_name, :str_column, 
-                    custom: { statement: 'LENGTH(TRIM({str_column})) > 10', 
-                              on: :update }
+  def up
+    validates :table_name, :str_column, 
+                      custom: { statement: 'LENGTH(TRIM({str_column})) > 10', 
+                                on: :update }
+  end
+
+  def down
+    validates :table_name, :str_column, custom: false
+  end
   ```
 
   as result only values with length greater than 10 will be allowed and that condition will be implemented inside ON UPDATE trigger
@@ -115,15 +153,34 @@ This gem is not intended to be installed directly and referenced from within the
   Almost all validations supports shorter notation (simplification) that is not compatible with ActiveRecord validation but much shorter (version >= 2.1 is required): 
 
   ```ruby
-  validates :table_name, :str_column, uniqueness: true, presence: true
+  def up
+    validates :table_name, :str_column, uniqueness: true, presence: true
+  end
+
+  def down
+    validates :table_name, :str_column, uniqueness: false, presence: false
+  end
   ```
 
   ```ruby
-  validates :table_name, :str_column, length: 1..3
+  def up
+    validates :table_name, :str_column, length: 1..3
+  end
+
+  def down
+    validates :table_name, :str_column, length: false
+  end
   ```
 
   ```ruby
-  validates :table_name, :str_column, custom: 'LENGTH(TRIM({str_column})) > 10'
+  def up
+    validates :table_name, :str_column, custom: 
+                           'LENGTH(TRIM({str_column})) > 10'
+  end
+
+  def down
+    validates :table_name, :str_column, custom: false
+  end
   ```
 
   Supported validators, simplification and their properties might vary from one db driver to another. See detailed properties description in correspondent driver section.  
