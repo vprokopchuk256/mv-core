@@ -6,6 +6,7 @@ require 'mv/core/active_record/connection_adapters/table_definition_decorator'
 require 'mv/core/active_record/connection_adapters/table_decorator'
 require 'mv/core/active_record/schema_dumper_decorator'
 require 'mv/core/active_record/schema_decorator'
+require 'mv/core/active_record/base_decorator'
 require 'mv/core/active_record/migration_decorator'
 require 'mv/core/active_record/migration/command_recorder_decorator'
 require 'mv/core/railtie'
@@ -15,6 +16,7 @@ ActiveSupport.on_load(:active_record) do
   ::ActiveRecord::ConnectionAdapters::Table.send(:prepend, Mv::Core::ActiveRecord::ConnectionAdapters::TableDecorator)
   ::ActiveRecord::SchemaDumper.send(:prepend, Mv::Core::ActiveRecord::SchemaDumperDecorator)
   ::ActiveRecord::Schema.send(:prepend, Mv::Core::ActiveRecord::SchemaDecorator)
+  ::ActiveRecord::Base.send(:extend, Mv::Core::ActiveRecord::BaseDecorator)
   ::ActiveRecord::Migration.send(:prepend, Mv::Core::ActiveRecord::MigrationDecorator)
   ::ActiveRecord::Migration::CommandRecorder.send(:prepend, Mv::Core::ActiveRecord::Migration::CommandRecorderDecorator)
   
