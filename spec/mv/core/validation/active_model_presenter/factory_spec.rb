@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'mv/core/validation/active_model_presenter/factory'
 
 describe Mv::Core::Validation::ActiveModelPresenter::Factory do
-  subject(:factory) { described_class.new }
+  subject(:factory) { described_class }
 
   describe "#create_presenter" do
     subject { factory.create_presenter(validation) }

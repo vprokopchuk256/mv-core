@@ -10,6 +10,8 @@ module Mv
     module Validation
       module ActiveModelPresenter
         class Factory
+          include Singleton
+
           def create_presenter validation
             klass = factory_map[validation.class]
 
@@ -24,6 +26,10 @@ module Mv
             opts.each do |validation_class, presenter_class|
               register_presenter(validation_class, presenter_class)
             end
+          end
+
+          class << self
+            delegate :create_presenter, :register_presenter, :register_presenters, to: :instance
           end
 
           private
