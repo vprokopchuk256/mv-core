@@ -153,6 +153,34 @@ describe Mv::Core::Validation::Length do
       its(:message) { is_expected.to eq('Length violated on the table table_name column column_name') }
     end
 
+    describe ":too_short" do
+      describe "when :minimum is defined" do
+        subject { instance(is: nil, minimum: 5, too_short: nil) }
+        
+        its(:too_short) { is_expected.to eq('Length violated on the table table_name column column_name') }
+      end
+
+      describe "when :minimum is not defined" do
+        subject { instance(is: 5, too_short: nil) }
+        
+        its(:too_short) { is_expected.to be_nil }
+      end
+    end
+
+    describe ":too_long" do
+      describe "when :maximum is defined" do
+        subject { instance(is: nil, maximum: 5, too_long: nil) }
+        
+        its(:too_long) { is_expected.to eq('Length violated on the table table_name column column_name') }
+      end
+
+      describe "when :maximum is not defined" do
+        subject { instance(is: 5, too_long: nil) }
+        
+        its(:too_long) { is_expected.to be_nil }
+      end
+    end
+
     describe ":on" do
       describe "when :as == :trigger" do
         subject { instance(on: nil, as: :trigger) } 

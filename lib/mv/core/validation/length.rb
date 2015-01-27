@@ -29,13 +29,21 @@ module Mv
             @is = opts[:is]
             @maximum = opts[:maximum]
             @minimum = opts[:minimum]
-            @too_long = opts[:too_long]
-            @too_short = opts[:too_short]
+            @too_long = opts[:too_long] || default_too_long_message
+            @too_short = opts[:too_short] || default_too_short_message
           end
         end
 
         def to_a
           super + [self.in.try(:sort), within.try(:sort), is.to_s, maximum.to_s, minimum.to_s, too_short.to_s, too_long.to_s]
+        end
+
+        def default_too_short_message
+          minimum ? default_message : nil
+        end
+
+        def default_too_long_message
+          maximum ? default_message : nil
         end
 
         private
