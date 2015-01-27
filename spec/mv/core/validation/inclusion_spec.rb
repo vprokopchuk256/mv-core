@@ -93,6 +93,7 @@ describe Mv::Core::Validation::Inclusion do
       subject { instance(message: nil) }
       
       its(:message) { is_expected.to eq('is not included in the list') }
+      its(:full_message) { is_expected.to eq('ColumnName is not included in the list') }
     end
 
     describe ":on" do

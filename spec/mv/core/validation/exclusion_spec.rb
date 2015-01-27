@@ -91,6 +91,7 @@ describe Mv::Core::Validation::Exclusion do
       subject { instance(message: nil) }
       
       its(:message) { is_expected.to eq('is reserved') }
+      its(:full_message) { is_expected.to eq('ColumnName is reserved') }
     end
 
     describe ":on" do

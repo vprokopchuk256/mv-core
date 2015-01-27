@@ -34,6 +34,16 @@ module Mv
           end
         end
 
+        def full_too_short
+          too_short ? compose_full_message(too_short) : nil
+        end
+
+        def full_too_long
+          too_long ? compose_full_message(too_long) : nil
+        end
+
+        protected 
+
         def to_a
           super + [self.in.try(:sort), within.try(:sort), is.to_s, maximum.to_s, minimum.to_s, too_short.to_s, too_long.to_s]
         end

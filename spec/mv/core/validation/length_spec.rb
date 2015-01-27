@@ -151,6 +151,7 @@ describe Mv::Core::Validation::Length do
       subject { instance(message: nil) }
       
       its(:message) { is_expected.to eq('is the wrong length') }
+      its(:full_message) { is_expected.to eq('ColumnName is the wrong length') }
     end
 
     describe ":too_short" do
@@ -158,12 +159,14 @@ describe Mv::Core::Validation::Length do
         subject { instance(is: nil, minimum: 5, too_short: nil) }
         
         its(:too_short) { is_expected.to eq('is too short') }
+        its(:full_too_short) { is_expected.to eq('ColumnName is too short') }
       end
 
       describe "when :minimum is not defined" do
         subject { instance(is: 5, too_short: nil) }
         
         its(:too_short) { is_expected.to be_nil }
+        its(:full_too_short) { is_expected.to be_nil }
       end
     end
 
@@ -172,12 +175,14 @@ describe Mv::Core::Validation::Length do
         subject { instance(is: nil, maximum: 5, too_long: nil) }
         
         its(:too_long) { is_expected.to eq('is too long') }
+        its(:full_too_long) { is_expected.to eq('ColumnName is too long') }
       end
 
       describe "when :maximum is not defined" do
         subject { instance(is: 5, too_long: nil) }
         
         its(:too_long) { is_expected.to be_nil }
+        its(:full_too_long) { is_expected.to be_nil }
       end
     end
 

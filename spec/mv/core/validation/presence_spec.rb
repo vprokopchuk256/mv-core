@@ -78,6 +78,7 @@ describe Mv::Core::Validation::Presence do
       subject { instance(message: nil) }
       
       its(:message) { is_expected.to eq("can't be blank") }
+      its(:full_message) { is_expected.to eq("ColumnName can't be blank") }
     end
 
     describe ":on" do
