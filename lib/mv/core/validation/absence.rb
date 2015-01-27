@@ -22,6 +22,10 @@ module Mv
           true
         end
 
+        def default_message
+          'must be blank'
+        end
+
         private
 
         def nil_and_blank_can_not_be_both_denied

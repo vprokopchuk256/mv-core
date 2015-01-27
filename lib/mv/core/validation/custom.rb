@@ -19,6 +19,12 @@ module Mv
         def to_a
           super + [statement.to_s]
         end
+
+        protected
+
+        def default_message
+          'is invalid'
+        end
       end
     end
   end

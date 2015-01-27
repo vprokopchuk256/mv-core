@@ -77,7 +77,7 @@ describe Mv::Core::Validation::Absence do
     describe ":message" do
       subject { instance(message: nil) }
       
-      its(:message) { is_expected.to eq('Absence violated on the table table_name column column_name') }
+      its(:message) { is_expected.to eq('must be blank') }
     end
 
     describe ":on" do

@@ -38,12 +38,16 @@ module Mv
           super + [self.in.try(:sort), within.try(:sort), is.to_s, maximum.to_s, minimum.to_s, too_short.to_s, too_long.to_s]
         end
 
+        def default_message
+          'is the wrong length'
+        end
+
         def default_too_short_message
-          minimum ? default_message : nil
+          minimum ? 'is too short' : nil
         end
 
         def default_too_long_message
-          maximum ? default_message : nil
+          maximum ? 'is too long' : nil
         end
 
         private

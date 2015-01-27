@@ -36,6 +36,10 @@ module Mv
           "idx_mv_#{table_name}_#{column_name}_uniq" if index?
         end
 
+        def default_message
+          'is not unique'
+        end
+
         private
 
         def index?
