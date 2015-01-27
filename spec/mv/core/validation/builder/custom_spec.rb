@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Custom do
   def custom(opts = {})
     Mv::Core::Validation::Custom.new(:table_name, 
                                      :column_name,
-                                     { message: 'some error message' }.merge(opts))
+                                     { message: 'is not valid' }.merge(opts))
   end
 
   let(:builder_class) {
@@ -37,7 +37,7 @@ describe Mv::Core::Validation::Builder::Custom do
 
       it { is_expected.to eq([{
         statement: "NEW.column_name IS NOT NULL AND (NEW.column_name > 0)", 
-        message: 'some error message'
+        message: 'ColumnName is not valid'
       }]) }
     end
 
@@ -46,7 +46,7 @@ describe Mv::Core::Validation::Builder::Custom do
 
       it { is_expected.to eq([{
         statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL", 
-        message: 'some error message'
+        message: 'ColumnName is not valid'
       }]) }
     end
 
@@ -55,7 +55,7 @@ describe Mv::Core::Validation::Builder::Custom do
 
       it { is_expected.to eq([{
         statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
-        message: 'some error message'
+        message: 'ColumnName is not valid'
       }]) }
     end
 
@@ -64,7 +64,7 @@ describe Mv::Core::Validation::Builder::Custom do
 
       it { is_expected.to eq([{
         statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
-        message: 'some error message'
+        message: 'ColumnName is not valid'
       }]) }
     end
   end

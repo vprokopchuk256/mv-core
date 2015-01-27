@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
   def exclusion(opts = {})
     Mv::Core::Validation::Exclusion.new(:table_name, 
                                         :column_name,
-                                        { in: [1, 5], message: 'some error message' }.merge(opts)) 
+                                        { in: [1, 5], message: 'is excluded' }.merge(opts)) 
   end
 
   describe "#initalize" do
@@ -18,18 +18,18 @@ describe Mv::Core::Validation::Builder::Exclusion do
     its(:allow_nil) { is_expected.to eq(exclusion.allow_nil) }
     its(:allow_blank) { is_expected.to eq(exclusion.allow_blank) }
     its(:column_name) { is_expected.to eq(exclusion.column_name) }
-    its(:message) { is_expected.to eq(exclusion.message) }
+    its(:message) { is_expected.to eq(exclusion.full_message) }
   end
 
   describe "#conditions" do
     subject { described_class.new(exclusion(opts)).conditions }
 
     describe "when integers array passed" do
-      let(:opts) { { in: [1, 5], message: 'some error message' } }
+      let(:opts) { { in: [1, 5], message: 'is excluded' } }
 
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND column_name NOT IN (1, 5)', 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -38,7 +38,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND column_name < 1 OR column_name > 3', 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -47,7 +47,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name < 'a' OR column_name > 'c'", 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -56,7 +56,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
 
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name NOT IN ('a', 'c')", 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -65,7 +65,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
 
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name NOT IN (1.5, 1.8)", 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -82,7 +82,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
 
       it { is_expected.to eq([{
         statement: 'column_name NOT IN (1, 5) OR column_name IS NULL', 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -91,7 +91,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
       
       it { is_expected.to eq([{
         statement: 'column_name NOT IN (1, 5) OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
 
@@ -100,7 +100,7 @@ describe Mv::Core::Validation::Builder::Exclusion do
 
       it { is_expected.to eq([{
         statement: 'column_name NOT IN (1, 5) OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
-        message: 'some error message'
+        message: 'ColumnName is excluded'
       }]) }
     end
   end

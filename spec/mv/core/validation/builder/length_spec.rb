@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Length do
   def length(opts = {})
     Mv::Core::Validation::Length.new(:table_name, 
                                      :column_name,
-                                     { message: 'some error message' }.merge(opts))
+                                     { message: 'has invalid length' }.merge(opts))
   end
 
   describe "#initalize" do
@@ -23,9 +23,9 @@ describe Mv::Core::Validation::Builder::Length do
     its(:allow_nil) { is_expected.to eq(validation.allow_nil) }
     its(:allow_blank) { is_expected.to eq(validation.allow_blank) }
     its(:column_name) { is_expected.to eq(validation.column_name) }
-    its(:message) { is_expected.to eq(validation.message) }
-    its(:too_short) { is_expected.to eq(validation.too_short) }
-    its(:too_long) { is_expected.to eq(validation.too_long) }
+    its(:message) { is_expected.to eq(validation.full_message) }
+    its(:too_short) { is_expected.to eq(validation.full_too_short) }
+    its(:too_long) { is_expected.to eq(validation.full_too_long) }
   end
 
   describe "conditions" do
@@ -38,7 +38,7 @@ describe Mv::Core::Validation::Builder::Length do
 
         it { is_expected.to eq([{
           statement: 'column_name IS NOT NULL AND LENGTH(column_name) IN (1, 3)', 
-          message: 'some error message'
+          message: 'ColumnName has invalid length'
         }]) }
       end
 
@@ -47,7 +47,7 @@ describe Mv::Core::Validation::Builder::Length do
 
         it { is_expected.to eq([{
           statement: 'column_name IS NOT NULL AND LENGTH(column_name) BETWEEN 1 AND 3', 
-          message: 'some error message'
+          message: 'ColumnName has invalid length'
         }]) }
       end
     end
@@ -58,7 +58,7 @@ describe Mv::Core::Validation::Builder::Length do
 
         it { is_expected.to eq([{
           statement: 'column_name IS NOT NULL AND LENGTH(column_name) IN (1, 3)', 
-          message: 'some error message'
+          message: 'ColumnName has invalid length'
         }]) }
       end
 
@@ -67,7 +67,7 @@ describe Mv::Core::Validation::Builder::Length do
 
         it { is_expected.to eq([{
           statement: 'column_name IS NOT NULL AND LENGTH(column_name) BETWEEN 1 AND 3', 
-          message: 'some error message'
+          message: 'ColumnName has invalid length'
         }]) }
       end
     end
@@ -77,48 +77,48 @@ describe Mv::Core::Validation::Builder::Length do
 
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND LENGTH(column_name) = 1', 
-        message: 'some error message'
+        message: 'ColumnName has invalid length'
       }]) }
     end
 
     describe "when :maximum is defined" do
-      let(:opts) { { maximum: 3, too_long: 'too long error message' } }
+      let(:opts) { { maximum: 3, too_long: 'is longer than expected' } }
 
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND LENGTH(column_name) <= 3', 
-        message: 'too long error message'
+        message: 'ColumnName is longer than expected'
       }]) }
     end
 
     describe "when :minimum is defined" do
-      let(:opts) { { minimum: 1, too_short: 'too short error message' } }
+      let(:opts) { { minimum: 1, too_short: 'is shorter than expected' } }
 
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND LENGTH(column_name) >= 1', 
-        message: 'too short error message'
+        message: 'ColumnName is shorter than expected'
       }]) }
     end
 
     describe "when both :maximum & :minimum are defined" do
       # it { is_expected.to eq('LENGTH(column_name) BETWEEN 1 AND 3') }
       describe "and too long and too short messages are the same" do
-        let(:opts) { { minimum: 1, maximum: 3, too_long: 'too long error message', too_short: 'too short error message' } }
+        let(:opts) { { minimum: 1, maximum: 3, too_long: 'is longer than expected', too_short: 'is shorter than expected' } }
 
         it { is_expected.to match_array([
           { statement: 'column_name IS NOT NULL AND LENGTH(column_name) >= 1', 
-            message: 'too short error message' },
+            message: 'ColumnName is shorter than expected' },
           { statement: 'column_name IS NOT NULL AND LENGTH(column_name) <= 3', 
-            message: 'too long error message' }
+            message: 'ColumnName is longer than expected' }
         ]) }
         
       end
 
       describe "and too long and too short messages are different" do
-        let(:opts) { { minimum: 1, maximum: 3, too_long: 'some error message', too_short: 'some error message' } }
+        let(:opts) { { minimum: 1, maximum: 3, too_long: 'has invalid length', too_short: 'has invalid length' } }
         
         it { is_expected.to eq([{
           statement: 'column_name IS NOT NULL AND LENGTH(column_name) BETWEEN 1 AND 3', 
-          message: 'some error message'
+          message: 'ColumnName has invalid length'
         }]) }
       end
     end
@@ -129,7 +129,7 @@ describe Mv::Core::Validation::Builder::Length do
 
       it { is_expected.to eq([{
         statement: 'LENGTH(column_name) = 1 OR column_name IS NULL', 
-        message: 'some error message'
+        message: 'ColumnName has invalid length'
       }]) }
     end
 
@@ -138,7 +138,7 @@ describe Mv::Core::Validation::Builder::Length do
 
       it { is_expected.to eq([{
         statement: 'LENGTH(column_name) = 1 OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
-        message: 'some error message'
+        message: 'ColumnName has invalid length'
       }]) }
     end
 
@@ -147,7 +147,7 @@ describe Mv::Core::Validation::Builder::Length do
 
       it { is_expected.to eq([{
         statement: 'LENGTH(column_name) = 1 OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
-        message: 'some error message'
+        message: 'ColumnName has invalid length'
       }]) }
     end
   end

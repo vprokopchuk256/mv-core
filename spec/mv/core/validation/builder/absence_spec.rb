@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Absence do
   def absence(opts = {})
     Mv::Core::Validation::Absence.new(:table_name, 
                                       :column_name,
-                                      { message: 'some error message' }.merge(opts))
+                                      { message: 'should be empty' }.merge(opts))
   end
 
   describe "#initialize" do
@@ -27,7 +27,7 @@ describe Mv::Core::Validation::Builder::Absence do
        
       it { is_expected.to eq([{
         statement: "column_name IS NULL OR LENGTH(TRIM(column_name)) = 0", 
-        message: 'some error message'
+        message: 'ColumnName should be empty'
       }]) }
     end 
 
@@ -36,7 +36,7 @@ describe Mv::Core::Validation::Builder::Absence do
       
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND LENGTH(TRIM(column_name)) = 0", 
-        message: 'some error message'
+        message: 'ColumnName should be empty'
       }]) }
     end
 
@@ -45,7 +45,7 @@ describe Mv::Core::Validation::Builder::Absence do
       
       it { is_expected.to eq([{
         statement: "column_name IS NULL AND LENGTH(TRIM(column_name)) > 0", 
-        message: 'some error message'
+        message: 'ColumnName should be empty'
       }]) }
     end
   end

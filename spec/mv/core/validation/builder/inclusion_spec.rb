@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
   def inclusion(opts = {})
     Mv::Core::Validation::Inclusion.new(:table_name, 
                                         :column_name,
-                                        { in: [1, 5], message: 'some error message'}.merge(opts)) 
+                                        { in: [1, 5], message: 'is included'}.merge(opts)) 
   end
 
   describe "#initalize" do
@@ -18,18 +18,18 @@ describe Mv::Core::Validation::Builder::Inclusion do
     its(:allow_nil) { is_expected.to eq(inclusion.allow_nil) }
     its(:allow_blank) { is_expected.to eq(inclusion.allow_blank) }
     its(:column_name) { is_expected.to eq(inclusion.column_name) }
-    its(:message) { is_expected.to eq(inclusion.message) }
+    its(:message) { is_expected.to eq(inclusion.full_message) }
   end
 
   describe "#conditions" do
     subject { described_class.new(inclusion(opts)).conditions }
 
     describe "when integers array passed" do
-      let(:opts) { { in: [1, 5], message: 'some error message' } }
+      let(:opts) { { in: [1, 5], message: 'is included' } }
 
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND column_name IN (1, 5)', 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -38,7 +38,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
       
       it { is_expected.to eq([{
         statement: 'column_name IS NOT NULL AND column_name BETWEEN 1 AND 3', 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -47,7 +47,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
       
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name BETWEEN 'a' AND 'c'", 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -56,7 +56,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
 
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name IN ('a', 'c')", 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -65,7 +65,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
 
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND column_name IN (1.5, 1.8)", 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
     
@@ -82,7 +82,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
 
       it { is_expected.to eq([{
         statement: 'column_name IN (1, 5) OR column_name IS NULL', 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -91,7 +91,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
       
       it { is_expected.to eq([{
         statement: 'column_name IN (1, 5) OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
 
@@ -100,7 +100,7 @@ describe Mv::Core::Validation::Builder::Inclusion do
 
       it { is_expected.to eq([{
         statement: 'column_name IN (1, 5) OR column_name IS NULL OR LENGTH(TRIM(column_name)) = 0', 
-        message: 'some error message'
+        message: 'ColumnName is included'
       }]) }
     end
   end
