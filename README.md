@@ -19,7 +19,7 @@ MV - Migration Validators Projects. All gems that belongs to that project are pr
   * [MySQL](#mysql)
   * [SQLite](#sqlite)
 * [Integration with ActiveRecord](#integration-with-activerecord)
-* [schema.rb](#schema.rb)
+* [SchemaRb](#schemarb)
 * [Tasks](#tasks)
 * [Drivers](#drivers)
 * [Version History](#version history)
@@ -253,7 +253,7 @@ console:
   => ["Title can't be blank"]
 ```
 
-# Shema.rb
+# SchemaRb
 
   All validations that you've defined are dumped to schema.rb automatically:
 
