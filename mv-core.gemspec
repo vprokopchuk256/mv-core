@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Valeriy Prokopchuk"]
-  s.date = "2015-01-22"
+  s.date = "2015-01-28"
   s.description = "DB constraints in migrations similiar to ActiveRecord validations. Core classes"
   s.email = "vprokopchuk@gmail.com"
   s.extra_rdoc_files = [
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "lib/mv-core.rb",
+    "lib/mv/core/active_record/base_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/abstract_adapter_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/table_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/table_definition_decorator.rb",
@@ -68,6 +69,14 @@ Gem::Specification.new do |s|
     "lib/mv/core/services/synchronize_constraints.rb",
     "lib/mv/core/services/uninstall.rb",
     "lib/mv/core/validation/absence.rb",
+    "lib/mv/core/validation/active_model_presenter/absence.rb",
+    "lib/mv/core/validation/active_model_presenter/base.rb",
+    "lib/mv/core/validation/active_model_presenter/exclusion.rb",
+    "lib/mv/core/validation/active_model_presenter/factory.rb",
+    "lib/mv/core/validation/active_model_presenter/inclusion.rb",
+    "lib/mv/core/validation/active_model_presenter/length.rb",
+    "lib/mv/core/validation/active_model_presenter/presence.rb",
+    "lib/mv/core/validation/active_model_presenter/uniqueness.rb",
     "lib/mv/core/validation/base.rb",
     "lib/mv/core/validation/builder/absence.rb",
     "lib/mv/core/validation/builder/base.rb",
@@ -91,6 +100,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/vprokopchuk256/mv-core"
   s.licenses = ["MIT"]
+  s.required_ruby_version = Gem::Requirement.new(">= 2.0")
   s.rubygems_version = "2.4.4"
   s.summary = "DB constraints in migrations similiar to ActiveRecord validations. Core classes"
 
