@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/Validation/active_model_presenter/inclusion'
+require 'mv/core/validation/active_model_presenter/inclusion'
 
 describe Mv::Core::Validation::ActiveModelPresenter::Inclusion do
   subject(:validation) { 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/Validation/active_model_presenter/length'
+require 'mv/core/validation/active_model_presenter/length'
 
 describe Mv::Core::Validation::ActiveModelPresenter::Length do
   subject(:validation) { 

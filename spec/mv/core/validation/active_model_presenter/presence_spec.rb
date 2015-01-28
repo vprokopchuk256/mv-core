@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/Validation/active_model_presenter/presence'
+require 'mv/core/validation/active_model_presenter/presence'
 
 describe Mv::Core::Validation::ActiveModelPresenter::Presence do
   subject(:validation) { 

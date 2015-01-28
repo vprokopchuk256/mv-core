@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/Validation/active_model_presenter/exclusion'
+require 'mv/core/validation/active_model_presenter/exclusion'
 
 describe Mv::Core::Validation::ActiveModelPresenter::Exclusion do
   subject(:validation) { 

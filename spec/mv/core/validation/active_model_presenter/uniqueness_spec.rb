@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'mv/core/Validation/active_model_presenter/uniqueness'
+require 'mv/core/validation/active_model_presenter/uniqueness'
 
 describe Mv::Core::Validation::ActiveModelPresenter::Uniqueness do
   subject(:validation) { 
