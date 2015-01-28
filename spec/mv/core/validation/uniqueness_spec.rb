@@ -91,7 +91,8 @@ describe Mv::Core::Validation::Uniqueness do
     describe ":message" do
       subject { instance(message: nil) }
       
-      its(:message) { is_expected.to eq('Uniqueness violated on the table table_name column column_name') }
+      its(:message) { is_expected.to eq('is not unique') }
+      its(:full_message) { is_expected.to eq('ColumnName is not unique') }
     end
 
     describe ":on" do

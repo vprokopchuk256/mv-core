@@ -81,7 +81,8 @@ describe Mv::Core::Validation::Custom do
     describe ":message" do
       subject { instance(message: nil) }
       
-      its(:message) { is_expected.to eq('Custom violated on the table table_name column column_name') }
+      its(:message) { is_expected.to eq('is invalid') }
+      its(:full_message) { is_expected.to eq('ColumnName is invalid') }
     end
 
     describe ":on" do

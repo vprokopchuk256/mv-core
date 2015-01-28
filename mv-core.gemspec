@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "lib/mv-core.rb",
+    "lib/mv/core/active_record/base_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/abstract_adapter_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/table_decorator.rb",
     "lib/mv/core/active_record/connection_adapters/table_definition_decorator.rb",
@@ -68,6 +69,14 @@ Gem::Specification.new do |s|
     "lib/mv/core/services/synchronize_constraints.rb",
     "lib/mv/core/services/uninstall.rb",
     "lib/mv/core/validation/absence.rb",
+    "lib/mv/core/validation/active_model_presenter/absence.rb",
+    "lib/mv/core/validation/active_model_presenter/base.rb",
+    "lib/mv/core/validation/active_model_presenter/exclusion.rb",
+    "lib/mv/core/validation/active_model_presenter/factory.rb",
+    "lib/mv/core/validation/active_model_presenter/inclusion.rb",
+    "lib/mv/core/validation/active_model_presenter/length.rb",
+    "lib/mv/core/validation/active_model_presenter/presence.rb",
+    "lib/mv/core/validation/active_model_presenter/uniqueness.rb",
     "lib/mv/core/validation/base.rb",
     "lib/mv/core/validation/builder/absence.rb",
     "lib/mv/core/validation/builder/base.rb",

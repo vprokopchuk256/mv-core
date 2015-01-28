@@ -7,7 +7,6 @@ module Mv
 
           delegate :table_name, 
                    :column_name, 
-                   :message, 
                    :allow_nil, 
                    :allow_blank, to: :validation
 
@@ -16,6 +15,10 @@ module Mv
           end
           
           protected
+
+          def message
+            validation.full_message
+          end
           
           def column_reference 
             column_name

@@ -7,7 +7,7 @@ describe Mv::Core::Validation::Builder::Presence do
   def presence(opts = {})
     Mv::Core::Validation::Presence.new(:table_name, 
                                         :column_name,
-                                        { message: 'some error message' }.merge(opts))
+                                        { message: 'is absent' }.merge(opts))
   end
 
   describe "#initialize" do
@@ -27,7 +27,7 @@ describe Mv::Core::Validation::Builder::Presence do
        
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL AND LENGTH(TRIM(column_name)) > 0", 
-        message: 'some error message'
+        message: 'ColumnName is absent'
       }]) }
     end 
 
@@ -36,7 +36,7 @@ describe Mv::Core::Validation::Builder::Presence do
       
       it { is_expected.to eq([{
         statement: "column_name IS NULL OR LENGTH(TRIM(column_name)) > 0", 
-        message: 'some error message'
+        message: 'ColumnName is absent'
       }]) }
     end
 
@@ -45,7 +45,7 @@ describe Mv::Core::Validation::Builder::Presence do
       
       it { is_expected.to eq([{
         statement: "column_name IS NOT NULL OR LENGTH(TRIM(column_name)) = 0", 
-        message: 'some error message'
+        message: 'ColumnName is absent'
       }]) }
     end
   end

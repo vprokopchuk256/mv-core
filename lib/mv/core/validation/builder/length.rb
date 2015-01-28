@@ -10,8 +10,6 @@ module Mv
                    :is, 
                    :maximum, 
                    :minimum,
-                   :too_short, 
-                   :too_long,
                    to: :validation
 
           def conditions
@@ -28,6 +26,14 @@ module Mv
           end
 
           protected
+
+          def too_short
+            validation.full_too_short
+          end
+
+          def too_long
+            validation.full_too_long
+          end
 
           def apply_in stmt
             [{ statement: self.in.is_a?(Range) ? "LENGTH(#{stmt}) BETWEEN #{self.in.min} AND #{self.in.max}" :

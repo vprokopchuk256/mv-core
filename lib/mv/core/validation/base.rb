@@ -49,6 +49,10 @@ module Mv
           [:save, :create].include?(on.try(:to_sym))
         end
 
+        def full_message 
+          compose_full_message(message)
+        end
+
         protected 
 
         def available_as
@@ -85,6 +89,10 @@ module Mv
 
         def default_allow_blank
           false
+        end
+
+        def compose_full_message message
+          "#{column_name.to_s.camelize} #{message}"
         end
 
         private

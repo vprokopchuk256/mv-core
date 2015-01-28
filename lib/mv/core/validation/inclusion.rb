@@ -23,6 +23,12 @@ module Mv
           prepared_in = self.in.is_a?(Range) ? [self.in.min, self.in.max] : self.in.try(:sort)
           super + [prepared_in]
         end
+
+        protected
+
+        def default_message
+          'is not included in the list'
+        end
       end
     end
   end
