@@ -19,6 +19,7 @@ MV - Migration Validators Projects. All gems that belongs to that project are pr
   * [MySQL](#mysql)
   * [SQLite](#sqlite)
 * [Integration with ActiveRecord](#integration-with-activerecord)
+* [schema.rb](#schema.rb)
 * [Tasks](#tasks)
 * [Drivers](#drivers)
 * [Version History](#version history)
@@ -250,6 +251,27 @@ console:
 
   p.errors.full_messages
   => ["Title can't be blank"]
+```
+
+# Shema.rb
+
+  All validations that you've defined are dumped to schema.rb automatically:
+
+  in migration: 
+
+```ruby
+  def change
+    create_table :posts do |t|
+      t.string :title, presence: { message: "can't be blank", as: :trigger }
+    end
+  end
+```
+
+in 'schema.rb': 
+
+```ruby
+  validates(:posts, :title, 
+                    presence: { message: "can't be blank", as: :trigger})
 ```
 
 # Tasks
