@@ -6,6 +6,8 @@
 
 Project ```Migration Validators``` (MV) makes it possible for RoR developer to define validations directly in db and then bubble them up to model so they available as normal ActiveModel::Validations there. And all that without code duplication.  
 
+**WARNING** Versions lower than 2.0 are not supported anymore. As results, rails v.3 or older are not supported either.
+
 # Abbreviations
 
 MV - Migration Validators Projects. All gems that belongs to that project are prefixed with mv-*
