@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Valeriy Prokopchuk"]
-  s.date = "2015-01-28"
+  s.date = "2015-05-25"
   s.description = "DB constraints in migrations similiar to ActiveRecord validations. Core classes"
   s.email = "vprokopchuk@gmail.com"
   s.extra_rdoc_files = [
@@ -83,6 +83,7 @@ Gem::Specification.new do |s|
     "lib/mv/core/validation/builder/custom.rb",
     "lib/mv/core/validation/builder/exclusion.rb",
     "lib/mv/core/validation/builder/factory.rb",
+    "lib/mv/core/validation/builder/format.rb",
     "lib/mv/core/validation/builder/inclusion.rb",
     "lib/mv/core/validation/builder/length.rb",
     "lib/mv/core/validation/builder/presence.rb",
@@ -90,6 +91,7 @@ Gem::Specification.new do |s|
     "lib/mv/core/validation/custom.rb",
     "lib/mv/core/validation/exclusion.rb",
     "lib/mv/core/validation/factory.rb",
+    "lib/mv/core/validation/format.rb",
     "lib/mv/core/validation/inclusion.rb",
     "lib/mv/core/validation/length.rb",
     "lib/mv/core/validation/presence.rb",

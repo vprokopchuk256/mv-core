@@ -1,4 +1,5 @@
 require 'mv/core/validation/uniqueness'
+require 'mv/core/validation/format'
 require 'mv/core/validation/exclusion'
 require 'mv/core/validation/inclusion'
 require 'mv/core/validation/length'
@@ -16,14 +17,14 @@ module Mv
         def create_validation table_name, column_name, validation_type, opts
           validation_class = factory_map[validation_type.to_sym]
 
-          raise Mv::Core::Error.new(table_name: table_name, 
-                                    column_name: column_name, 
-                                    validation_type: validation_type, 
-                                    opts: opts, 
+          raise Mv::Core::Error.new(table_name: table_name,
+                                    column_name: column_name,
+                                    validation_type: validation_type,
+                                    opts: opts,
                                     error: "Validation '#{validation_type}' is not supported") unless validation_class
 
           validation_class.new(table_name, column_name, opts)
-        end 
+        end
 
         def register_validation validation_type, klass
           factory_map[validation_type.to_sym] = klass
@@ -40,20 +41,20 @@ module Mv
         end
 
         class << self
-          delegate :create_validation, 
-                   :registered_validations, 
+          delegate :create_validation,
+                   :registered_validations,
                    :register_validation,
                    :register_validations, to: :instance
         end
 
-        private 
+        private
 
         def factory_map
           @factory_map ||= {
-            uniqueness: Mv::Core::Validation::Uniqueness, 
-            exclusion: Mv::Core::Validation::Exclusion, 
-            inclusion: Mv::Core::Validation::Inclusion, 
-            length: Mv::Core::Validation::Length, 
+            uniqueness: Mv::Core::Validation::Uniqueness,
+            exclusion: Mv::Core::Validation::Exclusion,
+            inclusion: Mv::Core::Validation::Inclusion,
+            length: Mv::Core::Validation::Length,
             presence: Mv::Core::Validation::Presence,
             absence: Mv::Core::Validation::Absence,
             custom: Mv::Core::Validation::Custom

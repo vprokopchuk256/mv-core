@@ -4,6 +4,7 @@ require 'mv/core/validation/builder/length'
 require 'mv/core/validation/builder/presence'
 require 'mv/core/validation/builder/absence'
 require 'mv/core/validation/builder/uniqueness'
+require 'mv/core/validation/builder/format'
 require 'mv/core/validation/builder/custom'
 
 module Mv

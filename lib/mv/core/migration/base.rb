@@ -12,11 +12,11 @@ module Mv
       class Base
         include Singleton
 
-        SUPPORTED_METHODS = %i{ add_column remove_column rename_column 
+        SUPPORTED_METHODS = %i{ add_column remove_column rename_column
                                 change_column rename_table drop_table}
 
         attr_reader :operations_list, :operations_factory
-        
+
         def initialize()
           @operations_list = Mv::Core::Migration::Operations::List.new
           @operations_factory = Mv::Core::Migration::Operations::Factory.new()
@@ -35,7 +35,7 @@ module Mv
         def execute
           if operations_list.present?
             Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
-            
+
             constraints_loader = Mv::Core::Services::LoadConstraints.new(operations_list.tables)
 
             old_constraints = constraints_loader.execute
@@ -47,8 +47,8 @@ module Mv
             constraints_comparizon = Mv::Core::Services::CompareConstraintArrays.new(old_constraints, new_constraints)
                                                                                      .execute
 
-            Mv::Core::Services::SynchronizeConstraints.new(constraints_comparizon[:added], 
-                                                           constraints_comparizon[:updated], 
+            Mv::Core::Services::SynchronizeConstraints.new(constraints_comparizon[:added],
+                                                           constraints_comparizon[:updated],
                                                            constraints_comparizon[:deleted])
                                                       .execute
           end
@@ -56,7 +56,7 @@ module Mv
 
         def add_column table_name, column_name, opts
           return unless opts.present?
-          
+
           unless disabled_validations?
             operation = operations_factory.create_operation(:add_column, table_name, column_name, opts)
             operations_list.add_operation(operation)

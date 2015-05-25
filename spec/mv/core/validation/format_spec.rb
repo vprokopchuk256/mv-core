@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-require 'mv/core/validation/custom'
+require 'mv/core/validation/format'
 
-describe Mv::Core::Validation::Custom do
-  def instance(opts = {})
+describe Mv::Core::Validation::Format do
+  def instance opts = {}
     table_name = opts.with_indifferent_access.delete(:table_name) || :table_name
     column_name = opts.with_indifferent_access.delete(:column_name) || :column_name
     described_class.new(table_name, column_name,
-                        { message: :message,
+                        { with: :with,
+                          message: :message,
                           on: :save,
-                          statement: :statement,
                           create_trigger_name: :create_trigger_name,
                           update_trigger_name: :update_trigger_name,
                           allow_nil: true,
-                          allow_blank: false,
-                          as: :trigger}.with_indifferent_access.merge(opts))
+                          allow_blank: true,
+                          as: :trigger}.with_indifferent_access.merge(opts) )
   end
 
   subject { instance }
@@ -23,20 +23,20 @@ describe Mv::Core::Validation::Custom do
     describe "by default" do
       its(:table_name) { is_expected.to eq(:table_name) }
       its(:column_name) { is_expected.to eq(:column_name) }
+      its(:with) { is_expected.to eq(:with) }
       its(:message) { is_expected.to eq(:message) }
-      its(:statement) { is_expected.to eq(:statement)}
       its(:on) { is_expected.to eq(:save) }
       its(:create_trigger_name) { is_expected.to eq(:create_trigger_name) }
       its(:update_trigger_name) { is_expected.to eq(:update_trigger_name) }
       its(:allow_nil) { is_expected.to be_truthy }
-      its(:allow_blank) { is_expected.to be_falsey }
+      its(:allow_blank) { is_expected.to be_truthy }
       its(:as) { is_expected.to eq(:trigger) }
     end
 
     describe "when simplification provided" do
-      subject { described_class.new(:table_name, :column_name, :statement) }
+      subject { described_class.new(:table_name, :column_name, /aaa/)}
 
-      its(:statement) { is_expected.to eq(:statement)}
+      its(:with) { is_expected.to eq(/aaa/) }
     end
   end
 
@@ -44,25 +44,26 @@ describe Mv::Core::Validation::Custom do
     it { is_expected.to eq(instance) }
     it { is_expected.to eq(instance({'table_name' => 'table_name',
                                      'column_name' => 'column_name',
+                                    'with' => 'with',
                                     'message' => 'message',
-                                    'statement' => 'statement',
                                     'on' => 'save',
                                     'create_trigger_name' => 'create_trigger_name',
                                     'update_trigger_name' => 'update_trigger_name',
                                     'allow_nil' => true,
-                                    'allow_blank' => false,
+                                    'allow_blank' => true,
                                     'as' => 'trigger' } )) }
 
     it { is_expected.not_to eq(instance(table_name: 'table_name_1')) }
     it { is_expected.not_to eq(instance(column_name: 'column_name_1')) }
     it { is_expected.not_to eq(instance(message: 'some_other_message')) }
-    it { is_expected.not_to eq(instance(statement: 'some_other_statement')) }
     it { is_expected.not_to eq(instance(on: 'create')) }
     it { is_expected.not_to eq(instance(create_trigger_name: 'some_other_create_trigger_name')) }
     it { is_expected.not_to eq(instance(update_trigger_name: 'some_other_update_trigger_name')) }
     it { is_expected.not_to eq(instance(allow_nil: false)) }
-    it { is_expected.not_to eq(instance(allow_blank: true)) }
-    it { is_expected.not_to eq(instance(as: :index)) }
+    it { is_expected.not_to eq(instance(allow_blank: false)) }
+    it { is_expected.not_to eq(instance(as: 'check')) }
+
+    it { is_expected.not_to eq(instance(with: 'with_1')) }
   end
 
   describe "default values" do
@@ -81,8 +82,7 @@ describe Mv::Core::Validation::Custom do
     describe ":message" do
       subject { instance(message: nil) }
 
-      its(:message) { is_expected.to eq('is invalid') }
-      its(:full_message) { is_expected.to eq('ColumnName is invalid') }
+      its(:message) { is_expected.to eq('Format violated on the table table_name column column_name') }
     end
 
     describe ":on" do
@@ -131,14 +131,6 @@ describe Mv::Core::Validation::Custom do
   describe "validation" do
     it { is_expected.to be_valid }
 
-    describe ":statement" do
-      describe "when empty" do
-        subject { instance(statement: '') }
-
-        it { is_expected.to be_invalid }
-      end
-    end
-
     describe ":create_trigger_name" do
       describe "when :on == :update" do
         subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, on: :update) }
@@ -150,6 +142,14 @@ describe Mv::Core::Validation::Custom do
     describe ":update_trigger_name" do
       describe "when :on == :create" do
         subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, on: :create) }
+
+        it { is_expected.to be_invalid }
+      end
+    end
+
+    describe ":with" do
+      describe "when it is not defined" do
+        subject { instance(with: nil) }
 
         it { is_expected.to be_invalid }
       end
@@ -200,7 +200,7 @@ describe Mv::Core::Validation::Custom do
     describe ":allow_blank" do
       [true, false].each do |value|
         describe "when :allow_blank == #{value}" do
-          subject { instance(allow_nil: false, allow_blank: value) }
+          subject { instance(allow_blank: value) }
 
           it { is_expected.to be_valid }
         end
@@ -222,3 +222,4 @@ describe Mv::Core::Validation::Custom do
     end
   end
 end
+
