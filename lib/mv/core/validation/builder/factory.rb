@@ -36,6 +36,7 @@ module Mv
               Mv::Core::Validation::Presence => Mv::Core::Validation::Builder::Presence,
               Mv::Core::Validation::Absence => Mv::Core::Validation::Builder::Absence,
               Mv::Core::Validation::Uniqueness => Mv::Core::Validation::Builder::Uniqueness,
+              Mv::Core::Validation::Format => Mv::Core::Validation::Builder::Format,
               Mv::Core::Validation::Custom => Mv::Core::Validation::Builder::Custom
             }
           end

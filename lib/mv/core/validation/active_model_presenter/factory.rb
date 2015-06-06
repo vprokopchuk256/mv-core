@@ -3,6 +3,7 @@ require 'mv/core/validation/active_model_presenter/inclusion'
 require 'mv/core/validation/active_model_presenter/length'
 require 'mv/core/validation/active_model_presenter/presence'
 require 'mv/core/validation/active_model_presenter/absence'
+require 'mv/core/validation/active_model_presenter/format'
 require 'mv/core/validation/active_model_presenter/uniqueness'
 
 module Mv
@@ -41,7 +42,8 @@ module Mv
               Mv::Core::Validation::Length => Mv::Core::Validation::ActiveModelPresenter::Length,
               Mv::Core::Validation::Presence => Mv::Core::Validation::ActiveModelPresenter::Presence,
               Mv::Core::Validation::Absence => Mv::Core::Validation::ActiveModelPresenter::Absence,
-              Mv::Core::Validation::Uniqueness => Mv::Core::Validation::ActiveModelPresenter::Uniqueness,
+              Mv::Core::Validation::Format => Mv::Core::Validation::ActiveModelPresenter::Format,
+              Mv::Core::Validation::Uniqueness => Mv::Core::Validation::ActiveModelPresenter::Uniqueness
             }
           end
         end

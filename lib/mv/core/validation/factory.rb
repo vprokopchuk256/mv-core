@@ -52,6 +52,7 @@ module Mv
         def factory_map
           @factory_map ||= {
             uniqueness: Mv::Core::Validation::Uniqueness,
+            format: Mv::Core::Validation::Format,
             exclusion: Mv::Core::Validation::Exclusion,
             inclusion: Mv::Core::Validation::Inclusion,
             length: Mv::Core::Validation::Length,

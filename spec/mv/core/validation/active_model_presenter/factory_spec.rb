@@ -13,12 +13,12 @@ describe Mv::Core::Validation::ActiveModelPresenter::Factory do
 
       it { is_expected.to be_an_instance_of(Mv::Core::Validation::ActiveModelPresenter::Exclusion) }
     end
-   
+
     describe "inclusion" do
       let(:validation) { Mv::Core::Validation::Inclusion.new(:table_name, :column_name, in: [1, 2]) }
 
       it { is_expected.to be_an_instance_of(Mv::Core::Validation::ActiveModelPresenter::Inclusion) }
-    end 
+    end
 
     describe "length" do
       let(:validation) { Mv::Core::Validation::Length.new(:table_name, :column_name, in: [1, 2]) }
@@ -36,6 +36,12 @@ describe Mv::Core::Validation::ActiveModelPresenter::Factory do
       let(:validation) { Mv::Core::Validation::Absence.new(:table_name, :column_name, {}) }
 
       it { is_expected.to be_an_instance_of(Mv::Core::Validation::ActiveModelPresenter::Absence) }
+    end
+
+    describe "format" do
+      let(:validation) { Mv::Core::Validation::Format.new(:table_name, :column_name, {}) }
+
+      it { is_expected.to be_an_instance_of(Mv::Core::Validation::ActiveModelPresenter::Format) }
     end
 
     describe "uniqueness" do
