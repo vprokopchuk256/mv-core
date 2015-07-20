@@ -4,7 +4,7 @@
 
 # Define validations in database and use them in model
 
-Project ```Migration Validators``` (MV) makes it possible for RoR developer to define validations directly in db and then bubble them up to model so they available as normal ActiveModel::Validations there. And all that without code duplication.  
+Project ```Migration Validators``` (MV) makes it possible for RoR developer to define validations directly in db and then bubble them up to model so they available as normal ActiveModel::Validations there. And all that without code duplication.
 
 **WARNING** Versions lower than 2.0 are not supported anymore. As results, rails v.3 or older are not supported either.
 
@@ -29,13 +29,13 @@ MV - Migration Validators Projects. All gems that belongs to that project are pr
 
 # Why `Migration Validators`
 
-It's commonly accepted in RoR community to ignore database constraints and define data validations in ActiveModel. In most cases such approach is perfectly acceptable and allows developer to concentrate on business logic rather than on writing database - specific code. 
+It's commonly accepted in RoR community to ignore database constraints and define data validations in ActiveModel. In most cases such approach is perfectly acceptable and allows developer to concentrate on business logic rather than on writing database - specific code.
 
-But when your application grows significantly then possibility of the data error with such approach became more tangible. Data consistency could be violated in many ways: directly ( with db console for ex ), as result of some error in the code, by other application if database is shared. 
+But when your application grows significantly then possibility of the data error with such approach became more tangible. Data consistency could be violated in many ways: directly ( with db console for ex ), as result of some error in the code, by other application if database is shared.
 
-DB constraints could help in such case. But there are several reasons why they are not widely spread in RoR: such constraints are DB - specific in most cases and their management is quite tricky. 
+DB constraints could help in such case. But there are several reasons why they are not widely spread in RoR: such constraints are DB - specific in most cases and their management is quite tricky.
 
-The goal of the `Migration Validators` project is to resolve those problems and make DB constraints management straightforward 
+The goal of the `Migration Validators` project is to resolve those problems and make DB constraints management straightforward
 
 # How It Works
 
@@ -43,7 +43,7 @@ The goal of the `Migration Validators` project is to resolve those problems and 
 
 Most of the validations could be defined in several ways: as condition inside trigger, as condition inside check constraint or as index ( for ```uniqueness```)
 
-In most cases developer can select how and where validation should be implemented. By default most optimal way is proposed. 
+In most cases developer can select how and where validation should be implemented. By default most optimal way is proposed.
 
 For example: ```uniqueness``` validation is defined as unique index by default. But developer can select other way - trigger of check constraint. Each way has own advantages and disadvantages
 
@@ -52,17 +52,17 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   Create new table:
 
   ```ruby
-  def change 
+  def change
     create_table do |t|
-      t.string :str_column, validates: { uniqueness: :true, 
+      t.string :str_column, validates: { uniqueness: :true,
                                          inclusion: { in: 1..3 }}
       t.column :column_name, :integer, validates: { exclusion: { in: [1,2,3]}}
     end
   end
   ```
 
-  Modify existing table: 
-  
+  Modify existing table:
+
   ```ruby
   def up
     change_table do |t|
@@ -79,7 +79,7 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   end
   ```
 
-  Update validation definition: 
+  Update validation definition:
 
   ```ruby
   def up
@@ -91,8 +91,8 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   end
   ```
 
- There are many ways to define desired database constraint. And those ways might vary for each RDBMS. One could define the way how constraint should be 
- defined in DB: 
+ There are many ways to define desired database constraint. And those ways might vary for each RDBMS. One could define the way how constraint should be
+ defined in DB:
 
   as trigger:
 
@@ -118,9 +118,9 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   end
   ```
 
-  Also there is possibility to define when validations should occur: 
+  Also there is possibility to define when validations should occur:
 
-  when new record created: 
+  when new record created:
 
   ```ruby
   def up
@@ -144,12 +144,12 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   end
   ```
 
-  And if you need to define some custom validation you can use custom validation (version >= 2.1 is required): 
+  And if you need to define some custom validation you can use custom validation (version >= 2.1 is required):
 
   ```ruby
   def up
-    validates :table_name, :str_column, 
-                      custom: { statement: 'LENGTH(TRIM({str_column})) > 10', 
+    validates :table_name, :str_column,
+                      custom: { statement: 'LENGTH(TRIM({str_column})) > 10',
                                 on: :update }
   end
 
@@ -159,8 +159,8 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   ```
 
   as result only values with length greater than 10 will be allowed and that condition will be implemented inside ON UPDATE trigger
-  
-  Almost all validations supports shorter notation (simplification) that is not compatible with ActiveRecord validation but much shorter (version >= 2.1 is required): 
+
+  Almost all validations supports shorter notation (simplification) that is not compatible with ActiveRecord validation but much shorter (version >= 2.1 is required):
 
   ```ruby
   def up
@@ -184,7 +184,7 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
 
   ```ruby
   def up
-    validates :table_name, :str_column, custom: 
+    validates :table_name, :str_column, custom:
                            'LENGTH(TRIM({str_column})) > 10'
   end
 
@@ -193,13 +193,13 @@ For example: ```uniqueness``` validation is defined as unique index by default. 
   end
   ```
 
-  Supported validators, simplification and their properties might vary from one db driver to another. See detailed properties description in correspondent [driver](#drivers) section.  
+  Supported validators, simplification and their properties might vary from one db driver to another. See detailed properties description in correspondent [driver](#drivers) section.
 
 # Installation
 
-`mv-core` is a set of core classes that are used everywhere across `Migration Validators` project gems. 
+`mv-core` is a set of core classes that are used everywhere across `Migration Validators` project gems.
 
-This gem is not intended to be installed directly and referenced from within the application. You should rather install appropriate driver. 
+This gem is not intended to be installed directly and referenced from within the application. You should rather install appropriate driver.
 
 ### PostgreSQL:
 
@@ -213,19 +213,19 @@ This gem is not intended to be installed directly and referenced from within the
   gem install mv-mysql
   ```
 
-### SQLite: 
+### SQLite:
 
   ```
   gem install mv-sqlite
   ```
- 
+
 # Integration With ActiveRecord
 
-You can level up validations that are defined in DB to your model using `enforce_migration_validations` method. 
+You can level up validations that are defined in DB to your model using `enforce_migration_validations` method.
 
-Example: 
+Example:
 
-migration: 
+migration:
 
 ```ruby
   def change
@@ -235,7 +235,7 @@ migration:
   end
 ```
 
-model: 
+model:
 
 ```ruby
   class Post << ActiveRecord::Base
@@ -243,12 +243,12 @@ model:
   end
 ```
 
-console: 
+console:
 
 ```ruby
   p = Post.new(title: nil)
 
-  p.valid? 
+  p.valid?
   => false
 
   p.errors.full_messages
@@ -259,7 +259,7 @@ console:
 
   All validations that you've defined are dumped to schema.rb automatically:
 
-  in migration: 
+  in migration:
 
 ```ruby
   def change
@@ -269,10 +269,10 @@ console:
   end
 ```
 
-in 'schema.rb': 
+in 'schema.rb':
 
 ```ruby
-  validates(:posts, :title, 
+  validates(:posts, :title,
                     presence: { message: "can't be blank", as: :trigger})
 ```
 
@@ -284,7 +284,7 @@ in 'schema.rb':
   bundle exec rake mv:show_constraints['table_name other_table_name']
   ```
 
-  or show all constraints are created in migrations: 
+  or show all constraints are created in migrations:
 
   ```ruby
   bundle exec rake mv:show_constraints
@@ -296,25 +296,25 @@ in 'schema.rb':
   bundle exec rake mv:delete_constraints['table_name other_table_name']
   ```
 
-  or remove all constraints are created in migrations: 
+  or remove all constraints are created in migrations:
 
   ```ruby
   bundle exec rake mv:delete_constraints
   ```
 
-  Create / restore / update constraints on the specified tables: 
+  Create / restore / update constraints on the specified tables:
 
   ```ruby
   bundle exec rake mv:create_constraints['table_name other_table_name']
   ```
 
-  or do it for the all tables: 
+  or do it for the all tables:
 
   ```ruby
   bundle exec rake mv:create_constraints
   ```
 
-  Remove all constraints and drop `migration_validators` table: 
+  Remove all constraints and drop `migration_validators` table:
 
   ```ruby
   bundle exec rake mv:uninstall
@@ -330,7 +330,7 @@ in 'schema.rb':
 
 Currently there are drivers for MySQL, PostgreSQL and SQLite RDBMS
 
-So - see detailed info here: 
+So - see detailed info here:
 
 * PostgreSQL: https://github.com/vprokopchuk256/mv-postgresql
 * MySQL: https://github.com/vprokopchuk256/mv-mysql
@@ -344,11 +344,15 @@ So - see detailed info here:
 
 **(2.1.0)** (22 Jan, 2015)
 
-* Custom validation 
+* Custom validation
 
 **(2.2.0)** (28 Jan, 2015)
 
 * Integration with ActiveRecord
+
+**(2.2.1)** (20 Jul, 2015)
+
+* Fix issue with invalid parameters number in `add_column` and `change_column` methods
 
 ## Contributing
 
