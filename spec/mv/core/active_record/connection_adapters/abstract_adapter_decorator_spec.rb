@@ -16,7 +16,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       end
 
       subject :add_column do
-        conn.add_column :table_name, :column_name, :string, 
+        conn.add_column :table_name, :column_name, :string,
                         validates: { length: { is: 5 } }
       end
 
@@ -33,6 +33,23 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       end
     end
 
+    describe 'when column options are not provided' do
+      before do
+        conn.create_table :table_name do |t|
+          t.string :col_name
+        end
+      end
+
+      subject :add_column do
+        conn.add_column :table_name, :column_name, :string
+      end
+
+      it "calls original method" do
+        add_column
+        expect(conn.column_exists?(:table_name, :column_name)).to be_truthy
+      end
+    end
+
     describe "when simplification provided" do
       before do
         conn.create_table :table_name do |t|
@@ -41,7 +58,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       end
 
       subject :add_column do
-        conn.add_column :table_name, :column_name, :string, length: { is: 5 } 
+        conn.add_column :table_name, :column_name, :string, length: { is: 5 }
       end
 
       it "calls migration add_column method" do
@@ -56,7 +73,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
         expect(conn.column_exists?(:table_name, :column_name)).to be_truthy
       end
     end
-  end 
+  end
 
   describe "#remove_column" do
     before do
@@ -66,7 +83,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
         t.string :column_name_1
       end
     end
-    
+
     subject :remove_column do
       conn.remove_column :table_name, :column_name, :string, {}
     end
@@ -90,7 +107,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
         t.string :col_name
       end
     end
-    
+
     subject :rename_column do
       conn.rename_column :table_name, :col_name, :column_name
     end
@@ -116,12 +133,12 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
     end
 
     subject :validates do
-      conn.validates :table_name, :column_name, length: { is: 5 } 
+      conn.validates :table_name, :column_name, length: { is: 5 }
     end
 
     it "calls migration change_column method" do
       expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
-        :table_name, :column_name, length: { is: 5 } 
+        :table_name, :column_name, length: { is: 5 }
       )
       validates
     end
@@ -136,15 +153,37 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       end
 
       subject :change_column do
-        conn.change_column :table_name, :column_name, :integer, 
+        conn.change_column :table_name, :column_name, :integer,
                            validates: { length: { is: 5 } }
       end
 
       it "calls migratin change_column method" do
         expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
-          :table_name, :column_name, length: { is: 5 } 
+          :table_name, :column_name, length: { is: 5 }
         )
         change_column
+      end
+
+      it "calls original method" do
+        change_column
+
+        cls = Class.new(::ActiveRecord::Base) do
+          self.table_name = "table_name"
+        end
+
+        expect(cls.columns_hash['column_name'].type).to eq(:integer)
+      end
+    end
+
+    describe "when column properties are not provided" do
+      before do
+        td = conn.create_table :table_name do |t|
+          t.string :column_name
+        end
+      end
+
+      subject :change_column do
+        conn.change_column :table_name, :column_name, :integer
       end
 
       it "calls original method" do
@@ -166,12 +205,12 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       end
 
       subject :change_column do
-        conn.change_column :table_name, :column_name, :integer, length: { is: 5 } 
+        conn.change_column :table_name, :column_name, :integer, length: { is: 5 }
       end
 
       it "calls migratin change_column method" do
         expect(Mv::Core::Migration::Base.current).to receive(:change_column).with(
-          :table_name, :column_name, length: { is: 5 } 
+          :table_name, :column_name, length: { is: 5 }
         )
         change_column
       end
@@ -185,7 +224,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
 
         expect(cls.columns_hash['column_name'].type).to eq(:integer)
       end
-      
+
     end
   end
 

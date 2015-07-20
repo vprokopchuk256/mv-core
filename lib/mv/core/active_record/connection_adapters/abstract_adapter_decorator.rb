@@ -6,16 +6,16 @@ module Mv
     module ActiveRecord
       module ConnectionAdapters
         module AbstractAdapterDecorator
-          def add_column table_name, column_name, type, opts
-            Mv::Core::Migration::Base.add_column(table_name, column_name, params(opts))  
-            
-            super 
+          def add_column table_name, column_name, type, opts = {}
+            Mv::Core::Migration::Base.add_column(table_name, column_name, params(opts))
+
+            super
           end
 
           def remove_column table_name, column_name, type = nil, options = {}
             Mv::Core::Migration::Base.remove_column table_name, column_name
 
-            super 
+            super
           end
 
           def rename_column table_name, old_column_name, new_column_name
@@ -24,7 +24,7 @@ module Mv
             super
           end
 
-          def change_column table_name, column_name, type, opts
+          def change_column table_name, column_name, type, opts = {}
             Mv::Core::Migration::Base.change_column(table_name, column_name, params(opts))
 
             super
