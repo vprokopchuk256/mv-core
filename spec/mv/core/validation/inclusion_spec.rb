@@ -6,14 +6,14 @@ describe Mv::Core::Validation::Inclusion do
   def instance(opts = {})
     table_name = opts.with_indifferent_access.delete(:table_name) || :table_name
     column_name = opts.with_indifferent_access.delete(:column_name) || :column_name
-    described_class.new(table_name, column_name, 
-                        { in: [1, 2], 
-                        message: :message, 
-                        on: :save, 
-                        create_trigger_name: :create_trigger_name, 
-                        update_trigger_name: :update_trigger_name, 
-                        allow_nil: true, 
-                        allow_blank: true, 
+    described_class.new(table_name, column_name,
+                        { in: [1, 2],
+                        message: :message,
+                        on: :save,
+                        create_trigger_name: :create_trigger_name,
+                        update_trigger_name: :update_trigger_name,
+                        allow_nil: true,
+                        allow_blank: true,
                         as: :trigger }.with_indifferent_access.merge(opts))
   end
 
@@ -42,15 +42,15 @@ describe Mv::Core::Validation::Inclusion do
 
   describe "#<==>" do
     it { is_expected.to eq(instance) }
-    it { is_expected.to eq(instance({'table_name' => 'table_name', 
+    it { is_expected.to eq(instance({'table_name' => 'table_name',
                                      'column_name' => 'column_name',
-                                     'in' => [1, 2], 
-                                    'message' => 'message', 
-                                    'on' => 'save', 
-                                    'create_trigger_name' => 'create_trigger_name', 
-                                    'update_trigger_name' => 'update_trigger_name', 
-                                    'allow_nil' => true, 
-                                    'allow_blank' => true, 
+                                     'in' => [1, 2],
+                                    'message' => 'message',
+                                    'on' => 'save',
+                                    'create_trigger_name' => 'create_trigger_name',
+                                    'update_trigger_name' => 'update_trigger_name',
+                                    'allow_nil' => true,
+                                    'allow_blank' => true,
                                     'as' => 'trigger' } )) }
 
     it { is_expected.not_to eq(instance(table_name: 'table_name_1')) }
@@ -63,7 +63,7 @@ describe Mv::Core::Validation::Inclusion do
     it { is_expected.not_to eq(instance(allow_blank: false)) }
     it { is_expected.not_to eq(instance(as: :index)) }
 
-    
+
     it { is_expected.to eq(instance(in: [2, 1])) }
     it { is_expected.not_to eq(instance(in: [1, 2, 3])) }
 
@@ -79,33 +79,33 @@ describe Mv::Core::Validation::Inclusion do
   describe "default values" do
     describe ":allow_nil" do
       subject { instance(allow_nil: nil) }
-      
+
       its(:allow_nil) { is_expected.to be_falsey }
     end
 
     describe ":allow_blank" do
       subject { instance(allow_blank: nil) }
-      
+
       its(:allow_blank) { is_expected.to be_falsey }
     end
 
     describe ":message" do
       subject { instance(message: nil) }
-      
+
       its(:message) { is_expected.to eq('is not included in the list') }
-      its(:full_message) { is_expected.to eq('ColumnName is not included in the list') }
+      its(:full_message) { is_expected.to eq('column_name is not included in the list') }
     end
 
     describe ":on" do
       describe "when :as == :trigger" do
-        subject { instance(on: nil, as: :trigger) } 
+        subject { instance(on: nil, as: :trigger) }
 
         its(:on) { is_expected.to eq(:save) }
       end
     end
 
     describe ":as" do
-      subject { instance(as: nil) } 
+      subject { instance(as: nil) }
 
       its(:as) { is_expected.to eq(:trigger) }
     end
@@ -146,7 +146,7 @@ describe Mv::Core::Validation::Inclusion do
     describe ":create_trigger_name" do
       describe "when :on == :update" do
         subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, on: :update) }
-        
+
         it { is_expected.to be_invalid }
       end
     end
@@ -154,7 +154,7 @@ describe Mv::Core::Validation::Inclusion do
     describe ":update_trigger_name" do
       describe "when :on == :create" do
         subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, on: :create) }
-        
+
         it { is_expected.to be_invalid }
       end
     end
@@ -162,13 +162,13 @@ describe Mv::Core::Validation::Inclusion do
     describe ":in" do
       describe "when empty" do
         subject { instance(in: []) }
-        
+
         it { is_expected.to be_invalid }
       end
 
       describe "when can not be converted to array" do
         subject { instance(in: :not_array) }
-        
+
         it { is_expected.to be_invalid }
       end
     end
@@ -176,25 +176,25 @@ describe Mv::Core::Validation::Inclusion do
     describe ":on" do
       describe "when :on == :save" do
         subject { instance(on: :save) }
-       
+
         it { is_expected.to be_valid }
       end
 
       describe "when :on == :update" do
         subject { instance(on: :update, create_trigger_name: nil) }
-       
+
         it { is_expected.to be_valid }
       end
 
       describe "when :on == :create" do
         subject { instance(on: :create, update_trigger_name: nil) }
-       
+
         it { is_expected.to be_valid }
       end
 
       describe "when :on == :invalid_event" do
         subject { instance(on: :invalid_event) }
-       
+
         it { is_expected.to be_invalid }
       end
     end
@@ -203,14 +203,14 @@ describe Mv::Core::Validation::Inclusion do
       [true, false].each do |value|
         describe "when :allow_nil == #{value}" do
           subject { instance(allow_nil: value) }
-         
+
           it { is_expected.to be_valid }
         end
       end
-      
+
       describe "when :allow_nil == :non_boolean_value" do
         subject { instance(allow_nil: :non_boolean_value) }
-       
+
         it { is_expected.to be_invalid }
       end
     end
@@ -219,14 +219,14 @@ describe Mv::Core::Validation::Inclusion do
       [true, false].each do |value|
         describe "when :allow_blank == #{value}" do
           subject { instance(allow_blank: value) }
-         
+
           it { is_expected.to be_valid }
         end
       end
-      
+
       describe "when :allow_blank == :non_boolean_value" do
         subject { instance(allow_blank: :non_boolean_value) }
-       
+
         it { is_expected.to be_invalid }
       end
     end
@@ -234,7 +234,7 @@ describe Mv::Core::Validation::Inclusion do
     describe ":as" do
       describe "when :as == :invalid_constraint_type" do
         subject { instance(as: :invalid_constraint_type, create_trigger_name: nil, update_trigger_name: nil) }
-       
+
         it { is_expected.to be_invalid }
       end
     end

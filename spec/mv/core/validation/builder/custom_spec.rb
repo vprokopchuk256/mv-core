@@ -5,7 +5,7 @@ require 'mv/core/validation/builder/custom'
 
 describe Mv::Core::Validation::Builder::Custom do
   def custom(opts = {})
-    Mv::Core::Validation::Custom.new(:table_name, 
+    Mv::Core::Validation::Custom.new(:table_name,
                                      :column_name,
                                      { message: 'is not valid' }.merge(opts))
   end
@@ -15,7 +15,7 @@ describe Mv::Core::Validation::Builder::Custom do
       protected
 
       def column_reference
-        "NEW.#{column_name}" 
+        "NEW.#{column_name}"
       end
     end
   }
@@ -36,8 +36,8 @@ describe Mv::Core::Validation::Builder::Custom do
       let(:opts) { { statement: "{column_name} > 0"} }
 
       it { is_expected.to eq([{
-        statement: "NEW.column_name IS NOT NULL AND (NEW.column_name > 0)", 
-        message: 'ColumnName is not valid'
+        statement: "NEW.column_name IS NOT NULL AND (NEW.column_name > 0)",
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -45,8 +45,8 @@ describe Mv::Core::Validation::Builder::Custom do
       let(:opts) { { statement: "{column_name} > 0", allow_nil: true } }
 
       it { is_expected.to eq([{
-        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL", 
-        message: 'ColumnName is not valid'
+        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL",
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -54,8 +54,8 @@ describe Mv::Core::Validation::Builder::Custom do
       let(:opts) { { statement: "{column_name} > 0", allow_blank: true } }
 
       it { is_expected.to eq([{
-        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
-        message: 'ColumnName is not valid'
+        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0",
+        message: 'column_name is not valid'
       }]) }
     end
 
@@ -63,8 +63,8 @@ describe Mv::Core::Validation::Builder::Custom do
       let(:opts) { { statement: "{column_name} > 0", allow_blank: true, allow_nil: true } }
 
       it { is_expected.to eq([{
-        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0", 
-        message: 'ColumnName is not valid'
+        statement: "(NEW.column_name > 0) OR NEW.column_name IS NULL OR LENGTH(TRIM(NEW.column_name)) = 0",
+        message: 'column_name is not valid'
       }]) }
     end
   end

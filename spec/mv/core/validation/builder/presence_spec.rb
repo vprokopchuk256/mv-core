@@ -5,7 +5,7 @@ require 'mv/core/validation/builder/presence'
 
 describe Mv::Core::Validation::Builder::Presence do
   def presence(opts = {})
-    Mv::Core::Validation::Presence.new(:table_name, 
+    Mv::Core::Validation::Presence.new(:table_name,
                                         :column_name,
                                         { message: 'is absent' }.merge(opts))
   end
@@ -24,28 +24,28 @@ describe Mv::Core::Validation::Builder::Presence do
 
     describe "by default" do
       let(:opts) { {} }
-       
+
       it { is_expected.to eq([{
-        statement: "column_name IS NOT NULL AND LENGTH(TRIM(column_name)) > 0", 
-        message: 'ColumnName is absent'
+        statement: "column_name IS NOT NULL AND LENGTH(TRIM(column_name)) > 0",
+        message: 'column_name is absent'
       }]) }
-    end 
+    end
 
     describe "when nil is allowed" do
       let(:opts) { { allow_nil: true } }
-      
+
       it { is_expected.to eq([{
-        statement: "column_name IS NULL OR LENGTH(TRIM(column_name)) > 0", 
-        message: 'ColumnName is absent'
+        statement: "column_name IS NULL OR LENGTH(TRIM(column_name)) > 0",
+        message: 'column_name is absent'
       }]) }
     end
 
     describe "when blank is allowed" do
       let(:opts) { { allow_blank: true } }
-      
+
       it { is_expected.to eq([{
-        statement: "column_name IS NOT NULL OR LENGTH(TRIM(column_name)) = 0", 
-        message: 'ColumnName is absent'
+        statement: "column_name IS NOT NULL OR LENGTH(TRIM(column_name)) = 0",
+        message: 'column_name is absent'
       }]) }
     end
   end

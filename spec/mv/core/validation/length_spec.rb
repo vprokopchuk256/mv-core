@@ -7,13 +7,13 @@ describe Mv::Core::Validation::Length do
     table_name = opts.with_indifferent_access.delete(:table_name) || :table_name
     column_name = opts.with_indifferent_access.delete(:column_name) || :column_name
     described_class.new(table_name, column_name,
-                        { is: 5, 
-                        message: :message, 
-                        too_long: :too_long, 
-                        too_short: :too_short, 
-                        on: :save, 
-                        create_trigger_name: :create_trigger_name, 
-                        update_trigger_name: :update_trigger_name, 
+                        { is: 5,
+                        message: :message,
+                        too_long: :too_long,
+                        too_short: :too_short,
+                        on: :save,
+                        create_trigger_name: :create_trigger_name,
+                        update_trigger_name: :update_trigger_name,
                         allow_nil: true,
                         allow_blank: true,
                         as: :trigger}.merge(opts))
@@ -38,7 +38,7 @@ describe Mv::Core::Validation::Length do
 
       describe ":in" do
         subject { instance(is: nil, in: [1, 2, 3]) }
-        
+
         its(:in) { is_expected.to eq([1, 2, 3]) }
       end
 
@@ -70,13 +70,13 @@ describe Mv::Core::Validation::Length do
 
       describe "as range" do
         subject { described_class.new(:table_name, :column_name, 1..2)}
-        
+
         its(:in) { is_expected.to eq(1..2) }
       end
 
       describe "as integer" do
         subject { described_class.new(:table_name, :column_name, 1)}
-        
+
         its(:is) { is_expected.to eq(1) }
       end
     end
@@ -86,13 +86,13 @@ describe Mv::Core::Validation::Length do
     it { is_expected.to eq(instance) }
     it { is_expected.to eq(instance({'table_name' => 'table_name',
                                      'column_name' => 'column_name',
-                                    'is' => '5', 
-                                    'message' => 'message', 
-                                    'on' => 'save', 
-                                    'create_trigger_name' => 'create_trigger_name', 
-                                    'update_trigger_name' => 'update_trigger_name', 
-                                    'allow_nil' => true, 
-                                    'allow_blank' => true, 
+                                    'is' => '5',
+                                    'message' => 'message',
+                                    'on' => 'save',
+                                    'create_trigger_name' => 'create_trigger_name',
+                                    'update_trigger_name' => 'update_trigger_name',
+                                    'allow_nil' => true,
+                                    'allow_blank' => true,
                                     'as' => 'trigger' } )) }
 
     it { is_expected.not_to eq(instance(table_name: 'table_name_1')) }
@@ -107,14 +107,14 @@ describe Mv::Core::Validation::Length do
 
     describe ":in" do
       subject { instance(is: nil, in: [1, 2, 3]) }
-      
+
       it { is_expected.to eq(instance(is: nil, 'in' => [3, 2, 1])) }
       it { is_expected.not_to eq(instance(is: nil, 'in' => [1, 2, 3, 4])) }
     end
 
     describe ":within" do
       subject { instance(is: nil, within: [1, 2, 3]) }
-      
+
       it { is_expected.to eq(instance(is: nil, 'within' => [3, 2, 1])) }
       it { is_expected.not_to eq(instance(is: nil, 'within' => [1, 2, 3, 4])) }
     end
@@ -137,34 +137,34 @@ describe Mv::Core::Validation::Length do
   describe "default values" do
     describe ":allow_nil" do
       subject { instance(allow_nil: nil) }
-      
+
       its(:allow_nil) { is_expected.to be_falsey }
     end
 
     describe ":allow_blank" do
       subject { instance(allow_blank: nil) }
-      
+
       its(:allow_blank) { is_expected.to be_falsey }
     end
 
     describe ":message" do
       subject { instance(message: nil) }
-      
+
       its(:message) { is_expected.to eq('is the wrong length') }
-      its(:full_message) { is_expected.to eq('ColumnName is the wrong length') }
+      its(:full_message) { is_expected.to eq('column_name is the wrong length') }
     end
 
     describe ":too_short" do
       describe "when :minimum is defined" do
         subject { instance(is: nil, minimum: 5, too_short: nil) }
-        
+
         its(:too_short) { is_expected.to eq('is too short') }
-        its(:full_too_short) { is_expected.to eq('ColumnName is too short') }
+        its(:full_too_short) { is_expected.to eq('column_name is too short') }
       end
 
       describe "when :minimum is not defined" do
         subject { instance(is: 5, too_short: nil) }
-        
+
         its(:too_short) { is_expected.to be_nil }
         its(:full_too_short) { is_expected.to be_nil }
       end
@@ -173,14 +173,14 @@ describe Mv::Core::Validation::Length do
     describe ":too_long" do
       describe "when :maximum is defined" do
         subject { instance(is: nil, maximum: 5, too_long: nil) }
-        
+
         its(:too_long) { is_expected.to eq('is too long') }
-        its(:full_too_long) { is_expected.to eq('ColumnName is too long') }
+        its(:full_too_long) { is_expected.to eq('column_name is too long') }
       end
 
       describe "when :maximum is not defined" do
         subject { instance(is: 5, too_long: nil) }
-        
+
         its(:too_long) { is_expected.to be_nil }
         its(:full_too_long) { is_expected.to be_nil }
       end
@@ -188,14 +188,14 @@ describe Mv::Core::Validation::Length do
 
     describe ":on" do
       describe "when :as == :trigger" do
-        subject { instance(on: nil, as: :trigger) } 
+        subject { instance(on: nil, as: :trigger) }
 
         its(:on) { is_expected.to eq(:save) }
       end
     end
 
     describe ":as" do
-      subject { instance(as: nil) } 
+      subject { instance(as: nil) }
 
       its(:as) { is_expected.to eq(:trigger) }
     end
@@ -236,7 +236,7 @@ describe Mv::Core::Validation::Length do
     describe ":create_trigger_name" do
       describe "when :on == :update" do
         subject { instance(create_trigger_name: :trigger_name, update_trigger_name: nil, on: :update) }
-        
+
         it { is_expected.to be_invalid }
       end
     end
@@ -244,7 +244,7 @@ describe Mv::Core::Validation::Length do
     describe ":update_trigger_name" do
       describe "when :on == :create" do
         subject { instance(update_trigger_name: :trigger_name, create_trigger_name: nil, on: :create) }
-        
+
         it { is_expected.to be_invalid }
       end
     end
@@ -348,37 +348,37 @@ describe Mv::Core::Validation::Length do
 
     describe ":in" do
       describe "when empty" do
-        subject { instance(in: [], is: nil) } 
+        subject { instance(in: [], is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when nil" do
-        subject { instance(in: nil, is: 5) } 
+        subject { instance(in: nil, is: 5) }
 
         it { is_expected.to be_valid }
       end
 
       describe "when not array" do
-        subject { instance(in: :some_not_array, is: nil) } 
+        subject { instance(in: :some_not_array, is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when at least one item is not an integer" do
-        subject { instance(in: [1, :not_integer], is: nil) } 
+        subject { instance(in: [1, :not_integer], is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when at least one item is negative" do
-        subject { instance(in: [1, -1], is: nil) } 
+        subject { instance(in: [1, -1], is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when range" do
-        subject { instance(in: 1..3, is: nil) } 
+        subject { instance(in: 1..3, is: nil) }
 
         it { is_expected.to be_valid }
       end
@@ -392,37 +392,37 @@ describe Mv::Core::Validation::Length do
 
     describe ":within" do
       describe "when empty" do
-        subject { instance(within: [], is: nil) } 
+        subject { instance(within: [], is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when nil" do
-        subject { instance(within: nil) } 
+        subject { instance(within: nil) }
 
         it { is_expected.to be_valid }
       end
 
       describe "when not array" do
-        subject { instance(within: :some_not_array, is: nil) } 
+        subject { instance(within: :some_not_array, is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when at least one item is not an integer" do
-        subject { instance(within: [1, :not_integer], is: nil) } 
+        subject { instance(within: [1, :not_integer], is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when at least one item is negative" do
-        subject { instance(in: [1, -1], is: nil) } 
+        subject { instance(in: [1, -1], is: nil) }
 
         it { is_expected.to be_invalid }
       end
 
       describe "when range" do
-        subject { instance(within: 1..3, is: nil) } 
+        subject { instance(within: 1..3, is: nil) }
 
         it { is_expected.to be_valid }
       end
@@ -437,25 +437,25 @@ describe Mv::Core::Validation::Length do
     describe ":on" do
       describe "when :on == :save" do
         subject { instance(on: :save) }
-       
+
         it { is_expected.to be_valid }
       end
 
       describe "when :on == :update" do
         subject { instance(on: :update, create_trigger_name: nil) }
-       
+
         it { is_expected.to be_valid }
       end
 
       describe "when :on == :create" do
         subject { instance(on: :create, update_trigger_name: nil) }
-       
+
         it { is_expected.to be_valid }
       end
 
       describe "when :on == :invalid_event" do
         subject { instance(on: :invalid_event) }
-       
+
         it { is_expected.to be_invalid }
       end
     end
@@ -464,14 +464,14 @@ describe Mv::Core::Validation::Length do
       [true, false].each do |value|
         describe "when :allow_nil == #{value}" do
           subject { instance(allow_nil: value) }
-         
+
           it { is_expected.to be_valid }
         end
       end
-      
+
       describe "when :allow_nil == :non_boolean_value" do
         subject { instance(allow_nil: :non_boolean_value) }
-       
+
         it { is_expected.to be_invalid }
       end
     end
@@ -480,14 +480,14 @@ describe Mv::Core::Validation::Length do
       [true, false].each do |value|
         describe "when :allow_blank == #{value}" do
           subject { instance(allow_blank: value) }
-         
+
           it { is_expected.to be_valid }
         end
       end
-      
+
       describe "when :allow_blank == :non_boolean_value" do
         subject { instance(allow_blank: :non_boolean_value) }
-       
+
         it { is_expected.to be_invalid }
       end
     end
@@ -495,7 +495,7 @@ describe Mv::Core::Validation::Length do
     describe ":as" do
       describe "when :as == :invalid_constraint_type" do
         subject { instance(as: :invalid_constraint_type, create_trigger_name: nil, update_trigger_name: nil) }
-       
+
         it { is_expected.to be_invalid }
       end
     end

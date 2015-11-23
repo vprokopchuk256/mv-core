@@ -5,7 +5,7 @@ module Mv
         include Comparable
         include ActiveModel::Validations
 
-        attr_reader :table_name, :column_name, :message, :on, :create_trigger_name, 
+        attr_reader :table_name, :column_name, :message, :on, :create_trigger_name,
                     :update_trigger_name, :allow_nil, :allow_blank, :as, :options
 
         validates :on, inclusion: { in: :available_on }, allow_nil: true
@@ -33,14 +33,14 @@ module Mv
         end
 
         def to_a
-          [table_name.to_s, column_name.to_s, message.to_s, on.to_s, create_trigger_name.to_s, 
+          [table_name.to_s, column_name.to_s, message.to_s, on.to_s, create_trigger_name.to_s,
            update_trigger_name.to_s, allow_nil, allow_blank, as.to_s]
         end
 
         def <=> other_validation
           [self.class.name, to_a] <=> [other_validation.class.name, other_validation.to_a]
         end
-        
+
         def update?
           [:save, :update].include?(on.try(:to_sym))
         end
@@ -49,17 +49,17 @@ module Mv
           [:save, :create].include?(on.try(:to_sym))
         end
 
-        def full_message 
+        def full_message
           compose_full_message(message)
         end
 
-        protected 
+        protected
 
         def available_as
           [:trigger]
         end
 
-        def available_on 
+        def available_on
           [:save, :update, :create]
         end
 
@@ -92,7 +92,7 @@ module Mv
         end
 
         def compose_full_message message
-          "#{column_name.to_s.camelize} #{message}"
+          "#{column_name.to_s} #{message}"
         end
 
         private

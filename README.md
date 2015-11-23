@@ -354,6 +354,10 @@ So - see detailed info here:
 
 * Fix issue with invalid parameters number in `add_column` and `change_column` methods
 
+**(2.2.2)** (23 Nov, 2015)
+
+* Do not camel case column name in error message
+
 ## Contributing
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
