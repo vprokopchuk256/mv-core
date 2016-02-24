@@ -5,6 +5,7 @@ module Mv
     module ActiveRecord
       module BaseDecorator
         def self.included(base)
+          Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
           Mv::Core::Db::MigrationValidator.where(table_name: base.table_name).each do |validator|
             presenter = Mv::Core::Validation::ActiveModelPresenter::Factory.create_presenter(validator.validation)
 

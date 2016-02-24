@@ -8,17 +8,11 @@ describe Mv::Core::ActiveRecord::BaseDecorator do
   end
 
   before do
-    Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
     db.drop_table(:table_name) if db.table_exists?(:table_name)
     db.create_table :table_name do |t|
       t.column :column_name, column_type
     end
 
-    create(:migration_validator, 
-           table_name: :table_name, 
-           column_name: :column_name, 
-           validation_type: validation_type, 
-           options: opts)
   end
 
   let(:klass) {
@@ -35,99 +29,117 @@ describe Mv::Core::ActiveRecord::BaseDecorator do
 
   let(:column_type) { :string }
 
-  describe "when custom validation defined" do
-    let(:validation_type) { :custom }
-    let(:opts) { { statement: '{column_name} IS NOT NULL'} }
-
-    it { is_expected.not_to validate_presence_of(:column_name) } 
-  end
-
-  describe "when presence validation defined" do
-    let(:validation_type) { :presence }
-    let(:opts) { {} }
-
-    it { is_expected.to validate_presence_of(:column_name) } 
-  end
-
-  describe "when uniqueness validation defined" do
-    let(:validation_type) { :uniqueness }
-    let(:opts) { {} }
-
-    it { is_expected.to validate_uniqueness_of(:column_name) } 
-  end
-
-  describe "when absence validation defined" do
-    let(:validation_type) { :absence }
-    let(:opts) { {} }
-
-    it { is_expected.to validate_absence_of(:column_name) } 
-  end
-
-  describe "when inclusion validation defined" do
-    let(:validation_type) { :inclusion }
-
-    describe "array" do
-      let(:opts) { { in: ['str1', 'str2'] } }
-
-      it { is_expected.to validate_inclusion_of(:column_name).in_array(['str1', 'str2']) } 
-    end
-
-    describe "range" do
-      let(:column_type) { :integer }
-      let(:opts) { { in: 1..3 } }
-
-      it { is_expected.to validate_inclusion_of(:column_name).in_range(1..3) } 
+  context 'when migration validators table is not initialized' do
+    it 'does not raise an error' do
+      expect { subject.valid? }.not_to raise_error
     end
   end
 
-  describe "when exclusion validation defined" do
-    let(:validation_type) { :exclusion }
+  context 'when migration validators table properly initialized' do
+    before do
+      Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
 
-    describe "array" do
-      let(:opts) { { in: ['str1', 'str2'] } }
-
-      it { is_expected.to validate_exclusion_of(:column_name).in_array(['str1', 'str2']) } 
+      create(:migration_validator,
+             table_name: :table_name,
+             column_name: :column_name,
+             validation_type: validation_type,
+             options: opts)
     end
 
-    describe "range" do
-      let(:column_type) { :integer }
-      let(:opts) { { in: 1..3 } }
+    describe "when custom validation defined" do
+      let(:validation_type) { :custom }
+      let(:opts) { { statement: '{column_name} IS NOT NULL'} }
 
-      it { is_expected.to validate_exclusion_of(:column_name).in_range(1..3) } 
-    end
-  end
-
-  describe "when length validation defined" do
-    let(:validation_type) { :length }
-
-    describe ":in" do
-      let(:opts) { { in: 1..3 } }
-
-      it { is_expected.to ensure_length_of(:column_name) } 
+      it { is_expected.not_to validate_presence_of(:column_name) }
     end
 
-    describe ":is" do
-      let(:opts) { { is: 1 } }
+    describe "when presence validation defined" do
+      let(:validation_type) { :presence }
+      let(:opts) { {} }
 
-      it { is_expected.to ensure_length_of(:column_name).is_equal_to(1) } 
+      it { is_expected.to validate_presence_of(:column_name) }
     end
 
-    describe ":within" do
-      let(:opts) { { within: 1..3 } }
+    describe "when uniqueness validation defined" do
+      let(:validation_type) { :uniqueness }
+      let(:opts) { {} }
 
-      it { is_expected.to ensure_length_of(:column_name) } 
+      it { is_expected.to validate_uniqueness_of(:column_name) }
     end
 
-    describe ":minimum" do
-      let(:opts) { { minimum: 1 } }
+    describe "when absence validation defined" do
+      let(:validation_type) { :absence }
+      let(:opts) { {} }
 
-      it { is_expected.to ensure_length_of(:column_name).is_at_least(1) } 
+      it { is_expected.to validate_absence_of(:column_name) }
     end
 
-    describe ":maximum" do
-      let(:opts) { { maximum: 1 } }
+    describe "when inclusion validation defined" do
+      let(:validation_type) { :inclusion }
 
-      it { is_expected.to ensure_length_of(:column_name).is_at_most(1) } 
+      describe "array" do
+        let(:opts) { { in: ['str1', 'str2'] } }
+
+        it { is_expected.to validate_inclusion_of(:column_name).in_array(['str1', 'str2']) }
+      end
+
+      describe "range" do
+        let(:column_type) { :integer }
+        let(:opts) { { in: 1..3 } }
+
+        it { is_expected.to validate_inclusion_of(:column_name).in_range(1..3) }
+      end
+    end
+
+    describe "when exclusion validation defined" do
+      let(:validation_type) { :exclusion }
+
+      describe "array" do
+        let(:opts) { { in: ['str1', 'str2'] } }
+
+        it { is_expected.to validate_exclusion_of(:column_name).in_array(['str1', 'str2']) }
+      end
+
+      describe "range" do
+        let(:column_type) { :integer }
+        let(:opts) { { in: 1..3 } }
+
+        it { is_expected.to validate_exclusion_of(:column_name).in_range(1..3) }
+      end
+    end
+
+    describe "when length validation defined" do
+      let(:validation_type) { :length }
+
+      describe ":in" do
+        let(:opts) { { in: 1..3 } }
+
+        it { is_expected.to ensure_length_of(:column_name) }
+      end
+
+      describe ":is" do
+        let(:opts) { { is: 1 } }
+
+        it { is_expected.to ensure_length_of(:column_name).is_equal_to(1) }
+      end
+
+      describe ":within" do
+        let(:opts) { { within: 1..3 } }
+
+        it { is_expected.to ensure_length_of(:column_name) }
+      end
+
+      describe ":minimum" do
+        let(:opts) { { minimum: 1 } }
+
+        it { is_expected.to ensure_length_of(:column_name).is_at_least(1) }
+      end
+
+      describe ":maximum" do
+        let(:opts) { { maximum: 1 } }
+
+        it { is_expected.to ensure_length_of(:column_name).is_at_most(1) }
+      end
     end
   end
 
