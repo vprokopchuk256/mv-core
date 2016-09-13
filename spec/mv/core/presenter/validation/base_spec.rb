@@ -3,18 +3,20 @@ require 'spec_helper'
 require 'mv/core/presenter/validation/base'
 
 describe Mv::Core::Presenter::Validation::Base do
-  let(:validation) { 
+  let(:validation) {
     Mv::Core::Validation::Exclusion.new(
-           :table_name, 
-           :column_name, 
-           in: opts, 
-           as: :trigger, 
+           :table_name,
+           :column_name,
+           in: opts,
+           as: :trigger,
            update_trigger_name: :update_trigger_name
     )
   }
 
   before do
-    ::ActiveRecord::Base.connection.class.send(:prepend, Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator)
+    ::ActiveRecord::Base.connection.class.send(
+      :prepend, Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator
+    )
     Mv::Core::Services::CreateMigrationValidatorsTable.new.execute
   end
 
@@ -35,145 +37,295 @@ describe Mv::Core::Presenter::Validation::Base do
   describe "#to_s" do
     subject { "#{presenter}" }
 
-    describe "with integers array" do
+    context "with integers array" do
       let(:opts) { [1, 5] }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: [1, 5], as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: [1, 5], as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with integers closed range" do
+    context "with integers closed range" do
       let(:opts) { 1..5 }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: 1..5, as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: 1..5, as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with integers open array" do
+    context "with integers open array" do
       let(:opts) { 1...5 }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: 1...5, as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: 1...5, as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with floats array" do
+    context "with floats array" do
       let(:opts) { [1.1, 1.5] }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: [1.1, 1.5], as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: [1.1, 1.5], as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with floats closed range" do
+    context "with floats closed range" do
       let(:opts) { 1.1..1.5 }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: 1.1..1.5, as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: 1.1..1.5, as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with floats oped range" do
+    context "with floats oped range" do
       let(:opts) { 1.1...1.5 }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: 1.1...1.5, as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: 1.1...1.5, as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
     end
 
     describe "with regexp" do
       let(:opts) { /exp/ }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: /exp/, as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: { in: /exp/, as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with times array" do
+    context "with times array" do
       let(:opts) { [Time.new(2011, 1, 1, 1, 1, 1), Time.new(2012, 2, 2, 2, 2, 2)] }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: [Time.new(2011, 1, 1, 1, 1, 1), Time.new(2012, 2, 2, 2, 2, 2)], as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: [Time.new(2011, 1, 1, 1, 1, 1), Time.new(2012, 2, 2, 2, 2, 2)],"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with times closed range" do
+    context "with times closed range" do
       let(:opts) { Time.new(2011, 1, 1, 1, 1, 1)..Time.new(2012, 2, 2, 2, 2, 2) }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: Time.new(2011, 1, 1, 1, 1, 1)..Time.new(2012, 2, 2, 2, 2, 2), as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: Time.new(2011, 1, 1, 1, 1, 1)..Time.new(2012, 2, 2, 2, 2, 2),"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with times closed range" do
+    context "with times closed range" do
       let(:opts) { Time.new(2011, 1, 1, 1, 1, 1)...Time.new(2012, 2, 2, 2, 2, 2) }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: Time.new(2011, 1, 1, 1, 1, 1)...Time.new(2012, 2, 2, 2, 2, 2), as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: Time.new(2011, 1, 1, 1, 1, 1)...Time.new(2012, 2, 2, 2, 2, 2),"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with datetimes array" do
+    context "with datetimes array" do
       let(:opts) { [DateTime.new(2011, 1, 1, 1, 1, 1), DateTime.new(2012, 2, 2, 2, 2, 2)] }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: [DateTime.new(2011, 1, 1, 1, 1, 1), DateTime.new(2012, 2, 2, 2, 2, 2)], as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: [DateTime.new(2011, 1, 1, 1, 1, 1), DateTime.new(2012, 2, 2, 2, 2, 2)],"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with datetimes closed range" do
+    context "with datetimes closed range" do
       let(:opts) { DateTime.new(2011, 1, 1, 1, 1, 1)..DateTime.new(2012, 2, 2, 2, 2, 2) }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: DateTime.new(2011, 1, 1, 1, 1, 1)..DateTime.new(2012, 2, 2, 2, 2, 2), as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: DateTime.new(2011, 1, 1, 1, 1, 1)..DateTime.new(2012, 2, 2, 2, 2, 2),"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with datetimes closed range" do
+    context "with datetimes closed range" do
       let(:opts) { DateTime.new(2011, 1, 1, 1, 1, 1)...DateTime.new(2012, 2, 2, 2, 2, 2) }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: DateTime.new(2011, 1, 1, 1, 1, 1)...DateTime.new(2012, 2, 2, 2, 2, 2), as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: DateTime.new(2011, 1, 1, 1, 1, 1)...DateTime.new(2012, 2, 2, 2, 2, 2),"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with dates array" do
+    context "with dates array" do
       let(:opts) { [Date.new(2011, 1, 1), Date.new(2012, 2, 2)] }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: [Date.new(2011, 1, 1), Date.new(2012, 2, 2)], as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\","\
+          " exclusion: { in: [Date.new(2011, 1, 1), Date.new(2012, 2, 2)],"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with dates closed range" do
+    context "with dates closed range" do
       let(:opts) { Date.new(2011, 1, 1)..Date.new(2012, 2, 2) }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: Date.new(2011, 1, 1)..Date.new(2012, 2, 2), as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: Date.new(2011, 1, 1)..Date.new(2012, 2, 2),"\
+          " as: :trigger, update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with dates closed range" do
+    context "with dates closed range" do
       let(:opts) { Date.new(2011, 1, 1)...Date.new(2012, 2, 2) }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: Date.new(2011, 1, 1)...Date.new(2012, 2, 2), as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: Date.new(2011, 1, 1)...Date.new(2012, 2, 2),"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with strings array" do
+    context "with strings array" do
       let(:opts) { ['str', 'str2'] }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: ['str', 'str2'], as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: ['str', 'str2'],"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with strings closed range" do
+    context "with strings closed range" do
       let(:opts) { 'str'..'str2' }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: 'str'..'str2', as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\","\
+          " exclusion: { in: 'str'..'str2',"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with strings oped range" do
+    context "with strings oped range" do
       let(:opts) { 'str'...'str2' }
-      
-      it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: { in: 'str'...'str2', as: :trigger, update_trigger_name: :update_trigger_name })") } 
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "exclusion: {"\
+          " in: 'str'...'str2',"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
       it_should_be_executable
     end
 
-    describe "with empty options hash" do
-      let(:validation) { 
+    context "with empty options hash" do
+      let(:validation) {
         Mv::Core::Validation::Exclusion.new(:table_name, :column_name, {})
       }
-      
+
       it { is_expected.to eq("validates(\"table_name\", \"column_name\", exclusion: true)") }
       it_should_be_executable
+    end
+
+    context 'for custom validation' do
+      let(:validation) {
+        Mv::Core::Validation::Custom.new(
+               :table_name,
+               :column_name,
+               statement: "column_name IN ('str1', 'str2')",
+               as: :trigger,
+               update_trigger_name: :update_trigger_name
+        )
+      }
+
+      it do
+        is_expected.to eq(
+          "validates(\"table_name\", \"column_name\", "\
+          "custom: {"\
+          " statement: 'column_name IN (\\'str1\\', \\'str2\\')',"\
+          " as: :trigger,"\
+          " update_trigger_name: :update_trigger_name })"
+        )
+      end
     end
   end
 end
