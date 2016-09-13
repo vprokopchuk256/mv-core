@@ -35,7 +35,7 @@ module Mv
             return date_to_str(value) if value.is_a?(Date)
             return range_to_str(value) if value.is_a?(Range)
             return array_to_str(value) if value.is_a?(Array)
-            return "'#{value}'" if value.is_a?(String)
+            return "'#{escaped_string(value)}'" if value.is_a?(String)
             return "/#{value.source}/" if value.is_a?(Regexp)
             value.to_s
           end
@@ -46,13 +46,14 @@ module Mv
 
           def range_to_str value
             [
-              value_to_str(value.first), 
-              value.exclude_end? ? '...' : '..', 
+              value_to_str(value.first),
+              value.exclude_end? ? '...' : '..',
               value_to_str(value.last)
             ].join
           end
 
-          def regexp_to_str value
+          def escaped_string value
+            value.gsub(/'/, %q(\\\'))
           end
 
           def time_to_str value

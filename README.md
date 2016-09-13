@@ -362,6 +362,10 @@ So - see detailed info here:
 
 * Suppress exception while running db:schema:load
 
+**(2.2.4)** (12 Sep, 2016)
+
+* Escape single quotes in the custom validation statement body
+
 ## Contributing
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
