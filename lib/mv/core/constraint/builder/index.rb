@@ -1,4 +1,4 @@
-require 'mv/core/constraint/builder/base'
+require_relative 'base'
 
 module Mv
   module Core
@@ -15,7 +15,7 @@ module Mv
           end
 
           def delete
-            super 
+            super
 
             constraint.validations.group_by(&:table_name).each do |table_name, validations|
               remove_index(table_name)
@@ -23,7 +23,7 @@ module Mv
           end
 
           def update new_constraint_builder
-            super 
+            super
 
             delete
             new_constraint_builder.create
@@ -32,12 +32,12 @@ module Mv
           private
 
           def index_exists?(table_name)
-            db.table_exists?(table_name) && 
-            db.index_name_exists?(table_name, name, false) 
+            db.data_source_exists?(table_name) &&
+            db.index_name_exists?(table_name, name, false)
           end
 
           def remove_index(table_name)
-            db.remove_index!(table_name, name) if index_exists?(table_name)
+            db.remove_index(table_name, name: name) if index_exists?(table_name)
           end
 
           def add_index(table_name, columns)

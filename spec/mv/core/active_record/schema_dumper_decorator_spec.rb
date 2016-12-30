@@ -25,14 +25,14 @@ describe Mv::Core::ActiveRecord::SchemaDumperDecorator do
   end
 
   describe "when migration_validators table does not exist" do
-    subject { dump } 
+    subject { dump }
 
     it "should not raise an error" do
       expect{ subject }.not_to raise_error
     end
 
     it "should create migration_validators table" do
-      expect{ subject }.to change{ ::ActiveRecord::Base.connection.table_exists?(:migration_validators) }.from(false).to(true)
+      expect{ subject }.to change{ ::ActiveRecord::Base.connection.data_source_exists?(:migration_validators) }.from(false).to(true)
     end
   end
 end

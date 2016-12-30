@@ -1,4 +1,4 @@
-require 'mv/core/validation/active_model_presenter/base'
+require_relative 'base'
 
 module Mv
   module Core

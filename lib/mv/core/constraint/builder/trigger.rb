@@ -1,4 +1,4 @@
-require 'mv/core/constraint/builder/base'
+require_relative 'base'
 
 module Mv
   module Core

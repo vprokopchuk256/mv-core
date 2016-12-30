@@ -1,4 +1,4 @@
-require 'mv/core/validation/builder/base'
+require_relative 'base'
 
 module Mv
   module Core
@@ -6,8 +6,8 @@ module Mv
       module Builder
         class Uniqueness < Base
           def conditions
-            res = "NOT EXISTS(SELECT #{column_name} 
-                                FROM #{table_name} 
+            res = "NOT EXISTS(SELECT #{column_name}
+                                FROM #{table_name}
                                WHERE #{column_reference} = #{column_name})"
 
             [{statement: apply_allow_nil_and_blank(res).squish, message: message}]

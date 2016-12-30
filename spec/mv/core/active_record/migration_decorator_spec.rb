@@ -18,7 +18,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
 
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             change_table :table_name do |t|
               t.validates :column_name, length: { is: 4 }
@@ -51,7 +51,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
         end
       end
     end
-    
+
     describe 'validates standalone' do
       before :each do
         ::ActiveRecord::Base.connection.create_table :table_name, id: false do |t|
@@ -60,7 +60,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
 
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             validates :table_name, :column_name, length: { is: 4 }
           end
@@ -100,7 +100,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
 
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             change_table :table_name, id: false do |t|
               t.change :column_name, :string, validates: { length: { is: 5 } }
@@ -142,7 +142,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
 
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             drop_table :table_name
           end
@@ -154,7 +154,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
         it "calls original migration call" do
           migrate_up
-          expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
+          expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name)).to be_falsey
         end
 
         it "should call add_column on migration presenter" do
@@ -186,7 +186,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
 
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             change_table :table_name do |t|
               t.remove :column_name
@@ -231,7 +231,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
 
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             rename_table :table_name, :table_name_1
           end
@@ -243,7 +243,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
         it "calls original migration call" do
           migrate_up
-          expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
+          expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name)).to be_falsey
         end
 
         it "should call add_column on migration presenter" do
@@ -263,7 +263,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
         it "calls original migration call" do
           migrate_down
-          expect(::ActiveRecord::Base.connection.table_exists?(:table_name_1)).to be_falsey
+          expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name_1)).to be_falsey
         end
 
         it "should call add_column on migration presenter" do
@@ -280,7 +280,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
     describe 'add column' do
       let(:migration) do
-        Class.new(::ActiveRecord::Migration) do
+        Class.new(::ActiveRecord::Migration[5.0]) do
           def change
             create_table :table_name, id: false do |t|
               t.string :column_name, validates: { length: { is: 5 } }
@@ -288,13 +288,13 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
           end
         end.new('TestMigration', '20141118164617')
       end
-      
+
       describe "#up" do
         subject(:migrate_up) { migration.migrate(:up) }
 
         it "calls original migration call" do
           migrate_up
-          expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_truthy
+          expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name)).to be_truthy
         end
 
         it "should call add_column on migration presenter" do
@@ -317,7 +317,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
         it "calls original migration call" do
           migrate_down
-          expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
+          expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name)).to be_falsey
         end
 
         it "should call add_column on migration presenter" do
@@ -332,10 +332,10 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
       end
     end
   end
-  
+
   describe "up & down" do
     let(:migration) do
-      Class.new(::ActiveRecord::Migration) do
+      Class.new(::ActiveRecord::Migration[5.0]) do
         def up
           create_table :table_name, id: false do |t|
             t.string :column_name, validates: { length: { is: 5 } }
@@ -353,7 +353,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
       it "calls original migration call" do
         migrate_up
-        expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_truthy
+        expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name)).to be_truthy
       end
 
       it "should call add_column on migration presenter" do
@@ -376,7 +376,7 @@ describe Mv::Core::ActiveRecord::MigrationDecorator do
 
       it "calls original migration call" do
         migrate_down
-        expect(::ActiveRecord::Base.connection.table_exists?(:table_name)).to be_falsey
+        expect(::ActiveRecord::Base.connection.data_source_exists?(:table_name)).to be_falsey
       end
 
       it "should call add_column on migration presenter" do

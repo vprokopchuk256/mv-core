@@ -1,5 +1,5 @@
-require 'mv/core/constraint/builder/index'
-require 'mv/core/constraint/builder/trigger'
+require_relative 'index'
+require_relative 'trigger'
 
 module Mv
   module Core
@@ -17,7 +17,7 @@ module Mv
           end
 
           def register_builders opts
-            opts.each do |constraint_class, builder_class| 
+            opts.each do |constraint_class, builder_class|
               register_builder(constraint_class, builder_class)
             end
           end
@@ -31,7 +31,7 @@ module Mv
 
           def factory_map
             @factory_map ||= {
-              Mv::Core::Constraint::Index => Mv::Core::Constraint::Builder::Index, 
+              Mv::Core::Constraint::Index => Mv::Core::Constraint::Builder::Index,
               Mv::Core::Constraint::Trigger => Mv::Core::Constraint::Builder::Trigger
             }
           end

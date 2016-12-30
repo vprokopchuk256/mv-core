@@ -1,5 +1,5 @@
-require 'mv/core/validation/base'
 require 'mv/core/validators/integers_array_validator'
+require_relative 'base'
 
 module Mv
   module Core
@@ -7,7 +7,7 @@ module Mv
       class Length < Base
         include ActiveModel::Validations
 
-        attr_reader :in, :within, :is, :maximum, :minimum, 
+        attr_reader :in, :within, :is, :maximum, :minimum,
                     :too_long, :too_short
 
         validates :in, :within, presence: true, allow_nil: true, integers_array: true
@@ -16,7 +16,7 @@ module Mv
         validate :in_within_is_maximum_minimum_allowance
 
         def initialize(table_name, column_name, opts)
-          unless opts.is_a?(Hash) 
+          unless opts.is_a?(Hash)
             opts = { in: opts } if opts.respond_to?(:to_a)
             opts = { is: opts } if opts.is_a?(Integer)
           end
@@ -42,7 +42,7 @@ module Mv
           too_long ? compose_full_message(too_long) : nil
         end
 
-        protected 
+        protected
 
         def to_a
           super + [self.in.try(:sort), within.try(:sort), is.to_s, maximum.to_s, minimum.to_s, too_short.to_s, too_long.to_s]
@@ -63,9 +63,9 @@ module Mv
         private
 
         def in_within_is_maximum_minimum_allowance
-          not_null_attrs = [[is, :is], 
-                            [within, :within], 
-                            [self.in, :in], 
+          not_null_attrs = [[is, :is],
+                            [within, :within],
+                            [self.in, :in],
                             [maximum || minimum, :minimum_or_maximum]]
                           .select(&:first).collect(&:second)
 

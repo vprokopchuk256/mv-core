@@ -1,4 +1,4 @@
-require 'mv/core/validation/builder/base'
+require_relative 'base'
 
 module Mv
   module Core

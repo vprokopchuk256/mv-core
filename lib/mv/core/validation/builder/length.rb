@@ -1,14 +1,14 @@
-require 'mv/core/validation/builder/base'
+require_relative 'base'
 
 module Mv
   module Core
     module Validation
       module Builder
         class Length < Base
-          delegate :in, 
-                   :within, 
-                   :is, 
-                   :maximum, 
+          delegate :in,
+                   :within,
+                   :is,
+                   :maximum,
                    :minimum,
                    to: :validation
 
@@ -20,7 +20,7 @@ module Mv
             res = apply_minimum(column_reference) if minimum && !maximum
             res = apply_minimum_and_maximum(column_reference) if minimum && maximum
 
-            res.collect do |condition| 
+            res.collect do |condition|
               { statement: apply_allow_nil_and_blank(condition[:statement]), message: condition[:message] }
             end
           end
@@ -61,7 +61,7 @@ module Mv
 
           def apply_minimum_and_maximum stmt
             if too_long == too_short
-              [{ statement: "LENGTH(#{stmt}) BETWEEN #{minimum} AND #{maximum}", 
+              [{ statement: "LENGTH(#{stmt}) BETWEEN #{minimum} AND #{maximum}",
                 message: message }]
             else
               [apply_minimum(stmt), apply_maximum(stmt)].flatten

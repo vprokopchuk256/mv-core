@@ -1,9 +1,9 @@
-require 'mv/core/migration/operations/add_column'
-require 'mv/core/migration/operations/change_column'
-require 'mv/core/migration/operations/drop_table'
-require 'mv/core/migration/operations/remove_column'
-require 'mv/core/migration/operations/rename_column'
-require 'mv/core/migration/operations/rename_table'
+require_relative 'add_column'
+require_relative 'change_column'
+require_relative 'drop_table'
+require_relative 'remove_column'
+require_relative 'rename_column'
+require_relative 'rename_table'
 
 module Mv
   module Core

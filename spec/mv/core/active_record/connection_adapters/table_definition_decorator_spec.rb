@@ -36,7 +36,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator do
 
    		it "should call original methos" do
    			create_table
-   			expect(conn.table_exists?(:table_name)).to be_truthy
+   			expect(conn.data_source_exists?(:table_name)).to be_truthy
    		end
     end
 
@@ -56,8 +56,8 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::TableDefinitionDecorator do
 
       it "should call original method" do
         create_table
-        expect(conn.table_exists?(:table_name)).to be_truthy
+        expect(conn.data_source_exists?(:table_name)).to be_truthy
       end
     end
- 	end 
+ 	end
 end

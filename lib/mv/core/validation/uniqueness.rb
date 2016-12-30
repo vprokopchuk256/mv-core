@@ -1,4 +1,4 @@
-require 'mv/core/validation/base'
+require_relative 'base'
 
 module Mv
   module Core
@@ -14,7 +14,7 @@ module Mv
           opts = opts == true ? {} : opts
 
           super(table_name, column_name, opts)
-          
+
           @index_name = opts.with_indifferent_access[:index_name] || default_index_name
         end
 
@@ -22,7 +22,7 @@ module Mv
           super + [index_name.to_s]
         end
 
-        protected 
+        protected
 
         def available_as
           super + [:index]

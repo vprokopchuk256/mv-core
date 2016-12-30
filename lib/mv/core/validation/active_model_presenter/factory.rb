@@ -1,9 +1,9 @@
-require 'mv/core/validation/active_model_presenter/exclusion'
-require 'mv/core/validation/active_model_presenter/inclusion'
-require 'mv/core/validation/active_model_presenter/length'
-require 'mv/core/validation/active_model_presenter/presence'
-require 'mv/core/validation/active_model_presenter/absence'
-require 'mv/core/validation/active_model_presenter/uniqueness'
+require_relative 'exclusion'
+require_relative 'inclusion'
+require_relative 'length'
+require_relative 'presence'
+require_relative 'absence'
+require_relative 'uniqueness'
 
 module Mv
   module Core

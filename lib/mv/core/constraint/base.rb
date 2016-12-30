@@ -1,4 +1,4 @@
-require 'mv/core/constraint/description'
+require_relative 'description'
 
 module Mv
   module Core
@@ -18,7 +18,7 @@ module Mv
         def <=> other_constraint
           [self.class.name, description, validations.sort] <=> [other_constraint.class.name, other_constraint.description, other_constraint.validations.sort]
         end
-        
+
         def create
         end
 

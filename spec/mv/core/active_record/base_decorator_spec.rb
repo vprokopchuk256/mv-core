@@ -8,7 +8,7 @@ describe Mv::Core::ActiveRecord::BaseDecorator do
   end
 
   before do
-    db.drop_table(:table_name) if db.table_exists?(:table_name)
+    db.drop_table(:table_name) if db.data_source_exists?(:table_name)
     db.create_table :table_name do |t|
       t.column :column_name, column_type
     end
@@ -114,31 +114,31 @@ describe Mv::Core::ActiveRecord::BaseDecorator do
       describe ":in" do
         let(:opts) { { in: 1..3 } }
 
-        it { is_expected.to ensure_length_of(:column_name) }
+        it { is_expected.to validate_length_of(:column_name) }
       end
 
       describe ":is" do
         let(:opts) { { is: 1 } }
 
-        it { is_expected.to ensure_length_of(:column_name).is_equal_to(1) }
+        it { is_expected.to validate_length_of(:column_name).is_equal_to(1) }
       end
 
       describe ":within" do
         let(:opts) { { within: 1..3 } }
 
-        it { is_expected.to ensure_length_of(:column_name) }
+        it { is_expected.to validate_length_of(:column_name) }
       end
 
       describe ":minimum" do
         let(:opts) { { minimum: 1 } }
 
-        it { is_expected.to ensure_length_of(:column_name).is_at_least(1) }
+        it { is_expected.to validate_length_of(:column_name).is_at_least(1) }
       end
 
       describe ":maximum" do
         let(:opts) { { maximum: 1 } }
 
-        it { is_expected.to ensure_length_of(:column_name).is_at_most(1) }
+        it { is_expected.to validate_length_of(:column_name).is_at_most(1) }
       end
     end
   end

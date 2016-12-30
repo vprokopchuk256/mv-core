@@ -3,10 +3,10 @@ require 'spec_helper'
 require 'mv/core/services/uninstall'
 
 describe Mv::Core::Services::Uninstall do
-  let(:migration_validator) { 
-    create(:migration_validator, table_name: :table_name, 
-                                 validation_type: :uniqueness, 
-                                 options: { as: :index }) 
+  let(:migration_validator) {
+    create(:migration_validator, table_name: :table_name,
+                                 validation_type: :uniqueness,
+                                 options: { as: :index })
   }
 
   before do
@@ -22,11 +22,11 @@ describe Mv::Core::Services::Uninstall do
     it "removes constraints" do
       expect_any_instance_of(Mv::Core::Constraint::Builder::Index).to receive(:delete)
 
-      subject      
+      subject
     end
 
     it "removes migration_validators table" do
-      expect{ subject }.to change{::ActiveRecord::Base.connection.table_exists?(:migration_validators)}.from(true).to(false)
+      expect{ subject }.to change{::ActiveRecord::Base.connection.data_source_exists?(:migration_validators)}.from(true).to(false)
     end
 
     describe "when migration validators table does not exist" do

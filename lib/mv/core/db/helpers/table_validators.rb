@@ -1,4 +1,4 @@
-require 'mv/core/db/migration_validator'
+require_relative '../migration_validator'
 
 module Mv
   module Core
@@ -6,7 +6,7 @@ module Mv
       module Helpers
         module TableValidators
           attr_accessor :table_name
-          
+
           def table_validators
             Mv::Core::Db::MigrationValidator.where(table_name: table_name)
           end
@@ -21,7 +21,7 @@ module Mv
 
           private
 
-          def say(message) 
+          def say(message)
             ::ActiveRecord::Migration.say(message, true)
           end
 

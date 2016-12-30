@@ -9,7 +9,7 @@ describe Mv::Core::Services::CreateMigrationValidatorsTable do
     describe "when table does not exist" do
       it "creates it" do
         expect { subject }.to change{
-          ActiveRecord::Base.connection.table_exists?(:migration_validators)
+          ActiveRecord::Base.connection.data_source_exists?(:migration_validators)
         }.from(false).to(true)
       end
 

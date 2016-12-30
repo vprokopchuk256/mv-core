@@ -1,10 +1,10 @@
-require 'mv/core/validation/builder/exclusion'
-require 'mv/core/validation/builder/inclusion'
-require 'mv/core/validation/builder/length'
-require 'mv/core/validation/builder/presence'
-require 'mv/core/validation/builder/absence'
-require 'mv/core/validation/builder/uniqueness'
-require 'mv/core/validation/builder/custom'
+require_relative 'exclusion'
+require_relative 'inclusion'
+require_relative 'length'
+require_relative 'presence'
+require_relative 'absence'
+require_relative 'uniqueness'
+require_relative 'custom'
 
 module Mv
   module Core

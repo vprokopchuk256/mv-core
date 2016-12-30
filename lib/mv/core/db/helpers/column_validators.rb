@@ -1,5 +1,5 @@
 require 'mv/core/validation/factory'
-require 'mv/core/db/helpers/table_validators'
+require_relative 'table_validators'
 
 module Mv
   module Core
@@ -20,10 +20,10 @@ module Mv
             update_column_validator(validation_type, opts)
           end
 
-          def delete_column_validator 
+          def delete_column_validator
             delete_validators(column_validators) > 0
           end
-          
+
           def update_column_validator validation_type, opts
             return delete_validators(column_validators.where(validation_type: validation_type)) if opts == false
 
@@ -44,9 +44,9 @@ module Mv
 
           def raise_column_validation_error validation_type, opts
             raise Mv::Core::Error.new(
-              table_name: table_name, 
-              column_name: column_name, 
-              validation_type: validation_type, 
+              table_name: table_name,
+              column_name: column_name,
+              validation_type: validation_type,
               options: opts,
               error: 'Validator can not be removed when new column is being added'
             )

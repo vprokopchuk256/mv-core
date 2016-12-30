@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
-gem 'railties', '~> 4.1'
-gem 'activerecord', '~> 4.1'
+gem 'railties', '~> 5.0'
+gem 'activerecord', '~> 5.0'
 gem 'i18n', '~> 0.7', github: 'svenfuchs/i18n'
 
 group :development do

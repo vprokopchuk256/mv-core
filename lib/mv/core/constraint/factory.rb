@@ -1,5 +1,5 @@
-require 'mv/core/constraint/trigger'
-require 'mv/core/constraint/index'
+require_relative 'trigger'
+require_relative 'index'
 
 module Mv
   module Core
@@ -19,11 +19,11 @@ module Mv
           delegate :create_constraint, :register_constraint, to: :instance
         end
 
-        private 
+        private
 
         def factory_map
           @factory_map ||= {
-            trigger: Mv::Core::Constraint::Trigger,  
+            trigger: Mv::Core::Constraint::Trigger,
             index: Mv::Core::Constraint::Index
           }
         end

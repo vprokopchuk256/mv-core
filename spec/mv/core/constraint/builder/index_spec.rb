@@ -13,11 +13,11 @@ describe Mv::Core::Constraint::Builder::Index do
 
   let(:index_description) { Mv::Core::Constraint::Description.new(:idx_mv_table_name, :index) }
   let(:index_constraint) { Mv::Core::Constraint::Index.new(index_description) }
-  let(:uniqueness) { 
-    Mv::Core::Validation::Uniqueness.new(:table_name, 
-                                         :column_name, 
-                                         as: :index, 
-                                         index_name: :idx_mv_table_name) 
+  let(:uniqueness) {
+    Mv::Core::Validation::Uniqueness.new(:table_name,
+                                         :column_name,
+                                         as: :index,
+                                         index_name: :idx_mv_table_name)
   }
 
   before do
@@ -37,7 +37,7 @@ describe Mv::Core::Constraint::Builder::Index do
       end
 
       Mv::Core::Migration::Base.with_suppressed_validations do
-        ActiveRecord::Base.connection.drop_table(:table_name) if ActiveRecord::Base.connection.table_exists?(:table_name)
+        ActiveRecord::Base.connection.drop_table(:table_name) if ActiveRecord::Base.connection.data_source_exists?(:table_name)
 
         ActiveRecord::Base.connection.create_table(:table_name) do |t|
           t.string :column_name
@@ -57,10 +57,10 @@ describe Mv::Core::Constraint::Builder::Index do
 
       describe 'when called second time' do
         before do
-          index_constraint.validations << Mv::Core::Validation::Uniqueness.new(:table_name, 
-                                                                               :column_name_1, 
-                                                                               as: :index, 
-                                                                               index_name: :idx_mv_table_name) 
+          index_constraint.validations << Mv::Core::Validation::Uniqueness.new(:table_name,
+                                                                               :column_name_1,
+                                                                               as: :index,
+                                                                               index_name: :idx_mv_table_name)
           index_builder.create
         end
 
@@ -72,12 +72,12 @@ describe Mv::Core::Constraint::Builder::Index do
       subject { ActiveRecord::Base.connection.indexes(:table_name).find{|idx| idx.name == "idx_mv_table_name"} }
 
       describe "when index exists" do
-        before do 
-          index_builder.create 
-          index_constraint.validations << Mv::Core::Validation::Uniqueness.new(:table_name, 
-                                                                               :column_name_1, 
-                                                                               as: :index, 
-                                                                               index_name: :idx_mv_table_name) 
+        before do
+          index_builder.create
+          index_constraint.validations << Mv::Core::Validation::Uniqueness.new(:table_name,
+                                                                               :column_name_1,
+                                                                               as: :index,
+                                                                               index_name: :idx_mv_table_name)
           index_builder.update(index_builder)
         end
 
@@ -88,14 +88,14 @@ describe Mv::Core::Constraint::Builder::Index do
         before do
           index_builder.update(index_builder)
         end
-        
+
         it { is_expected.to be_present }
       end
     end
 
     describe "#delete" do
-      before { 
-        ActiveRecord::Base.connection.add_index(:table_name, :column_name, name: :idx_mv_table_name) 
+      before {
+        ActiveRecord::Base.connection.add_index(:table_name, :column_name, name: :idx_mv_table_name)
         index_builder.delete
       }
 

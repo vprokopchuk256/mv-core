@@ -5,11 +5,11 @@ module Mv
     module Services
       class Uninstall
         def execute
-          if db.table_exists?(:migration_validators)
+          if db.data_source_exists?(:migration_validators)
             Mv::Core::Services::DeleteConstraints.new.execute
-            
+
             ::ActiveRecord::Migration.say_with_time('drop migration_validators table') do
-              db.drop_table(:migration_validators)         
+              db.drop_table(:migration_validators)
             end
           end
         end

@@ -249,7 +249,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
     it "calls original rename_table method" do
       rename_table
 
-      expect(conn.table_exists?(:new_table_name)).to be_truthy
+      expect(conn.data_source_exists?(:new_table_name)).to be_truthy
     end
   end
 
@@ -275,7 +275,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       it "calls original drop_table method" do
         drop_table
 
-        expect(conn.table_exists?(:table_name)).to be_falsey
+        expect(conn.data_source_exists?(:table_name)).to be_falsey
       end
     end
 
@@ -294,7 +294,7 @@ describe Mv::Core::ActiveRecord::ConnectionAdapters::AbstractAdapterDecorator do
       it "calls original drop_table method" do
         drop_table
 
-        expect(conn.table_exists?(:table_name)).to be_falsey
+        expect(conn.data_source_exists?(:table_name)).to be_falsey
       end
     end
   end

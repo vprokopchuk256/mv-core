@@ -19,7 +19,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = "vprokopchuk@gmail.com"
   gem.authors = ["Valeriy Prokopchuk"]
   gem.files = Dir.glob('lib/**/*.rb')
-  gem.required_ruby_version = '>= 2.0'
+  gem.required_ruby_version = '>= 2.2.5'
 end
 Jeweler::RubygemsDotOrgTasks.new
 

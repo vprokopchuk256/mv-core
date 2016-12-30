@@ -1,4 +1,4 @@
-require 'mv/core/validation/builder/base'
+require_relative 'base'
 
 module Mv
   module Core
@@ -9,7 +9,7 @@ module Mv
 
           def conditions
             [{
-              statement: apply_allow_nil_and_blank(apply_in(column_reference)), 
+              statement: apply_allow_nil_and_blank(apply_in(column_reference)),
               message: message
             }]
           end
@@ -19,10 +19,10 @@ module Mv
           def db_value value
             return value if value.is_a?(Integer) or value.is_a?(Float)
             return "'#{value.to_s}'" if value.is_a?(String)
-            raise Mv::Core::Error.new(table_name: table_name, 
-                                      column_name: column_name, 
-                                      validation_type: :inclusion, 
-                                      options: { in: value }, 
+            raise Mv::Core::Error.new(table_name: table_name,
+                                      column_name: column_name,
+                                      validation_type: :inclusion,
+                                      options: { in: value },
                                       error: "#{value.class} is not supported as :in value")
           end
 
@@ -32,11 +32,11 @@ module Mv
             else
               prepared_in = self.in.to_a.collect{ |v| db_value(v) }
 
-              "#{stmt} IN (#{prepared_in.join(', ')})" 
+              "#{stmt} IN (#{prepared_in.join(', ')})"
             end
           end
         end
       end
-    end 
+    end
   end
 end
